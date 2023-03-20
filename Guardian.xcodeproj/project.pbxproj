@@ -1,0 +1,516 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05B0712E29C13DA7008A2010 /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImage.swift */; };
+		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
+		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
+		05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714229C6BD28008A2010 /* ImagePicker.swift */; };
+		05B0714729C707E3008A2010 /* ProfileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714629C707E3008A2010 /* ProfileItem.swift */; };
+		1f09b8d7b62798a3209ed59e18af97bb /* AllergenViewCarousel2Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12eb4638d78df01d3dfbe72a98d9505f /* AllergenViewCarousel2Item.swift */; };
+		3377120360f4bd9a18322925fc2357c6 /* AllergenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2167d88b719cf84b6307bec968e402c6 /* AllergenView.swift */; };
+		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
+		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
+		5d0929bfd1bb67cb97803fe43d53246e /* MemberList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberList.swift */; };
+		635e1ae4a63db128d4b4c8c48246b4b0 /* Members.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286a28a490ee8f1d80a0b9c470c169c1 /* Members.swift */; };
+		9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */; };
+		aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */; };
+		ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */; };
+		b3b9dba880f13bad225aa45aefd116b9 /* MemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */; };
+		d045ac6548e4d65a94917231ded3de47 /* ClinicalTestRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53909bdc9f0afb6c8664617425ebea9d /* ClinicalTestRecordView.swift */; };
+		d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */; };
+		dcccffdbd5f27ab91d250c4cd3e50242 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1c7fc036c65998861c813f86c5be1a50 /* DiaryView.swift */; };
+		e546bac4e75705aea8de14f811a143d8 /* NewProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = ebdc53c4e742e385a2d9c5c06bd19c54 /* NewProfile.swift */; };
+		e8d4a69dee09bc1e26bf5c1322490f79 /* AllergenViewCarouselItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8580b595d3bef38df23536dbe75cc683 /* AllergenViewCarouselItem.swift */; };
+		ee9f3546aa38d27092b3e536a7a85016 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */; };
+		f44f9316c8552818f8dd5e5b88b4f68c /* ExportDiaryClinicalRecordsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = e7dd7d30e21d44752364bbea448e7a66 /* ExportDiaryClinicalRecordsItem.swift */; };
+		fa062cddd79a3dd3f60488861fe99eee /* AllergyID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ba5b8ef6a08eac2d1f30e768b5339ae4 /* AllergyID.swift */; };
+		fc281aaad95472bb6916c82bb623dcc1 /* MemberDetailViewGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = aea1424f8103a1e6f785986cb7ef4cd2 /* MemberDetailViewGridItem.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		05B0712D29C13DA7008A2010 /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
+		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
+		05B0714029C5E755008A2010 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
+		05B0714229C6BD28008A2010 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		05B0714629C707E3008A2010 /* ProfileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileItem.swift; sourceTree = "<group>"; };
+		0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		12eb4638d78df01d3dfbe72a98d9505f /* AllergenViewCarousel2Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergenViewCarousel2Item.swift; sourceTree = "<group>"; };
+		1c7fc036c65998861c813f86c5be1a50 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
+		2167d88b719cf84b6307bec968e402c6 /* AllergenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergenView.swift; sourceTree = "<group>"; };
+		286a28a490ee8f1d80a0b9c470c169c1 /* Members.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Members.swift; sourceTree = "<group>"; };
+		53909bdc9f0afb6c8664617425ebea9d /* ClinicalTestRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicalTestRecordView.swift; sourceTree = "<group>"; };
+		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
+		7511ec6c10495ef1d733df87b4c9f251 /* MemberList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberList.swift; sourceTree = "<group>"; };
+		7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardian.swift; sourceTree = "<group>"; };
+		8580b595d3bef38df23536dbe75cc683 /* AllergenViewCarouselItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergenViewCarouselItem.swift; sourceTree = "<group>"; };
+		8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryClinicalRecords.swift; sourceTree = "<group>"; };
+		aea1424f8103a1e6f785986cb7ef4cd2 /* MemberDetailViewGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailViewGridItem.swift; sourceTree = "<group>"; };
+		b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ba5b8ef6a08eac2d1f30e768b5339ae4 /* AllergyID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergyID.swift; sourceTree = "<group>"; };
+		c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
+		d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailView.swift; sourceTree = "<group>"; };
+		d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		e7dd7d30e21d44752364bbea448e7a66 /* ExportDiaryClinicalRecordsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryClinicalRecordsItem.swift; sourceTree = "<group>"; };
+		ebdc53c4e742e385a2d9c5c06bd19c54 /* NewProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfile.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		95D396F8291C4B380053F8C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		05B0711D29C019FC008A2010 /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				05B0713F29C5739E008A2010 /* Members */,
+				05B0713A29C4148E008A2010 /* CloudKit */,
+				05B0712C29C13B51008A2010 /* Profile */,
+				aea1424f8103a1e6f785986cb7ef4cd2 /* MemberDetailViewGridItem.swift */,
+				12eb4638d78df01d3dfbe72a98d9505f /* AllergenViewCarousel2Item.swift */,
+				8580b595d3bef38df23536dbe75cc683 /* AllergenViewCarouselItem.swift */,
+				e7dd7d30e21d44752364bbea448e7a66 /* ExportDiaryClinicalRecordsItem.swift */,
+			);
+			path = "View Models";
+			sourceTree = "<group>";
+		};
+		05B0711F29C01A11008A2010 /* Content View */ = {
+			isa = PBXGroup;
+			children = (
+				c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */,
+				05B0712229C01A7B008A2010 /* Members List */,
+				ebdc53c4e742e385a2d9c5c06bd19c54 /* NewProfile.swift */,
+				2167d88b719cf84b6307bec968e402c6 /* AllergenView.swift */,
+				1c7fc036c65998861c813f86c5be1a50 /* DiaryView.swift */,
+				53909bdc9f0afb6c8664617425ebea9d /* ClinicalTestRecordView.swift */,
+				05B0712329C01A81008A2010 /* AllergyID */,
+				05B0712129C01A76008A2010 /* Scan */,
+				05B0712529C01B27008A2010 /* Share */,
+			);
+			path = "Content View";
+			sourceTree = "<group>";
+		};
+		05B0712029C01A19008A2010 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		05B0712129C01A76008A2010 /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		05B0712229C01A7B008A2010 /* Members List */ = {
+			isa = PBXGroup;
+			children = (
+				286a28a490ee8f1d80a0b9c470c169c1 /* Members.swift */,
+				d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */,
+			);
+			path = "Members List";
+			sourceTree = "<group>";
+		};
+		05B0712329C01A81008A2010 /* AllergyID */ = {
+			isa = PBXGroup;
+			children = (
+				ba5b8ef6a08eac2d1f30e768b5339ae4 /* AllergyID.swift */,
+			);
+			path = AllergyID;
+			sourceTree = "<group>";
+		};
+		05B0712429C01AF1008A2010 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */,
+				05B0714029C5E755008A2010 /* DateFormatter.swift */,
+				05B0714229C6BD28008A2010 /* ImagePicker.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		05B0712529C01B27008A2010 /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
+		05B0712C29C13B51008A2010 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				05B0712D29C13DA7008A2010 /* ProfileImage.swift */,
+				05B0712F29C13DD1008A2010 /* ProfileModel.swift */,
+				05B0714629C707E3008A2010 /* ProfileItem.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		05B0713A29C4148E008A2010 /* CloudKit */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CloudKit;
+			sourceTree = "<group>";
+		};
+		05B0713F29C5739E008A2010 /* Members */ = {
+			isa = PBXGroup;
+			children = (
+				7511ec6c10495ef1d733df87b4c9f251 /* MemberList.swift */,
+			);
+			path = Members;
+			sourceTree = "<group>";
+		};
+		95D396F2291C4B380053F8C8 = {
+			isa = PBXGroup;
+			children = (
+				d6683324c14f01660adbd8ba4f1f943a /* Guardian */,
+				95D396FC291C4B380053F8C8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		95D396FC291C4B380053F8C8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		95D39704291C4B3A0053F8C8 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		d6683324c14f01660adbd8ba4f1f943a /* Guardian */ = {
+			isa = PBXGroup;
+			children = (
+				05B0713129C173C5008A2010 /* Guardian.entitlements */,
+				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
+				05B0712429C01AF1008A2010 /* Extensions */,
+				05B0711D29C019FC008A2010 /* View Models */,
+				05B0711F29C01A11008A2010 /* Content View */,
+				05B0712029C01A19008A2010 /* Controller */,
+				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
+				95D39704291C4B3A0053F8C8 /* Preview Content */,
+			);
+			path = Guardian;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		95D396FA291C4B380053F8C8 /* Guardian */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95D39709291C4B3A0053F8C8 /* Build configuration list for PBXNativeTarget "Guardian" */;
+			buildPhases = (
+				95D396F7291C4B380053F8C8 /* Sources */,
+				95D396F8291C4B380053F8C8 /* Frameworks */,
+				95D396F9291C4B380053F8C8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Guardian;
+			productName = Guardian;
+			productReference = d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		95D396F3291C4B380053F8C8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1410;
+				LastUpgradeCheck = 1410;
+				TargetAttributes = {
+					95D396FA291C4B380053F8C8 = {
+						CreatedOnToolsVersion = 14.1;
+					};
+				};
+			};
+			buildConfigurationList = 95D396F6291C4B380053F8C8 /* Build configuration list for PBXProject "Guardian" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 95D396F2291C4B380053F8C8;
+			productRefGroup = 95D396FC291C4B380053F8C8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				95D396FA291C4B380053F8C8 /* Guardian */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		95D396F9291C4B380053F8C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ee9f3546aa38d27092b3e536a7a85016 /* Preview Assets.xcassets in Resources */,
+				37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		95D396F7291C4B380053F8C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				635e1ae4a63db128d4b4c8c48246b4b0 /* Members.swift in Sources */,
+				fa062cddd79a3dd3f60488861fe99eee /* AllergyID.swift in Sources */,
+				dcccffdbd5f27ab91d250c4cd3e50242 /* DiaryView.swift in Sources */,
+				e546bac4e75705aea8de14f811a143d8 /* NewProfile.swift in Sources */,
+				3377120360f4bd9a18322925fc2357c6 /* AllergenView.swift in Sources */,
+				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
+				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
+				05B0714729C707E3008A2010 /* ProfileItem.swift in Sources */,
+				b3b9dba880f13bad225aa45aefd116b9 /* MemberDetailView.swift in Sources */,
+				9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */,
+				fc281aaad95472bb6916c82bb623dcc1 /* MemberDetailViewGridItem.swift in Sources */,
+				4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */,
+				1f09b8d7b62798a3209ed59e18af97bb /* AllergenViewCarousel2Item.swift in Sources */,
+				05B0712E29C13DA7008A2010 /* ProfileImage.swift in Sources */,
+				d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */,
+				05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */,
+				f44f9316c8552818f8dd5e5b88b4f68c /* ExportDiaryClinicalRecordsItem.swift in Sources */,
+				d045ac6548e4d65a94917231ded3de47 /* ClinicalTestRecordView.swift in Sources */,
+				5d0929bfd1bb67cb97803fe43d53246e /* MemberList.swift in Sources */,
+				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
+				aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */,
+				e8d4a69dee09bc1e26bf5c1322490f79 /* AllergenViewCarouselItem.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		95D39707291C4B3A0053F8C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		95D39708291C4B3A0053F8C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		95D3970A291C4B3A0053F8C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Guardian/Preview Content\"";
+				DEVELOPMENT_TEAM = FZ7NL6565P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swifteff.GuardianFoodAllergy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		95D3970B291C4B3A0053F8C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Guardian/Preview Content\"";
+				DEVELOPMENT_TEAM = FZ7NL6565P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swifteff.GuardianFoodAllergy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		95D396F6291C4B380053F8C8 /* Build configuration list for PBXProject "Guardian" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95D39707291C4B3A0053F8C8 /* Debug */,
+				95D39708291C4B3A0053F8C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		95D39709291C4B3A0053F8C8 /* Build configuration list for PBXNativeTarget "Guardian" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95D3970A291C4B3A0053F8C8 /* Debug */,
+				95D3970B291C4B3A0053F8C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 95D396F3291C4B380053F8C8 /* Project object */;
+}
