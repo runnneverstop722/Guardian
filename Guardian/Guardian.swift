@@ -10,20 +10,18 @@ import SwiftUI
 
 @main
 struct Guardian: App {
-	var body: some Scene {
-		WindowGroup {
-			TabView {
-				NavigationStack {
-					Members()
-				}
-				.tabItem { Label("メンバー", systemImage: "person.3") }
-				ScanView()
-					.tabItem { Label("スキャン", systemImage: "doc.viewfinder") }
-				AllergyID()
-					.tabItem { Label("IDカード", systemImage: "menucard") }
-				EmptyView()
-					.tabItem { Label("Fourth", systemImage: "wind") }
-			}
-		}
-	}
+    var body: some Scene {
+        WindowGroup {
+            TabView {
+                NavigationStack {
+                    MembersView()
+                }
+                .tabItem { Label("メンバー", systemImage: "person.3") }
+                AllergyID()
+                    .tabItem { Label("IDカード", systemImage: "menucard") }
+                EmptyView()
+                    .tabItem { Label("Fourth", systemImage: "wind") }
+            }
+        }
+    }
 }

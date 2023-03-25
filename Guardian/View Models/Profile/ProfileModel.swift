@@ -1,25 +1,22 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-An observable state object that contains profile details.
-*/
+//ProfileModel.swift
 
 import SwiftUI
 import PhotosUI
 import CoreTransferable
 import CloudKit
 
-class NumbersOnly: ObservableObject {
-    @Published var value = "" {
-        didSet {
-            let filtered = value.filter { $0.isNumber }
-            
-            if value != filtered {
-                value = filtered
-            }
-        }
-    }
+struct profileInfoModel: Hashable, Identifiable {
+    let id = UUID().uuidString
+    let data: Data? //image
+    let firstName: String = ""
+    let lastName: String = ""
+    let gender: Gender = .選択なし
+    let birthDate = Date()
+    let hospitalName: String = ""
+    let allergist: String = ""
+    let allergistContactInfo: String = ""
+    let profileInfo: [MemberList] = []
+    let record: CKRecord
 }
 
 @MainActor class ProfileModel: ObservableObject {
@@ -42,11 +39,12 @@ class NumbersOnly: ObservableObject {
     @Published var hospitalName: String = ""
     @Published var allergist: String = ""
     @Published var allergistContactInfo: String = ""
-    @Published var profileInfo: [String] = []
-    @Published var profileInfoImage: URL?
+    @Published var profileInfo: [MemberList] = []
+    @Published var isAddMemberPresented = false
+    @Published var isEditMemberPresented = false
     
     init() {
-        fetchItems()
+        fetchItemsFromCloud()
     }
     
     // MARK: - Profile Image
@@ -127,10 +125,7 @@ class NumbersOnly: ObservableObject {
         var imageURL: URL?
         
         if let data = data {
-            
-//            let imageData:Data = image.jpegData(compressionQuality: 1.0)!
             let path:String = documentsDirectoryPath.appendingPathComponent(tempImageName)
-//            try? image.jpegData(compressionQuality: 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
             imageURL = URL(fileURLWithPath: path)
             try? data.write(to: imageURL!, options: [.atomic])
         }
@@ -157,7 +152,7 @@ class NumbersOnly: ObservableObject {
         profileImage: URL?,
         firstName: String,
         lastName: String,
-        gender:Gender,
+        gender: Gender,
         birthDate: Date,
         hospitalName: String,
         allergist: String,
@@ -166,7 +161,6 @@ class NumbersOnly: ObservableObject {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "ProfileInfo", recordID: ckRecordID)
-            
             if let profileImage = profileImage {
                 let url = CKAsset(fileURL: profileImage)
                 myRecord["profileImage"] = url
@@ -188,90 +182,43 @@ class NumbersOnly: ObservableObject {
         }
     }
     
-    //MARK: - Fetching to Private DataBase Custom Zone
+    //MARK: - Fetching from CK Private DataBase Custom Zone
     
-    func fetchItems() {
-        
-        _ = Gender.RawValue()
-        var returnedItems: [String] = []
-        var returnedURL: URL?
-        
+    func fetchItemsFromCloud() {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: "ProfileInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
         let queryOperation = CKQueryOperation(query: query)
-        
-        if #available(iOS 15.0, *) {
-            queryOperation.recordMatchedBlock = { (returnedRecordID, returnedResult) in
-                switch returnedResult {
-                case .success(let record) :
-                    guard let firstName = record["firstName"] as? String else {return}
-                    guard let lastName = record["lastName"] as? String else {return}
-                    guard let gender = record["gender"] as? String else {return}
-//                    guard let birthDate = record["birthDate"] as? String else {return}
-                    guard let hospitalName = record["hospitalName"] as? String else {return}
-                    guard let allergist = record["allergist"] as? String else {return}
-                    guard let allergistContactInfo = record["allergistContactInfo"] as? String else {return}
-                    if let profileImage = record["profileImage"] as? CKAsset {
-                        returnedURL = profileImage.fileURL
-                    }
-                    returnedItems.append(firstName)
-                    returnedItems.append(lastName)
-                    returnedItems.append(gender)
-//                    returnedItems.append(birthDate)
-                    returnedItems.append(hospitalName)
-                    returnedItems.append(allergist)
-                    returnedItems.append(allergistContactInfo)
-                    
-                case .failure(let error) :
-                    print("Error recordMatchedBlock: \(error)")
-                }
-            }
-        } else {
-            queryOperation.recordFetchedBlock = { (returnedRecord) in
-                guard let firstName = returnedRecord["firstName"] as? String else {return}
-                guard let lastName = returnedRecord["lastName"] as? String else {return}
-                guard let gender = returnedRecord["gender"] as? String else {return}
-//                guard let birthDate = returnedRecord["birthDate"] as? String else {return}
-                guard let hospitalName = returnedRecord["hospitalName"] as? String else {return}
-                guard let allergist = returnedRecord["allergist"] as? String else {return}
-                guard let allergistContactInfo = returnedRecord["allergistContactInfo"] as? String else {return}
-                if let profileImage = returnedRecord["profileImage"] as? CKAsset {
-                    returnedURL = profileImage.fileURL
-                }
-                returnedItems.append(firstName)
-                returnedItems.append(lastName)
-                returnedItems.append(gender)
-//                returnedItems.append(birthDate)
-                returnedItems.append(hospitalName)
-                returnedItems.append(allergist)
-                returnedItems.append(allergistContactInfo)
+        queryOperation.recordFetchedBlock = { (returnedRecord) in
+            if let member = MemberList(record: returnedRecord) {
+                self.profileInfo.append(member)
             }
         }
-        
-        if #available(iOS 15.0, *) {
-            queryOperation.queryResultBlock = { [weak self] returnedResult in
-                print("RETURNED RESULT: \(returnedResult)")
-                DispatchQueue.main.async {
-                    self?.profileInfo = returnedItems
-                    self?.profileInfoImage = returnedURL
-                }
-            }
-        } else {
-            queryOperation.queryCompletionBlock = { [weak self] (returnedCursor, returnedError) in
-                print("RETURNED queryResultBlock")
-                DispatchQueue.main.async {
-                    self?.profileInfo = returnedItems
-                    self?.profileInfoImage = returnedURL
-                }
-            }
+        queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED queryResultBlock")
+
         }
-        
         addOperation(operation: queryOperation)
     }
     
     func addOperation(operation: CKDatabaseOperation) {
         CKContainer.default().privateCloudDatabase.add(operation)
+    }
+    
+    //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
+    
+
+    
+    func updateItem(model: MemberList) {
+        
+    }
+    
+    
+    //MARK: - DELETE CK @CK Private DataBase Custom Zone
+
+    func deleteItemsFromCloud(indexSet: IndexSet) {
+        
     }
     
 }
