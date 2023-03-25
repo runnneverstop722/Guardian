@@ -63,7 +63,7 @@ struct MemberDetailView: View {
             Section(header: Text("Allergens")) {
                 ForEach(0..<5) { index in
                     NavigationLink(
-                        destination: AllergenView(allergenName: "Allergen \(index)"),
+                        destination: AllergensView(allergenName: "Allergen \(index)"),
                         label: {
                             HStack {
                                 Image(systemName: "exclamationmark.triangle")
