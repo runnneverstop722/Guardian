@@ -4,21 +4,23 @@ import SwiftUI
 import CloudKit
 
 struct NewDiagnosis: View {
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var diagnosisModel: DiagnosisModel
     
     @State private var showingAddAllergen = false
     @State private var showingRemoveDiagnosisAlert = false
     @State private var showingSaveConfirmationAlert = false
-    
-    let profile: CKRecord
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
     private let allergenOptions = ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"]
     
     @State private var isShowingActionSheet = false
-    
+    @State private var isUpdate = false
     init(profile: CKRecord) {
-        self.profile = profile
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
+    }
+    init(record: CKRecord) {
+        _isUpdate = State(wrappedValue: true)
+        _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(diagnosis: record))
     }
     var body: some View {
         NavigationView {
@@ -69,17 +71,24 @@ struct NewDiagnosis: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
-                        showingRemoveDiagnosisAlert.toggle()
-                    }) {
-                        Text("Remove this diagnosis")
-                            .foregroundColor(.red)
-                    }
-                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                            // Handle removal of diagnosis
-                        }, secondaryButton: .cancel())
+                if isUpdate {
+                    ToolbarItem(placement: .bottomBar) {
+                        Button(action: {
+                            showingRemoveDiagnosisAlert.toggle()
+                        }) {
+                            Text("Remove this diagnosis")
+                                .foregroundColor(.red)
+                        }
+                        .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                            Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                                // Handle removal of diagnosis
+                                diagnosisModel.deleteItemsFromCloud { isSuccess in
+                                    if isSuccess {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
+                                }
+                            }, secondaryButton: .cancel())
+                        }
                     }
                 }
             }
@@ -92,7 +101,7 @@ struct NewDiagnosis: View {
                     // Save the data to the variables you mentioned:
                     // episodeDate, firstKnownExposure(Bool), wentToHospital(Bool),
                     // typeOfExposure([String]), symptoms([String]), leadTimeToSymptoms(String), treatments([String])
-                    diagnosisModel.addButtonPressed(record: profile)
+                    diagnosisModel.addButtonPressed()
 
                 },
                       secondaryButton: .cancel())

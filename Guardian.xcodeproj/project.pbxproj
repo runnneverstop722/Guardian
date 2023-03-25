@@ -16,7 +16,6 @@
 		051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C329CE895600A890D0 /* SelectSymptoms.swift */; };
 		051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C529CE896800A890D0 /* SelectLocations.swift */; };
 		051A27C829CE897500A890D0 /* EpisodeDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C729CE897500A890D0 /* EpisodeDetails.swift */; };
-		051A27CB29CE898B00A890D0 /* DiagnosisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CA29CE898B00A890D0 /* DiagnosisView.swift */; };
 		051A27CD29CE89A100A890D0 /* NewDiagnosis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CC29CE89A100A890D0 /* NewDiagnosis.swift */; };
 		051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */; };
 		051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D129CE8BE900A890D0 /* ExportDataView.swift */; };
@@ -51,7 +50,6 @@
 		051A27C329CE895600A890D0 /* SelectSymptoms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectSymptoms.swift; sourceTree = "<group>"; };
 		051A27C529CE896800A890D0 /* SelectLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocations.swift; sourceTree = "<group>"; };
 		051A27C729CE897500A890D0 /* EpisodeDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetails.swift; sourceTree = "<group>"; };
-		051A27CA29CE898B00A890D0 /* DiagnosisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisView.swift; sourceTree = "<group>"; };
 		051A27CC29CE89A100A890D0 /* NewDiagnosis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDiagnosis.swift; sourceTree = "<group>"; };
 		051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataModel.swift; sourceTree = "<group>"; };
 		051A27D129CE8BE900A890D0 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
@@ -103,7 +101,6 @@
 		051A27C929CE897E00A890D0 /* Diagnosis */ = {
 			isa = PBXGroup;
 			children = (
-				051A27CA29CE898B00A890D0 /* DiagnosisView.swift */,
 				051A27CC29CE89A100A890D0 /* NewDiagnosis.swift */,
 			);
 			path = Diagnosis;
@@ -314,7 +311,6 @@
 				635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */,
 				fa062cddd79a3dd3f60488861fe99eee /* AllergyID.swift in Sources */,
 				051A27C229CE893C00A890D0 /* NewEpisode.swift in Sources */,
-				051A27CB29CE898B00A890D0 /* DiagnosisView.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* NewProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
 				3377120360f4bd9a18322925fc2357c6 /* AllergensView.swift in Sources */,

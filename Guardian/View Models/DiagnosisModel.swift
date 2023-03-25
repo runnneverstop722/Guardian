@@ -27,24 +27,45 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     @Published var diagnosisInfo: [DiagnosisListModel] = []
     let record: CKRecord
     
+    var isUpdated: Bool = false
     
     init(record: CKRecord) {
         self.record = record
         fetchItemsFromCloud()
     }
     
+    init(diagnosis: CKRecord) {
+        record = diagnosis
+        guard let diagnosis = record["diagnosis"] as? String,
+              let diagnosisDate = record["diagnosisDate"] as? Date,
+              let allergens = record["allergens"] as? [String] else {
+            return
+        }
+        let diagnosedHospital = record["diagnosedHospital"] as? String
+        let diagnosedAllergist = record["diagnosedAllergist"] as? String
+        self.diagnosis = diagnosis
+        self.diagnosisDate = diagnosisDate
+        self.allergens = allergens
+        self.diagnosedHospital = diagnosedHospital ?? ""
+        self.diagnosedAllergist = diagnosedAllergist ?? ""
+        isUpdated = true
+    }
     //MARK: - Saving to Private DataBase Custom Zone
     
-    func addButtonPressed(record: CKRecord) {
+    func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !allergens.isEmpty else { return }
-        addItem(
-            record: record,
-            diagnosis: diagnosis,
-            diagnosisDate: diagnosisDate,
-            diagnosedHospital: diagnosedHospital,
-            diagnosedAllergist: diagnosedAllergist,
-            allergens: allergens)
+        if isUpdated {
+            updateItem()
+        } else {
+            addItem(
+                record: record,
+                diagnosis: diagnosis,
+                diagnosisDate: diagnosisDate,
+                diagnosedHospital: diagnosedHospital,
+                diagnosedAllergist: diagnosedAllergist,
+                allergens: allergens)
+        }
     }
     
     private func addItem(
@@ -74,6 +95,11 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let record = returnedRecord {
+                DispatchQueue.main.async {
+                   NotificationCenter.default.post(name: NSNotification.Name.init("removeDiagnosis"), object: DiagnosisListModel(record: record))
+                }
+            }
         }
     }
     
@@ -87,6 +113,8 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let queryOperation = CKQueryOperation(query: query)
+//        diagnosisInfo.removeAll()
+        self.diagnosisInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let member = DiagnosisListModel(record: returnedRecord) {
@@ -107,22 +135,28 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     
     //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
         
-    func updateItem(model: DiagnosisListModel) {
-        let myRecord = model.record
+    func updateItem() {
+        let myRecord = record
 
         myRecord["diagnosisDate"] = diagnosisDate
         myRecord["diagnosedHospital"] = diagnosedHospital
         myRecord["diagnosedAllergist"] = diagnosedAllergist
         myRecord["allergens"] = allergens
         saveItem(record: myRecord)
-        
     }
     
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 
-    func deleteItemsFromCloud(model: DiagnosisListModel) {
-        
+    func deleteItemsFromCloud(completion: @escaping ((Bool) -> Void)) {
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
+            DispatchQueue.main.async {
+                completion(error == nil)
+                if error == nil {
+                    NotificationCenter.default.post(name: NSNotification.Name.init("removeDiagnosis"), object: nil)
+                }
+            }
+        }
     }
     
 }

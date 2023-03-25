@@ -17,6 +17,18 @@ struct MembersView: View {
                         .onTapGesture {
                             vm.updateItem(model: item)
                         }
+                }.swipeActions(allowsFullSwipe: false) {
+                    Button {
+                        
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        
+                    } label: {
+                        Label("Delete", systemImage: "trash.fill")
+                    }
+
                 }
             }
             .onDelete(perform: deleteItems(atOffsets:))

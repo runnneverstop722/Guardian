@@ -191,13 +191,14 @@ struct profileInfoModel: Hashable, Identifiable {
         
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.recordFetchedBlock = { (returnedRecord) in
-            if let member = MemberList(record: returnedRecord) {
-                self.profileInfo.append(member)
+            DispatchQueue.main.async {
+                if let member = MemberList(record: returnedRecord) {
+                    self.profileInfo.append(member)
+                }
             }
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED queryResultBlock")
-
         }
         addOperation(operation: queryOperation)
     }

@@ -16,17 +16,20 @@ struct MemberDetailView: View {
     @StateObject var diagnosisModel: DiagnosisModel
     let profile: CKRecord
     
+    let onDeleteDiagnosis = NotificationCenter.default.publisher(for: Notification.Name("removeDiagnosis"))
+    
     let firstName: String = "John"
     init(profile: CKRecord) {
         self.profile = profile
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
     }
+    
     var body: some View {
         List {
             Section(header: Text("Diagnosis")) {
                 ForEach(diagnosisModel.diagnosisInfo, id: \.self) { item in
                     NavigationLink(
-                        destination: DiagnosisView(),
+                        destination: NewDiagnosis(record: item.record),
                         label: {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -57,7 +60,13 @@ struct MemberDetailView: View {
                         isActive: $isAddingNewDiagnosis,
                         label: {}
                     )
-                )
+                ).onReceive(onDeleteDiagnosis) { data in
+                    if let data = data.object as? DiagnosisListModel {
+                        diagnosisModel.diagnosisInfo.insert(data, at: 0)
+                    } else {
+                        diagnosisModel.fetchItemsFromCloud()
+                    }
+                }
             }
             
             Section(header: Text("Allergens")) {
