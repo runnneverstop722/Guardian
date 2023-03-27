@@ -26,7 +26,7 @@ struct profileInfoModel: Hashable, Identifiable {
 
 @MainActor class ProfileModel: ObservableObject  {
     enum Gender: String, CaseIterable, Identifiable {
-        case 男性, 女性, 選択なし
+        case 男, 女, 選択なし
         var id: String { self.rawValue }
     }
 
@@ -42,30 +42,31 @@ struct profileInfoModel: Hashable, Identifiable {
     @Published var profileInfo: [MemberListModel] = []
     @Published var isAddMemberPresented = false
     @Published var isEditMemberPresented = false
-    let record: CKRecord
+    var record: CKRecord?
     var isUpdated: Bool = false
     
-    init(record: CKRecord) {
-        self.record = record
+    init() {
         fetchItemsFromCloud()
     }
     init(profile: CKRecord) {
         record = profile
-        guard let firstName = record["firstName"] as? String,
-              let lastName = record["lastName"] as? String,
-              let birthDate = record["birthDate"] as? Date,
-              let gender = (record["gender"] as? String),
-              let genderEnum = Gender(rawValue: gender),
-              let allergens = record["allergens"] as? [String] else {
+        guard let firstName = profile["firstName"] as? String,
+              let lastName = profile["lastName"] as? String,
+              let birthDate = profile["birthDate"] as? Date,
+              let gender = (profile["gender"] as? String),
+              let genderEnum = Gender(rawValue: gender)
+                else {
             return
         }
-        let hospitalName = record["hospitalName"] as? String
-        let allergist = record["allergist"] as? String
-        let allergistContactInfo = record["allergistContactInfo"] as? String
+        let allergens = profile["allergens"] as? [String] ?? []
+        let hospitalName = profile["hospitalName"] as? String
+        let allergist = profile["allergist"] as? String
+        let allergistContactInfo = profile["allergistContactInfo"] as? String
         
-        if let asset = record["profileImage"] as? CKAsset, let url = asset.fileURL {
+        if let asset = profile["profileImage"] as? CKAsset, let url = asset.fileURL {
             let imageURL = try? Data(contentsOf: url)
             self.data = imageURL
+            self.imageState = .success(Image(uiImage: UIImage(data: imageURL!)!))
         } else {
             print("No Image File")
         }
@@ -169,15 +170,20 @@ struct profileInfoModel: Hashable, Identifiable {
     func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !firstName.isEmpty, !lastName.isEmpty else { return }
-        addItem(
-            profileImage: getImageURL(for: data),
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            birthDate: birthDate,
-            hospitalName: hospitalName,
-            allergist: allergist,
-            allergistContactInfo: allergistContactInfo)
+        if isUpdated {
+            updateItem(model: MemberListModel(record: myRecord))
+        } else {
+            addItem(
+                profileImage: getImageURL(for: data),
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                birthDate: birthDate,
+                hospitalName: hospitalName,
+                allergist: allergist,
+                allergistContactInfo: allergistContactInfo,
+                allergens: allergens)
+        }
     }
     
     private func addItem(
@@ -188,7 +194,9 @@ struct profileInfoModel: Hashable, Identifiable {
         birthDate: Date,
         hospitalName: String,
         allergist: String,
-        allergistContactInfo: String ) {
+        allergistContactInfo: String,
+        allergens: [String]
+    ) {
             
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
@@ -204,6 +212,7 @@ struct profileInfoModel: Hashable, Identifiable {
             myRecord["hospitalName"] = hospitalName
             myRecord["allergist"] = allergist
             myRecord["allergistContactInfo"] = allergistContactInfo
+            myRecord["allergens"] = allergens
             saveItem(record: myRecord)
         }
     
@@ -211,14 +220,18 @@ struct profileInfoModel: Hashable, Identifiable {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let record = returnedRecord {
+                DispatchQueue.main.async {
+                   NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: MemberListModel(record: record))
+                }
+            }
         }
     }
     
     //MARK: - Fetching from CK Private DataBase Custom Zone
     
     func fetchItemsFromCloud() {
-        let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
-        let predicate = NSPredicate(format: "profile == %@", reference)
+        let predicate = NSPredicate(value: true)
         
         let query = CKQuery(recordType: "ProfileInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
@@ -234,7 +247,7 @@ struct profileInfoModel: Hashable, Identifiable {
             }
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED queryResultBlock")
+            print("RETURNED ProfileInto queryResultBlock")
         }
         addOperation(operation: queryOperation)
     }
@@ -248,7 +261,7 @@ struct profileInfoModel: Hashable, Identifiable {
 
     
     func updateItem(model: MemberListModel) {
-        let myRecord = record
+        guard let myRecord = record else { return }
         
         myRecord["profileImage"] = data
         myRecord["firstName"] = firstName
@@ -258,14 +271,22 @@ struct profileInfoModel: Hashable, Identifiable {
         myRecord["hospitalName"] = hospitalName
         myRecord["allergist"] = allergist
         myRecord["allergistContactInfo"] = allergistContactInfo
+        myRecord["allergens"] = allergens
         saveItem(record: myRecord)
     }
     
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 
-    func deleteItemsFromCloud(indexSet: IndexSet) {
-        
+    func deleteItemsFromCloud(completion: @escaping ((Bool) -> Void)) {
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record!.recordID) { recordID, error in
+            DispatchQueue.main.async {
+                completion(error == nil)
+                if error == nil {
+                    NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: nil)
+                }
+            }
+        }
     }
     
 }

@@ -26,7 +26,6 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     
     @Published var diagnosisInfo: [DiagnosisListModel] = []
     let record: CKRecord
-    
     var isUpdated: Bool = false
     
     init(record: CKRecord) {

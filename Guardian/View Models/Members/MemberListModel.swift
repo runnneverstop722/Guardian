@@ -37,7 +37,7 @@ struct MemberListModel: Identifiable, Hashable {
         headline = String(format: "%@ %@", firstName, lastName) // firstname + " " + lastname
         date = birthDate
         let age = Calendar.current.dateComponents([.year], from: birthDate, to: .now)
-        caption = String(format: "%d 際", age.year!)
+        caption = String(format: "%d 歳", age.year!)
         imageURL = fileURL
         self.record = record
     }

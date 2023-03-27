@@ -6,8 +6,15 @@ import CloudKit
 
 struct MembersView: View {
     @State private var isMainUserSettingPresented = false
-    @StateObject var profileModel: ProfileModel
-    let profile: CKRecord
+    @StateObject var profileModel: ProfileModel 
+    @State private var isUpdate = false
+    @State private var editItem: MemberListModel?
+    init() {
+        _profileModel = StateObject(wrappedValue: ProfileModel())
+    }
+    init(record: CKRecord) {
+        _profileModel = StateObject(wrappedValue: ProfileModel(profile: record))
+    }
     
     var body: some View {
         List {
@@ -18,13 +25,21 @@ struct MembersView: View {
                             profileModel.updateItem(model: item)
                         }
                 }.swipeActions(allowsFullSwipe: false) {
-                    Button() {
-                        
-                    } label: {
-                        Label("Edit", systemImage: "slider.horizontal.3")
-                    }.tint(.indigo)
+                    Button("Edit") {
+                        editItem = item
+                    }
+
                     Button(role: .destructive) {
-                        
+//                        profileModel.profileInfo.removeAll(where: { $0.id == item.id })
+//                        if let record = item.record {
+//                            profileModel.deleteItemsFromCloud() { success in
+//                                if success {
+//                                    NotificationCenter.default.post(name: NSNotification.Name("ItemDeleted"), object: nil)
+//                                } else {
+//                                    // Handle deletion failure
+//                                }
+//                            }
+//                        }
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
                     }
@@ -41,7 +56,7 @@ struct MembersView: View {
         .navigationTitle("Member List")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("+Add Member") {
+                Button("+Add") {
                     profileModel.isAddMemberPresented = true
                 }
             }
@@ -50,7 +65,10 @@ struct MembersView: View {
             MemberDetailView(profile: item.record)
         }
         .sheet(isPresented: $profileModel.isAddMemberPresented) {
-            ProfileView(profile: profile)
+            ProfileView()
+        }
+        .sheet(item: $editItem) { item in
+            ProfileView(profile: item.record)
         }
     }
 }

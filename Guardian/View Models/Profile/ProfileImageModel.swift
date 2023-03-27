@@ -34,7 +34,9 @@ struct CircularProfileImage: View {
     
     var body: some View {
         ProfileImageModel(imageState: imageState)
-            .scaledToFill()
+            //.scaledToFill()
+            
+            .aspectRatio(contentMode: .fill)
             .clipShape(Circle())
             .frame(width: 100, height: 100)
             .background {

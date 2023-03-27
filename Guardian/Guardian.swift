@@ -11,7 +11,7 @@ import CloudKit
 
 @main
 struct Guardian: App {
-    
+
     var body: some Scene {
         WindowGroup {
             TabView {

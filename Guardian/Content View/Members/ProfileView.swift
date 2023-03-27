@@ -13,14 +13,20 @@ struct ProfileView: View {
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
     @State private var showingAlert = false
+    @State private var isUpdate = false
     @Environment(\.dismiss) private var dismiss
-    let profile: CKRecord
+    
+    var profile: CKRecord?
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
     private let allergenOptions = ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"]
     
+    init() {
+        _profileModel = StateObject(wrappedValue: ProfileModel())
+    }
+    
     init(profile: CKRecord) {
         self.profile = profile
-        _profileModel = StateObject(wrappedValue: ProfileModel(record: profile))
+        _profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
     }
     
     var body: some View {
@@ -98,16 +104,18 @@ struct ProfileView: View {
             })
             .navigationTitle("Profile")
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        profileModel.addButtonPressed()
-                        showingAlert = true
-                    }
-                    .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("Your data is successfully saved."),
-                              message: Text(""), dismissButton: .default(Text("Close"), action: {
-                            dismiss()
-                        }))
+                if isUpdate {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            profileModel.addButtonPressed()
+                            showingAlert = true
+                        }
+                        .alert(isPresented: $showingAlert) {
+                            Alert(title: Text("データが保存されました。"),
+                                  message: Text(""), dismissButton: .default(Text("Close"), action: {
+                                dismiss()
+                            }))
+                        }
                     }
                 }
             }
@@ -148,12 +156,3 @@ struct ProfileView: View {
         }
     }
 }
-
-//struct NewProfile_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationStack {
-//            ProfileView()
-//        }
-//    }
-//}
-
