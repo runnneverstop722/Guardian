@@ -1,5 +1,5 @@
 //
-//  AllergyID   .swift
+//  IDcard   .swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct AllergyID: View {
+struct IDcard: View {
 	var body: some View {
 		VStack(spacing: 16.0) {
 
@@ -60,6 +60,6 @@ struct AllergyID: View {
 
 struct AllergyID_Previews: PreviewProvider {
 	static var previews: some View {
-		AllergyID()
+		IDcard()
 	}
 }

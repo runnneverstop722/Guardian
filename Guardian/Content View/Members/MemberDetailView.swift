@@ -18,7 +18,6 @@ struct MemberDetailView: View {
     
     let onDeleteDiagnosis = NotificationCenter.default.publisher(for: Notification.Name("removeDiagnosis"))
     
-    let firstName: String = "John"
     init(profile: CKRecord) {
         self.profile = profile
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
@@ -29,18 +28,15 @@ struct MemberDetailView: View {
             Section(header: Text("Diagnosis")) {
                 ForEach(diagnosisModel.diagnosisInfo, id: \.self) { item in
                     NavigationLink(
-                        destination: NewDiagnosis(record: item.record),
+                        destination: DiagnosisView(record: item.record),
                         label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(item.headline)
-                                        .font(.headline)
-                                    Text(item.caption1)
-                                        .font(.caption)
-                                }
-                                Spacer()
-                                Text(item.caption2.joined(separator: ","))
-                                    .font(.caption)
+                            VStack(alignment: .leading) {
+                                Text(item.headline)
+                                    .font(.system(.headline, design: .rounded))
+                                Text(item.caption1)
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                Text(item.caption2.joined(separator: ", "))
+                                    .font(.system(.caption, design: .rounded, weight: .light))
                             }
                         })
                 }
@@ -56,7 +52,7 @@ struct MemberDetailView: View {
                 }
                 .background(
                     NavigationLink(
-                        destination: NewDiagnosis(profile: profile),
+                        destination: DiagnosisView(profile: profile),
                         isActive: $isAddingNewDiagnosis,
                         label: {}
                     )

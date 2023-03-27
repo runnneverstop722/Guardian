@@ -1,5 +1,5 @@
 //
-//  TabbedApp.swift
+//  Guardian.swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -7,17 +7,19 @@
 //
 
 import SwiftUI
+import CloudKit
 
 @main
 struct Guardian: App {
+    
     var body: some Scene {
         WindowGroup {
             TabView {
                 NavigationStack {
                     MembersView()
                 }
-                .tabItem { Label("メンバー", systemImage: "person.3") }
-                AllergyID()
+                .tabItem { Label("カルテ", systemImage: "person.text.rectangle.fill") }
+                IDcard()
                     .tabItem { Label("IDカード", systemImage: "menucard") }
                 EmptyView()
                     .tabItem { Label("Fourth", systemImage: "wind") }

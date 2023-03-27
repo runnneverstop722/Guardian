@@ -42,8 +42,8 @@ struct episodeInfoModel: Identifiable {
     @Published var episodePhoto: [EpisodePhoto]  = []
     @Published var episodeInfoModel: [EpisodeDetails] = []
 
-    @Published var symptomCategories = ["Skin", "Nose or breathing", "Heart", "Abdominal", "Other"]
-    @Published var typeOfExposureOptions = ["Ingestion", "Skin", "Smell", "Unknown"]
+    @Published var symptomCategories = ["皮膚・粘膜", "呼吸器", "循環器", "Abdominal", "その他"]
+    @Published var typeOfExposureOptions = ["摂取", "肌に触れた", "匂い", "不明"]
     @Published var leadTimeToSymptomsOptions = ["Under 5 min", "5-10 min", "10-15 min", "15-30 min", "30-60 min", "Over an hour"]
     @Published var treatmentsOptions = ["Antihistamine", "Injected steroids", "Oral steroids", "Topical steroids", "Epinephrine shot in the muscle", "Albuterol inhaler", "Other"]
     
@@ -206,7 +206,7 @@ struct episodeInfoModel: Identifiable {
     func fetchItemsFromCloud() {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: "episodeInfo", predicate: predicate)
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.recordFetchedBlock = { (returnedRecord) in

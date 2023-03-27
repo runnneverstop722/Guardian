@@ -17,16 +17,16 @@ struct SelectSymptoms: View {
         self._selectedSymptoms = selectedSymptoms
 
         switch category {
-        case "Skin":
-            symptoms = ["Rash", "Hives", "Itching", "Flushing or redness", "Burning", "Swelling, Edema, or angioedema"]
-        case "Nose or breathing":
-            symptoms = ["Runny nose", "Congestion or stuffy nose", "Mouth or palate itching", "Sneezing", "Cough", "Chest pain", "Chest tightness", "Wheezing", "Shortness of breath", "Throat tightness"]
-        case "Heart":
-            symptoms = ["Irregular heart beat or palpitations", "Fainting or loss of consciousness", "Chest pain or chest tightness", "Low blood pressure"]
-        case "Abdominal":
+        case "皮膚・粘膜":
+            symptoms = ["かぶれ", "じんましん", "かゆみ", "紅潮又は赤み", "Burning", ""]
+        case "呼吸器":
+            symptoms = ["間欠的な咳", "鼻閉（鼻つまり）", "くしゃみ", "断統的な咳", "持続する強い咳き込み", "犬吠様咳嗽（犬が吠えたような鳴き声の咳）", "聴診上の喘鳴", "軽い息苦しさ", "明らかな喘鳴", "呼吸困難", "チアノーゼ（皮膚が青っぽく変色）", "呼吸停止", "血中酸素飽和度92以下", "締めつけられる感覚", "嗄声(声がれ)"]
+        case "循環器":
+            symptoms = ["不整脈又は徐脈（60回（bpm）未満）", "Fainting or loss of consciousness", "Chest pain or chest tightness", "血圧低下(1歳未満＜70mmHg、1～10歳く［70+（2✕年齢）mmHgl、11歳～成人＜90 mmHg)"]
+        case "消化器":
             symptoms = ["Nausea and/or vomiting", "Diarrhea", "Abdominal pain", "Blood or mucus in stool"]
-        case "Other":
-            symptoms = ["Anaphylaxis", "Fevers", "Chills or rigors or shakes", "Dizziness or lightheadedness", "Muscle aches", "Mental status change or abnormal behavior", "Liver injury", "Kidney injury", "Joint pain", "Joint swelling", "Other"]
+        case "その他":
+            symptoms = ["アナフィラキシー", "発熱", "Chills or rigors or shakes", "Dizziness or lightheadedness", "Muscle aches", "Mental status change or abnormal behavior", "Liver injury", "Kidney injury", "Joint pain", "Joint swelling", "Other"]
         default:
             symptoms = []
         }

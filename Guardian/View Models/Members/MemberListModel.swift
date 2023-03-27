@@ -1,5 +1,5 @@
 //
-//  MemberList.swift
+//  MemberListModel.swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 import CloudKit
 
-struct MemberList: Identifiable, Hashable {
+struct MemberListModel: Identifiable, Hashable {
     
     let id = UUID()
     let headline: String

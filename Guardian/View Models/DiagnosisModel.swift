@@ -43,6 +43,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
         let diagnosedHospital = record["diagnosedHospital"] as? String
         let diagnosedAllergist = record["diagnosedAllergist"] as? String
+        
         self.diagnosis = diagnosis
         self.diagnosisDate = diagnosisDate
         self.allergens = allergens
@@ -110,10 +111,10 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         let predicate = NSPredicate(format: "profile == %@", reference)
         
         let query = CKQuery(recordType: "DiagnosisInfo", predicate: predicate)
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-//        diagnosisInfo.removeAll()
+
         self.diagnosisInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {

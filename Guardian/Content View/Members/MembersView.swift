@@ -5,58 +5,52 @@ import PhotosUI
 import CloudKit
 
 struct MembersView: View {
-    @StateObject var vm = ProfileModel()
     @State private var isMainUserSettingPresented = false
-    
+    @StateObject var profileModel: ProfileModel
+    let profile: CKRecord
     
     var body: some View {
         List {
-            ForEach(vm.profileInfo, id: \.self) { item in
+            ForEach(profileModel.profileInfo, id: \.self) { item in
                 NavigationLink(value: item) {
                     Row(headline: item.headline, caption: item.caption, image: item.image)
                         .onTapGesture {
-                            vm.updateItem(model: item)
+                            profileModel.updateItem(model: item)
                         }
                 }.swipeActions(allowsFullSwipe: false) {
-                    Button {
+                    Button() {
                         
                     } label: {
-                        Label("Edit", systemImage: "pencil")
-                    }
+                        Label("Edit", systemImage: "slider.horizontal.3")
+                    }.tint(.indigo)
                     Button(role: .destructive) {
                         
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
                     }
-
                 }
             }
             .onDelete(perform: deleteItems(atOffsets:))
             .onMove(perform: move(fromOffsets:toOffset:))
         }
         .refreshable {
-            vm.profileInfo = []
-            vm.fetchItemsFromCloud()
+            profileModel.profileInfo = []
+            profileModel.fetchItemsFromCloud()
         }
         .listStyle(.plain)
         .navigationTitle("Member List")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("+Add Member") {
-                    vm.isAddMemberPresented = true
-                }
-            }
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("Edit Member") {
-                    vm.isEditMemberPresented = true
+                    profileModel.isAddMemberPresented = true
                 }
             }
         }
-        .navigationDestination(for: MemberList.self) { item in
+        .navigationDestination(for: MemberListModel.self) { item in
             MemberDetailView(profile: item.record)
         }
-        .sheet(isPresented: $vm.isAddMemberPresented) {
-            NewProfileView()
+        .sheet(isPresented: $profileModel.isAddMemberPresented) {
+            ProfileView(profile: profile)
         }
     }
 }
@@ -64,7 +58,7 @@ struct MembersView: View {
 private extension MembersView {
     
     func deleteItems(atOffsets offsets: IndexSet) {
-        vm.profileInfo.remove(atOffsets: offsets)
+        profileModel.profileInfo.remove(atOffsets: offsets)
     }
     
     func editItems() {
@@ -72,7 +66,7 @@ private extension MembersView {
     }
     
     func move(fromOffsets source: IndexSet, toOffset destination: Int) {
-        vm.profileInfo.move(fromOffsets: source, toOffset: destination)
+        profileModel.profileInfo.move(fromOffsets: source, toOffset: destination)
     }
 }
 
@@ -117,11 +111,11 @@ extension MembersView {
         }
     }
 }
-
-struct Members_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            MembersView()
-        }
-    }
-}
+//
+//struct Members_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationStack {
+//            MembersView()
+//        }
+//    }
+//}

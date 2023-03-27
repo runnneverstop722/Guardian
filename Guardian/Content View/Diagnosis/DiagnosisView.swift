@@ -1,16 +1,16 @@
-//  NewDiagnosis.swift
+//  DiagnosisView.swift
 
 import SwiftUI
 import CloudKit
 
-struct NewDiagnosis: View {
+struct DiagnosisView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var diagnosisModel: DiagnosisModel
     
     @State private var showingAddAllergen = false
     @State private var showingRemoveDiagnosisAlert = false
     @State private var showingSaveConfirmationAlert = false
-    private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
+    private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "新生児・乳児食物蛋白誘発胃腸症"]
     private let allergenOptions = ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"]
     
     @State private var isShowingActionSheet = false
@@ -149,6 +149,6 @@ struct NewDiagnosis: View {
 
 //struct NewDiagnosis_Previews: PreviewProvider {
 //    static var previews: some View {
-//        NewDiagnosis()
+//        DiagnosisView()
 //    }
 //}
