@@ -5,10 +5,14 @@ import PhotosUI
 import CloudKit
 
 struct MembersView: View {
+    @Environment(\.presentationMode) var presentationMode
     @State private var isMainUserSettingPresented = false
+    @State private var showingRemoveDiagnosisAlert = false
     @StateObject var profileModel: ProfileModel 
     @State private var isUpdate = false
     @State private var editItem: MemberListModel?
+    
+    let onUpdateProfile = NotificationCenter.default.publisher(for: Notification.Name("updateProfile"))
     init() {
         _profileModel = StateObject(wrappedValue: ProfileModel())
     }
@@ -34,13 +38,23 @@ struct MembersView: View {
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         // Delete Item Action
+                        profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
+                            if isSuccess {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
                         
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
                     }
+                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                            // Handle removal of diagnosis
+                            
+                        }, secondaryButton: .cancel())
+                    }
                 }
             }
-            .onDelete(perform: deleteItems(atOffsets:))
             .onMove(perform: move(fromOffsets:toOffset:))
         }
         .refreshable {
@@ -65,14 +79,18 @@ struct MembersView: View {
         .sheet(item: $editItem) { item in
             ProfileView(profile: item.record)
         }
+        .onReceive(onUpdateProfile) { data in
+            if let data = data.object as? CKRecord.ID {
+                profileModel.profileInfo.removeAll { $0.record.recordID == data
+                }
+            } else if let data = data.object as? MemberListModel {
+                profileModel.profileInfo.append(data)
+            }
+        }
     }
 }
 
 private extension MembersView {
-    
-    func deleteItems(atOffsets offsets: IndexSet) {
-        profileModel.profileInfo.remove(atOffsets: offsets)
-    }
     
     func editItems() {
         

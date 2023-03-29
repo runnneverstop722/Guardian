@@ -22,6 +22,7 @@
 		051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D329CE8C9500A890D0 /* AddAllergenView.swift */; };
 		051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* AllergensView.swift */; };
 		051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DD29D1C4ED00A890D0 /* __nn.swift */; };
+		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -57,6 +58,7 @@
 		051A27D329CE8C9500A890D0 /* AddAllergenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAllergenView.swift; sourceTree = "<group>"; };
 		051A27DA29D08DE400A890D0 /* AllergensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergensView.swift; sourceTree = "<group>"; };
 		051A27DD29D1C4ED00A890D0 /* __nn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = __nn.swift; sourceTree = "<group>"; };
+		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -133,9 +135,18 @@
 			path = "Your Record";
 			sourceTree = "<group>";
 		};
+		051A27E129D4293200A890D0 /* Allergens */ = {
+			isa = PBXGroup;
+			children = (
+				051A27E229D4294A00A890D0 /* AllergensModel.swift */,
+			);
+			path = Allergens;
+			sourceTree = "<group>";
+		};
 		05B0711D29C019FC008A2010 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				051A27E129D4293200A890D0 /* Allergens */,
 				05B0713F29C5739E008A2010 /* Members */,
 				05B0712C29C13B51008A2010 /* Profile */,
 				051A27BA29CE885400A890D0 /* EpisodeModel.swift */,
@@ -335,6 +346,7 @@
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
 				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
 				051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */,
+				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,

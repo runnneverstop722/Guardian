@@ -9,21 +9,6 @@ import PhotosUI
 import CoreTransferable
 import CloudKit
 
-struct profileInfoModel: Hashable, Identifiable {
-    let id = UUID().uuidString
-    let data: Data? //image
-    let firstName: String = ""
-    let lastName: String = ""
-    let gender: Gender = .選択なし
-    let birthDate = Date()
-    let hospitalName: String = ""
-    let allergist: String = ""
-    let allergistContactInfo: String = ""
-    let allergens: [String] = []
-    let profileInfo: [MemberListModel] = []
-    let record: CKRecord
-}
-
 @MainActor class ProfileModel: ObservableObject  {
     enum Gender: String, CaseIterable, Identifiable {
         case 男, 女, 選択なし
@@ -39,6 +24,8 @@ struct profileInfoModel: Hashable, Identifiable {
     @Published var allergist: String = ""
     @Published var allergistContactInfo: String = ""
     @Published var allergens: [String] = []
+    
+    private var allergensObject: [AllergensModel] = []
     @Published var profileInfo: [MemberListModel] = []
     @Published var isAddMemberPresented = false
     @Published var isEditMemberPresented = false
@@ -58,7 +45,7 @@ struct profileInfoModel: Hashable, Identifiable {
                 else {
             return
         }
-        let allergens = profile["allergens"] as? [String] ?? []
+//        let allergens = profile["allergens"] as? [String] ?? []
         let hospitalName = profile["hospitalName"] as? String
         let allergist = profile["allergist"] as? String
         let allergistContactInfo = profile["allergistContactInfo"] as? String
@@ -79,6 +66,32 @@ struct profileInfoModel: Hashable, Identifiable {
         self.allergist = allergist ?? ""
         self.allergistContactInfo = allergistContactInfo ?? ""
         isUpdated = true
+        fetchAllergens(recordID: record!.recordID)
+    }
+    
+    private func fetchAllergens(recordID: CKRecord.ID) {
+        let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
+        let predicate = NSPredicate(format: "profile == %@", reference)
+        
+        let query = CKQuery(recordType: "Allergens", predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let queryOperation = CKQueryOperation(query: query)
+
+        self.allergens = []
+        self.allergensObject = []
+        queryOperation.recordFetchedBlock = { (returnedRecord) in
+            DispatchQueue.main.async {
+                if let object = AllergensModel(record: returnedRecord) {
+                    self.allergens.append(object.allergen)
+                    self.allergensObject.append(object)
+                }
+            }
+        }
+        queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED DiagnosisInfo queryResultBlock")
+        }
+        addOperation(operation: queryOperation)
     }
     // MARK: - Profile Image
     
@@ -211,19 +224,62 @@ struct profileInfoModel: Hashable, Identifiable {
             myRecord["hospitalName"] = hospitalName
             myRecord["allergist"] = allergist
             myRecord["allergistContactInfo"] = allergistContactInfo
-            myRecord["allergens"] = allergens
-            saveItem(record: myRecord)
+//            myRecord["allergens"] = allergens
+        saveItem(record: myRecord) { [weak self] recordID in
+            guard let id = recordID else { return }
+            self?.updateSaveAllergens(recordID: id, allergens: allergens)
+        }
         }
     
-    private func saveItem(record: CKRecord) {
+    private func deleteAllergens(recordID: CKRecord.ID) {
+        
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { recordID, error in
+            DispatchQueue.main.async {
+            }
+        }
+    }
+    func updateSaveAllergens(recordID: CKRecord.ID,allergens: [String]) {
+        let needToremove = allergensObject.filter { !allergens.contains($0.allergen)
+        }
+        
+        needToremove.forEach {
+            deleteAllergens(recordID: $0.record.recordID)
+        }
+        let objects = allergensObject.map { $0.allergen
+        }
+        let needToAdd = allergens.filter { !objects.contains($0) }
+        for allergen in needToAdd {
+            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "Allergens", recordID: ckRecordID)
+            
+            myRecord["allergen"] = allergen
+            let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
+            myRecord["profile"] = reference as CKRecordValue
+            print("profileID: ", recordID.recordName)
+            saveAllergen(record: myRecord)
+        }
+    }
+    
+    private func saveAllergen(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
+            print("Record: \(String(describing: returnedRecord))")
+            print("Error: \(String(describing: returnedError))")
+        }
+    }
+    
+    private func saveItem(record: CKRecord, completion: @escaping ((CKRecord.ID?)->Void)) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
             if let record = returnedRecord {
                 DispatchQueue.main.async {
-                   NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: MemberListModel(record: record))
+                    if !self.isUpdated {
+                        NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: MemberListModel(record: record))
+                    }
                 }
             }
+            completion(returnedRecord?.recordID)
         }
     }
     
@@ -269,22 +325,25 @@ struct profileInfoModel: Hashable, Identifiable {
             myRecord["hospitalName"] = hospitalName
             myRecord["allergist"] = allergist
             myRecord["allergistContactInfo"] = allergistContactInfo
-            myRecord["allergens"] = allergens
-            saveItem(record: myRecord)
+//            myRecord["allergens"] = allergens
+            saveItem(record: myRecord) { [weak self, allergens] recordID in
+                guard let recordID = recordID else { return }
+                self?.updateSaveAllergens(recordID: recordID, allergens: allergens)
+            }
         }
     
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 
-    func deleteItemsFromCloud(completion: @escaping ((Bool)->Void)) {
-//        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
-//            DispatchQueue.main.async {
-//                completion(error == nil)
-//                if error == nil {
-//                    NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: nil)
-//                }
-//            }
-//        }
+    func deleteItemsFromCloud(record: CKRecord, completion: @escaping ((Bool)->Void)) {
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
+            DispatchQueue.main.async {
+                completion(error == nil)
+                if error == nil {
+                    NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: recordID)
+                }
+            }
+        }
     }
     
 }

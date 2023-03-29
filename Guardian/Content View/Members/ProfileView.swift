@@ -12,9 +12,11 @@ import CloudKit
 struct ProfileView: View {
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
+    @State private var showingRemoveDiagnosisAlert = false
     @State private var showingAlert = false
     @State private var isUpdate = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) var presentationMode
     
     var profile: CKRecord?
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
@@ -26,6 +28,7 @@ struct ProfileView: View {
     
     init(profile: CKRecord) {
         self.profile = profile
+        _isUpdate = State(initialValue: true)
         _profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
     }
     
@@ -98,26 +101,44 @@ struct ProfileView: View {
                         showingAddAllergen.toggle()
                     }
                     .sheet(isPresented: $showingAddAllergen) {
-                        AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens)
+                        AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
                     }
                 }
             })
             .navigationTitle("プロフィール")
             .toolbar {
-
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("保存") {
-                            profileModel.addButtonPressed()
-                            showingAlert = true
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        profileModel.addButtonPressed()
+                        showingAlert = true
+                    }
+                    .alert(isPresented: $showingAlert) {
+                        Alert(title: Text("データが保存されました。"),
+                              message: Text(""), dismissButton: .default(Text("Close"), action: {
+                            dismiss()
+                        }))
+                    }
+                }
+                if isUpdate {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button(action: {
+                            showingRemoveDiagnosisAlert.toggle()
+                        }) {
+                            Text("Remove")
+                                .foregroundColor(.red)
                         }
-                        .alert(isPresented: $showingAlert) {
-                            Alert(title: Text("データが保存されました。"),
-                                  message: Text(""), dismissButton: .default(Text("Close"), action: {
-                                dismiss()
-                            }))
+                        .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                            Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                                // Handle removal of diagnosis
+                                profileModel.deleteItemsFromCloud(record: profile!) { isSuccess in
+                                    if isSuccess {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
+                                }
+                            }, secondaryButton: .cancel())
                         }
                     }
-
+                }
             }
         }
     }
@@ -129,8 +150,14 @@ struct ProfileView: View {
         let allergenOptions: [String]
         @Binding var selectedAllergens: [String]
         @Environment(\.presentationMode) var presentationMode
-        @State private var selectedItems = Set<String>()
+        @State var selectedItems = Set<String>()
         
+//        init(allergenOptions: [String], selectedAllergens: Binding<[String]>) {
+//            self.allergenOptions = allergenOptions
+//            _selectedAllergens = selectedAllergens
+//            let selected = Set(selectedAllergens.wrappedValue)
+//            _selectedItems = State(wrappedValue: selected)
+//        }
         var body: some View {
             NavigationView {
                 List(allergenOptions, id: \.self, selection: $selectedItems) { item in
@@ -145,6 +172,7 @@ struct ProfileView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Done") {
+                            selectedAllergens = []
                             selectedAllergens.append(contentsOf: selectedItems)
                             presentationMode.wrappedValue.dismiss()
                         }

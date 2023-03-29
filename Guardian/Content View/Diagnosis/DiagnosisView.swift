@@ -96,11 +96,6 @@ struct DiagnosisView: View {
                 Alert(title: Text("Save Diagnosis?"),
                       message: Text("Do you want to save this diagnosis?"),
                       primaryButton: .default(Text("Save")) {
-                    // Save the diagnosis
-                    // Save Episode to CloudKit
-                    // Save the data to the variables you mentioned:
-                    // episodeDate, firstKnownExposure(Bool), episodeWentToHospital(Bool),
-                    // typeOfExposure([String]), symptoms([String]), leadTimeToSymptoms(String), treatments([String])
                     diagnosisModel.addButtonPressed()
 
                 },

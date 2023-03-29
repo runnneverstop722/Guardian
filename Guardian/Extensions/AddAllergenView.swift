@@ -42,6 +42,6 @@ struct AddAllergenView_Previews: PreviewProvider {
     @State static private var sampleAllergens: [String] = []
 
     static var previews: some View {
-        AddAllergenView(allergenOptions: ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウ イフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"], selectedAllergen: $sampleAllergens)
+        AddAllergenView(allergenOptions: ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"], selectedAllergen: $sampleAllergens)
     }
 }
