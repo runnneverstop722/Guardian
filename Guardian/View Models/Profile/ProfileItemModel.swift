@@ -21,4 +21,5 @@ struct ProfileItemModel: Hashable {
     var hospitalName: String = ""
     var allergist: String = ""
     var allergistContactInfo: String = ""
+
 }

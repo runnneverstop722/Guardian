@@ -171,7 +171,7 @@ struct profileInfoModel: Hashable, Identifiable {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !firstName.isEmpty, !lastName.isEmpty else { return }
         if isUpdated {
-            updateItem(model: MemberListModel(record: myRecord))
+//            updateItem(model: MemberListModel(record: myRecord))
         } else {
             addItem(
                 profileImage: getImageURL(for: data),
@@ -251,15 +251,12 @@ struct profileInfoModel: Hashable, Identifiable {
         }
         addOperation(operation: queryOperation)
     }
-    
     func addOperation(operation: CKDatabaseOperation) {
         CKContainer.default().privateCloudDatabase.add(operation)
     }
     
     //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
-    
 
-    
     func updateItem(model: MemberListModel) {
         guard let myRecord = record else { return }
         
@@ -278,15 +275,10 @@ struct profileInfoModel: Hashable, Identifiable {
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 
-    func deleteItemsFromCloud(completion: @escaping ((Bool) -> Void)) {
-        CKContainer.default().privateCloudDatabase.delete(withRecordID: record!.recordID) { recordID, error in
-            DispatchQueue.main.async {
-                completion(error == nil)
-                if error == nil {
-                    NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: nil)
-                }
-            }
-        }
+    func deleteItemsFromCloud(indexSet: IndexSet) {
+        guard let index = indexSet.first else { return }
+        
+        
     }
     
 }

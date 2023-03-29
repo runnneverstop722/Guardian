@@ -11,7 +11,7 @@ struct SelectLocations: View {
     let symptom: String
     @Binding var selectedSymptoms: [String]
 
-    let locations = ["Ear", "Lips", "Tongue", "Throat", "Hands", "Feet", "Legs", "Arms", "Trunk", "Genitalia"]
+    let locations = ["耳", "唇(くちびる)", "舌", "喉(のど)", "腕（うで）", "手", "胴体", "足（足首より上）", "足（足首より下）"]
     
     var body: some View {
         List {
@@ -34,7 +34,7 @@ struct SelectLocations: View {
                 }
             }
         }
-        .navigationBarTitle("\(symptom) Locations")
+        .navigationBarTitle("\(symptom)")
     }
 }
 
@@ -42,6 +42,6 @@ struct SelectLocations_Previews: PreviewProvider {
     @State static var selectedSymptoms: [String] = []
 
     static var previews: some View {
-        SelectLocations(category: "Skin", symptom: "Rash", selectedSymptoms: $selectedSymptoms)
+        SelectLocations(category: "皮膚", symptom: "かぶれ", selectedSymptoms: $selectedSymptoms)
     }
 }

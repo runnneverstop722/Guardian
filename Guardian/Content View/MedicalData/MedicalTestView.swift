@@ -1,5 +1,5 @@
 //
-//  MedicalDataView.swift
+//  MedicalTestView.swift
 //  Guardian
 //
 //  Created by Teff on 2023/03/23.
@@ -9,23 +9,23 @@ import SwiftUI
 
 struct BloodTest: Identifiable {
     let id = UUID()
-    var date: Date = Date()
-    var level: String = ""
-    var grade: BloodTestGrade = .negative
+    var bloodTestDate: Date = Date()
+    var bloodTestLevel: String = ""
+    var bloodTestGrade: BloodTestGrade = .negative
 }
 
 struct SkinTest: Identifiable {
     let id = UUID()
-    var date: Date = Date()
-    var result: String = ""
-    var positive: Bool = false
+    var skinTestDate: Date = Date()
+    var SkinTestResultValue: String = ""
+    var SkinTestResult: Bool = false
 }
 
 struct OralFoodChallenge: Identifiable {
     let id = UUID()
-    var date: Date = Date()
-    var quantity: String = ""
-    var result: Bool = false
+    var oralFoodChallengeDate: Date = Date()
+    var oralFoodChallengeQuantity: String = ""
+    var oralFoodChallengeResult: Bool = false
 }
 
 enum BloodTestGrade: String, CaseIterable {
@@ -39,7 +39,7 @@ enum BloodTestGrade: String, CaseIterable {
 }
 
 
-struct MedicalDataView: View {
+struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @State private var allergenName = "AllergenShrimp"
     
@@ -50,8 +50,8 @@ struct MedicalDataView: View {
     @Environment(\.presentationMode) var presentationMode
     
     
-    var totalNumberOfMedicalData: String {
-        return "\(allergenName)TotalNumberOfMedicalData: \(bloodTests.count + skinTests.count + oralFoodChallenges.count)"
+    var totalNumberOfMedicalTest: String {
+        return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTests.count + skinTests.count + oralFoodChallenges.count)"
     }
     
     var body: some View {
@@ -62,9 +62,9 @@ struct MedicalDataView: View {
                     .padding()
                 
                 Picker(selection: $selectedTestIndex, label: Text("Test Type")) {
-                    Text("Blood Test").tag(0)
-                    Text("Skin Test").tag(1)
-                    Text("Oral Food Challenge").tag(2)
+                    Text("血液検査").tag(0)
+                    Text("皮膚プリックテスト").tag(1)
+                    Text("経口負荷試験(OFC)").tag(2)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
@@ -80,7 +80,7 @@ struct MedicalDataView: View {
                 }
                 .animation(.default, value: selectedTestIndex)
             }
-            .navigationTitle("Medical Data")
+            .navigationTitle("Medical Test")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
@@ -109,7 +109,7 @@ struct BloodTestSection: View {
             Button(action: {
                 bloodTests.append(BloodTest())
             }) {
-                Text("+Add Blood Test")
+                Text("+新しい記録")
             }
             .padding(.bottom)
         }
@@ -133,7 +133,7 @@ struct SkinTestSection: View {
             Button(action: {
                 skinTests.append(SkinTest())
             }) {
-                Text("+Add Skin Test")
+                Text("+新しい記録")
             }
             .padding(.bottom)
         }
@@ -157,7 +157,7 @@ struct OralFoodChallengeSection: View {
             Button(action: {
                 oralFoodChallenges.append(OralFoodChallenge())
             }) {
-                Text("+Add Oral Food Challenge")
+                Text("+新しい記録")
             }
             .padding(.bottom)
         }
@@ -169,10 +169,10 @@ struct BloodTestFormView: View {
     
     private var textFieldBinding: Binding<String> {
             Binding(
-                get: { bloodTest.grade.rawValue },
+                get: { bloodTest.bloodTestGrade.rawValue },
                 set: { newValue in
                     if let newGrade = BloodTestGrade(rawValue: newValue) {
-                        bloodTest.grade = newGrade
+                        bloodTest.bloodTestGrade = newGrade
                     }
                 }
             )
@@ -181,22 +181,22 @@ struct BloodTestFormView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Test Date:")
+                Text("日付:")
                 Spacer()
-                DatePicker("", selection: $bloodTest.date, displayedComponents: .date)
+                DatePicker("", selection: $bloodTest.bloodTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             
             HStack {
                 Text("IgEレベル(UA/mL):")
                 Spacer()
-                TextField("0.0", text: $bloodTest.level)
+                TextField("0.0", text: $bloodTest.bloodTestLevel)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
             
             VStack(alignment: .leading) {
-                Picker("IgEクラス:", selection: $bloodTest.grade) {
+                Picker("IgEクラス:", selection: $bloodTest.bloodTestGrade) {
                     ForEach(BloodTestGrade.allCases, id: \.self) { grade in
                         Text(grade.rawValue).tag(grade)
                     }
@@ -216,7 +216,7 @@ struct SkinTestFormView: View {
             HStack {
                 Text("日付:")
                 Spacer()
-                DatePicker("", selection: $skinTest.date, displayedComponents: .date)
+                DatePicker("", selection: $skinTest.skinTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             
@@ -225,7 +225,7 @@ struct SkinTestFormView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    TextField("0.0", text: $skinTest.result)
+                    TextField("0.0", text: $skinTest.SkinTestResultValue)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                 }
@@ -234,7 +234,7 @@ struct SkinTestFormView: View {
             HStack {
                 Text("陽性?:")
                 Spacer()
-                Toggle("", isOn: $skinTest.positive)
+                Toggle("", isOn: $skinTest.SkinTestResult)
                     .toggleStyle(SwitchToggleStyle())
             }
         }
@@ -250,14 +250,14 @@ struct OralFoodChallengeFormView: View {
             HStack {
                 Text("日付:")
                 Spacer()
-                DatePicker("", selection: $oralFoodChallenge.date, displayedComponents: .date)
+                DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             
             HStack {
                 Text("食べた量(mm):")
                 Spacer()
-                TextField("0.0", text: $oralFoodChallenge.quantity)
+                TextField("0.0", text: $oralFoodChallenge.oralFoodChallengeQuantity)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
@@ -265,7 +265,7 @@ struct OralFoodChallengeFormView: View {
             HStack {
                 Text("症状あり:")
                 Spacer()
-                Toggle("", isOn: $oralFoodChallenge.result)
+                Toggle("", isOn: $oralFoodChallenge.oralFoodChallengeResult)
                     .toggleStyle(SwitchToggleStyle())
             }
         }
@@ -273,8 +273,8 @@ struct OralFoodChallengeFormView: View {
 }
 
 
-struct MedicalDataView_Previews: PreviewProvider {
+struct MedicalTestView_Previews: PreviewProvider {
     static var previews: some View {
-        MedicalDataView()
+        MedicalTestView()
     }
 }

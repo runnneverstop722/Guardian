@@ -1,5 +1,5 @@
 //
-//  MemberDetailView.swift
+//  YourRecordsView.swift
 //  Guardian
 //
 //  Created by Teff on 2023/03/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import CloudKit
 
-struct MemberDetailView: View {
+struct YourRecordsView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showUpdateProfile = false
     @State private var showExportPDF = false

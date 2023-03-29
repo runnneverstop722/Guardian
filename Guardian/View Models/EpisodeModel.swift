@@ -42,17 +42,15 @@ struct episodeInfoModel: Identifiable {
     @Published var episodePhoto: [EpisodePhoto]  = []
     @Published var episodeInfoModel: [EpisodeDetails] = []
 
-    @Published var symptomCategories = ["皮膚・粘膜", "呼吸器", "循環器", "Abdominal", "その他"]
-    @Published var typeOfExposureOptions = ["摂取", "肌に触れた", "匂い", "不明"]
-    @Published var leadTimeToSymptomsOptions = ["Under 5 min", "5-10 min", "10-15 min", "15-30 min", "30-60 min", "Over an hour"]
-    @Published var treatmentsOptions = ["Antihistamine", "Injected steroids", "Oral steroids", "Topical steroids", "Epinephrine shot in the muscle", "Albuterol inhaler", "Other"]
+    @Published var symptomCategories = ["皮膚", "呼吸器", "循環器", "消化器", "その他"]
+    @Published var typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
+    @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間以降"]
+    @Published var treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
     
     init() {
         fetchItemsFromCloud()
     }
-    
-    
-    
+
     
     // MARK: - Profile Image
     enum ImageState {

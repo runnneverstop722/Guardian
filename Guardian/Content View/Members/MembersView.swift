@@ -24,22 +24,17 @@ struct MembersView: View {
                         .onTapGesture {
                             profileModel.updateItem(model: item)
                         }
-                }.swipeActions(allowsFullSwipe: false) {
-                    Button("Edit") {
+                }.swipeActions(edge: .leading) {
+                    Button(role: .none) {
                         editItem = item
-                    }
-
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    } .tint(.indigo)
+                }
+                .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-//                        profileModel.profileInfo.removeAll(where: { $0.id == item.id })
-//                        if let record = item.record {
-//                            profileModel.deleteItemsFromCloud() { success in
-//                                if success {
-//                                    NotificationCenter.default.post(name: NSNotification.Name("ItemDeleted"), object: nil)
-//                                } else {
-//                                    // Handle deletion failure
-//                                }
-//                            }
-//                        }
+                        // Delete Item Action
+                        
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
                     }
@@ -53,16 +48,16 @@ struct MembersView: View {
             profileModel.fetchItemsFromCloud()
         }
         .listStyle(.plain)
-        .navigationTitle("Member List")
+        .navigationTitle("管理メンバー")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("+Add") {
+                Button("+新規") {
                     profileModel.isAddMemberPresented = true
                 }
             }
         }
         .navigationDestination(for: MemberListModel.self) { item in
-            MemberDetailView(profile: item.record)
+            YourRecordsView(profile: item.record)
         }
         .sheet(isPresented: $profileModel.isAddMemberPresented) {
             ProfileView()

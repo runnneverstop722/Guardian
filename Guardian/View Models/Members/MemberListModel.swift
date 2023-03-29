@@ -34,6 +34,7 @@ struct MemberListModel: Identifiable, Hashable {
         if let profileImage = record["profileImage"] as? CKAsset {
             fileURL = profileImage.fileURL
         }
+      
         headline = String(format: "%@ %@", firstName, lastName) // firstname + " " + lastname
         date = birthDate
         let age = Calendar.current.dateComponents([.year], from: birthDate, to: .now)

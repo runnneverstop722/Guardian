@@ -99,7 +99,7 @@ struct DiagnosisView: View {
                     // Save the diagnosis
                     // Save Episode to CloudKit
                     // Save the data to the variables you mentioned:
-                    // episodeDate, firstKnownExposure(Bool), wentToHospital(Bool),
+                    // episodeDate, firstKnownExposure(Bool), episodeWentToHospital(Bool),
                     // typeOfExposure([String]), symptoms([String]), leadTimeToSymptoms(String), treatments([String])
                     diagnosisModel.addButtonPressed()
 

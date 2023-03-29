@@ -89,12 +89,12 @@ struct ProfileView: View {
                 .fontWeight(.bold)
                 
                 // Added this selector in ProfileView
-                Section(header: Text("Allergens")) {
+                Section(header: Text("管理対象のアレルゲン")) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in
                         Text(allergen)
                     }
                     .onDelete(perform: deleteAllergen)
-                    Button("Add Allergen") {
+                    Button("+ 追加") {
                         showingAddAllergen.toggle()
                     }
                     .sheet(isPresented: $showingAddAllergen) {
@@ -102,11 +102,11 @@ struct ProfileView: View {
                     }
                 }
             })
-            .navigationTitle("Profile")
+            .navigationTitle("プロフィール")
             .toolbar {
-                if isUpdate {
+
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Save") {
+                        Button("保存") {
                             profileModel.addButtonPressed()
                             showingAlert = true
                         }
@@ -117,7 +117,7 @@ struct ProfileView: View {
                             }))
                         }
                     }
-                }
+
             }
         }
     }

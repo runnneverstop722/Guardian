@@ -10,17 +10,18 @@
 		051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */; };
 		051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B829CE881200A890D0 /* DiagnosisListModel.swift */; };
 		051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BA29CE885400A890D0 /* EpisodeModel.swift */; };
-		051A27BD29CE88BF00A890D0 /* UpdateProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BC29CE88BF00A890D0 /* UpdateProfileView.swift */; };
-		051A27BF29CE891300A890D0 /* MedicalDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BE29CE891300A890D0 /* MedicalDataView.swift */; };
-		051A27C229CE893C00A890D0 /* NewEpisode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C129CE893C00A890D0 /* NewEpisode.swift */; };
+		051A27BD29CE88BF00A890D0 /* ______UpdateProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */; };
+		051A27BF29CE891300A890D0 /* MedicalTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BE29CE891300A890D0 /* MedicalTestView.swift */; };
+		051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C129CE893C00A890D0 /* EpisodeView.swift */; };
 		051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C329CE895600A890D0 /* SelectSymptoms.swift */; };
 		051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C529CE896800A890D0 /* SelectLocations.swift */; };
-		051A27C829CE897500A890D0 /* EpisodeDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C729CE897500A890D0 /* EpisodeDetails.swift */; };
+		051A27C829CE897500A890D0 /* ____EpisodeDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */; };
 		051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CC29CE89A100A890D0 /* DiagnosisView.swift */; };
 		051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */; };
 		051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D129CE8BE900A890D0 /* ExportDataView.swift */; };
 		051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D329CE8C9500A890D0 /* AddAllergenView.swift */; };
 		051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* AllergensView.swift */; };
+		051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DD29D1C4ED00A890D0 /* __nn.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -33,7 +34,7 @@
 		9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */; };
 		aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */; };
 		ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */; };
-		b3b9dba880f13bad225aa45aefd116b9 /* MemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */; };
+		b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */; };
 		d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */; };
 		e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */; };
 		ee9f3546aa38d27092b3e536a7a85016 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */; };
@@ -44,17 +45,18 @@
 		051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisModel.swift; sourceTree = "<group>"; };
 		051A27B829CE881200A890D0 /* DiagnosisListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisListModel.swift; sourceTree = "<group>"; };
 		051A27BA29CE885400A890D0 /* EpisodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeModel.swift; sourceTree = "<group>"; };
-		051A27BC29CE88BF00A890D0 /* UpdateProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileView.swift; sourceTree = "<group>"; };
-		051A27BE29CE891300A890D0 /* MedicalDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalDataView.swift; sourceTree = "<group>"; };
-		051A27C129CE893C00A890D0 /* NewEpisode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEpisode.swift; sourceTree = "<group>"; };
+		051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "______UpdateProfileView.swift"; sourceTree = "<group>"; };
+		051A27BE29CE891300A890D0 /* MedicalTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTestView.swift; sourceTree = "<group>"; };
+		051A27C129CE893C00A890D0 /* EpisodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeView.swift; sourceTree = "<group>"; };
 		051A27C329CE895600A890D0 /* SelectSymptoms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectSymptoms.swift; sourceTree = "<group>"; };
 		051A27C529CE896800A890D0 /* SelectLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocations.swift; sourceTree = "<group>"; };
-		051A27C729CE897500A890D0 /* EpisodeDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetails.swift; sourceTree = "<group>"; };
+		051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "____EpisodeDetails.swift"; sourceTree = "<group>"; };
 		051A27CC29CE89A100A890D0 /* DiagnosisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisView.swift; sourceTree = "<group>"; };
 		051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataModel.swift; sourceTree = "<group>"; };
 		051A27D129CE8BE900A890D0 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
 		051A27D329CE8C9500A890D0 /* AddAllergenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAllergenView.swift; sourceTree = "<group>"; };
 		051A27DA29D08DE400A890D0 /* AllergensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergensView.swift; sourceTree = "<group>"; };
+		051A27DD29D1C4ED00A890D0 /* __nn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = __nn.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -71,7 +73,7 @@
 		b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ba5b8ef6a08eac2d1f30e768b5339ae4 /* IDcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDcard.swift; sourceTree = "<group>"; };
 		c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
-		d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailView.swift; sourceTree = "<group>"; };
+		d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourRecordsView.swift; sourceTree = "<group>"; };
 		d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -87,15 +89,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		051A27C029CE892400A890D0 /* NewEpisode */ = {
+		051A27C029CE892400A890D0 /* Episode */ = {
 			isa = PBXGroup;
 			children = (
-				051A27C129CE893C00A890D0 /* NewEpisode.swift */,
-				051A27C729CE897500A890D0 /* EpisodeDetails.swift */,
+				051A27C129CE893C00A890D0 /* EpisodeView.swift */,
 				051A27C329CE895600A890D0 /* SelectSymptoms.swift */,
 				051A27C529CE896800A890D0 /* SelectLocations.swift */,
 			);
-			path = NewEpisode;
+			path = Episode;
 			sourceTree = "<group>";
 		};
 		051A27C929CE897E00A890D0 /* Diagnosis */ = {
@@ -109,10 +110,8 @@
 		051A27D529CE8E9400A890D0 /* Members */ = {
 			isa = PBXGroup;
 			children = (
-				286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */,
-				d65b9234ace86c190f444c8df57d4ad0 /* MemberDetailView.swift */,
 				ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */,
-				051A27BC29CE88BF00A890D0 /* UpdateProfileView.swift */,
+				286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */,
 			);
 			path = Members;
 			sourceTree = "<group>";
@@ -120,17 +119,18 @@
 		051A27D629D005E500A890D0 /* MedicalData */ = {
 			isa = PBXGroup;
 			children = (
-				051A27BE29CE891300A890D0 /* MedicalDataView.swift */,
+				051A27BE29CE891300A890D0 /* MedicalTestView.swift */,
 			);
 			path = MedicalData;
 			sourceTree = "<group>";
 		};
-		051A27DC29D08E0000A890D0 /* Allergens */ = {
+		051A27DC29D08E0000A890D0 /* Your Record */ = {
 			isa = PBXGroup;
 			children = (
+				d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */,
 				051A27DA29D08DE400A890D0 /* AllergensView.swift */,
 			);
-			path = Allergens;
+			path = "Your Record";
 			sourceTree = "<group>";
 		};
 		05B0711D29C019FC008A2010 /* View Models */ = {
@@ -139,8 +139,8 @@
 				05B0713F29C5739E008A2010 /* Members */,
 				05B0712C29C13B51008A2010 /* Profile */,
 				051A27BA29CE885400A890D0 /* EpisodeModel.swift */,
-				051A27B829CE881200A890D0 /* DiagnosisListModel.swift */,
 				051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */,
+				051A27B829CE881200A890D0 /* DiagnosisListModel.swift */,
 				051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */,
 			);
 			path = "View Models";
@@ -151,10 +151,10 @@
 			children = (
 				c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */,
 				051A27D529CE8E9400A890D0 /* Members */,
-				051A27DC29D08E0000A890D0 /* Allergens */,
+				051A27DC29D08E0000A890D0 /* Your Record */,
 				051A27C929CE897E00A890D0 /* Diagnosis */,
 				051A27D629D005E500A890D0 /* MedicalData */,
-				051A27C029CE892400A890D0 /* NewEpisode */,
+				051A27C029CE892400A890D0 /* Episode */,
 				05B0712329C01A81008A2010 /* IDcard */,
 				05B0712129C01A76008A2010 /* Scan */,
 				05B0712529C01B27008A2010 /* Share */,
@@ -249,6 +249,9 @@
 				05B0711D29C019FC008A2010 /* View Models */,
 				05B0711F29C01A11008A2010 /* Content View */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
+				051A27DD29D1C4ED00A890D0 /* __nn.swift */,
+				051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */,
+				051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */,
 				95D39704291C4B3A0053F8C8 /* Preview Content */,
 			);
 			path = Guardian;
@@ -326,7 +329,7 @@
 			files = (
 				635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */,
 				fa062cddd79a3dd3f60488861fe99eee /* IDcard.swift in Sources */,
-				051A27C229CE893C00A890D0 /* NewEpisode.swift in Sources */,
+				051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
@@ -336,20 +339,21 @@
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
 				05B0714729C707E3008A2010 /* ProfileItemModel.swift in Sources */,
-				b3b9dba880f13bad225aa45aefd116b9 /* MemberDetailView.swift in Sources */,
+				051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */,
+				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
 				9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */,
 				4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */,
 				05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */,
 				d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */,
-				051A27BF29CE891300A890D0 /* MedicalDataView.swift in Sources */,
-				051A27BD29CE88BF00A890D0 /* UpdateProfileView.swift in Sources */,
+				051A27BF29CE891300A890D0 /* MedicalTestView.swift in Sources */,
+				051A27BD29CE88BF00A890D0 /* ______UpdateProfileView.swift in Sources */,
 				05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */,
 				051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */,
 				5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */,
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
 				aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */,
-				051A27C829CE897500A890D0 /* EpisodeDetails.swift in Sources */,
+				051A27C829CE897500A890D0 /* ____EpisodeDetails.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,
 				051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */,

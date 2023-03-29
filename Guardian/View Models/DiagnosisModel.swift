@@ -124,11 +124,9 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED DiagnosisInfo queryResultBlock")
-
         }
         addOperation(operation: queryOperation)
     }
-    
     func addOperation(operation: CKDatabaseOperation) {
         CKContainer.default().privateCloudDatabase.add(operation)
     }

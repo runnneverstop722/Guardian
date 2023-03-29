@@ -18,9 +18,9 @@ struct Guardian: App {
                 NavigationStack {
                     MembersView()
                 }
-                .tabItem { Label("カルテ", systemImage: "person.text.rectangle.fill") }
+                .tabItem { Label("管理メンバー", systemImage: "person.text.rectangle.fill") }
                 IDcard()
-                    .tabItem { Label("IDカード", systemImage: "menucard") }
+                    .tabItem { Label("周知", systemImage: "exclamationmark.bubble") }
                 EmptyView()
                     .tabItem { Label("Fourth", systemImage: "wind") }
             }

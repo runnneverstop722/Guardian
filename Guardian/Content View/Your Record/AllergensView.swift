@@ -19,26 +19,39 @@ struct AllergensView: View {
     @State private var showNewEpisode = false
     @State private var showEpisodeDetails = false
     @State private var selectedItem: Int? = nil
-    @State private var showMedicalDataView = false
-
+    @State private var showMedicalTestView = false
     
     var allergenName: String = "Unknown Allergen"
     
     var body: some View {
         List {
-            Section(header: Text("Total Medical Data")) {
+            Section(header: Text("Medical Test")) {
                 VStack(alignment: .leading) {
-                    Text("Blood Tests: \(bloodTests.count)")
-                    Text("Skin Tests: \(skinTests.count)")
-                    Text("Oral Food Challenges: \(oralFoodChallenges.count)")
+                    HStack {
+                        Text("血液検査")
+                        Spacer()
+                        Text("\(bloodTests.count) 件")
+                    }
+                    Divider()
+                    HStack {
+                        Text("皮膚プリックテスト")
+                        Spacer()
+                        Text("\(skinTests.count) 件")
+                    }
+                    Divider()
+                    HStack {
+                        Text("経口負荷試験(OFC)")
+                        Spacer()
+                        Text("\(oralFoodChallenges.count) 件")
+                    }
                 }
                 
                 NavigationLink(
-                    destination: MedicalDataView(),
-                    isActive: $showMedicalDataView
+                    destination: MedicalTestView(),
+                    isActive: $showMedicalTestView
                 ) {
-                    Button("Go to Medical Data") {
-                        showMedicalDataView = true
+                    Button("+ Add & Details") {
+                        showMedicalTestView = true
                     }
                 }
             }
@@ -60,7 +73,7 @@ struct AllergensView: View {
                     }
                     .sheet(isPresented: $showEpisodeDetails) {
                         if let selectedItem = selectedItem {
-//                            EpisodeDetails(episode: selectedItem)
+//                            EpisodeView(episode: selectedItem)
                         }
                     }
                     .swipeActions {
@@ -76,11 +89,11 @@ struct AllergensView: View {
                     }
                 }
                 
-                Button("Add new episode") {
+                Button("+ Add") {
                     showNewEpisode.toggle()
                 }
                 .sheet(isPresented: $showNewEpisode) {
-                    NewEpisode()
+                    EpisodeView()
                 }
             }
             
