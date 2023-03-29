@@ -168,10 +168,9 @@ struct profileInfoModel: Hashable, Identifiable {
     //MARK: - Saving to Private DataBase Custom Zone
     
     func addButtonPressed() {
-        /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !firstName.isEmpty, !lastName.isEmpty else { return }
         if isUpdated {
-//            updateItem(model: MemberListModel(record: myRecord))
+            updateItem()
         } else {
             addItem(
                 profileImage: getImageURL(for: data),
@@ -257,28 +256,35 @@ struct profileInfoModel: Hashable, Identifiable {
     
     //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
 
-    func updateItem(model: MemberListModel) {
-        guard let myRecord = record else { return }
-        
-        myRecord["profileImage"] = data
-        myRecord["firstName"] = firstName
-        myRecord["lastName"] = lastName
-        myRecord["gender"] = gender.rawValue
-        myRecord["birthDate"] = birthDate
-        myRecord["hospitalName"] = hospitalName
-        myRecord["allergist"] = allergist
-        myRecord["allergistContactInfo"] = allergistContactInfo
-        myRecord["allergens"] = allergens
-        saveItem(record: myRecord)
-    }
+    func updateItem() {
+            guard let myRecord = record else { return }
+            if let profileImage = getImageURL(for: data) {
+                let url = CKAsset(fileURL: profileImage)
+                myRecord["profileImage"] = url
+            }
+            myRecord["firstName"] = firstName
+            myRecord["lastName"] = lastName
+            myRecord["gender"] = gender.rawValue
+            myRecord["birthDate"] = birthDate
+            myRecord["hospitalName"] = hospitalName
+            myRecord["allergist"] = allergist
+            myRecord["allergistContactInfo"] = allergistContactInfo
+            myRecord["allergens"] = allergens
+            saveItem(record: myRecord)
+        }
     
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 
-    func deleteItemsFromCloud(indexSet: IndexSet) {
-        guard let index = indexSet.first else { return }
-        
-        
+    func deleteItemsFromCloud(completion: @escaping ((Bool)->Void)) {
+//        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
+//            DispatchQueue.main.async {
+//                completion(error == nil)
+//                if error == nil {
+//                    NotificationCenter.default.post(name: NSNotification.Name.init("removeMember"), object: nil)
+//                }
+//            }
+//        }
     }
     
 }

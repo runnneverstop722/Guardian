@@ -22,7 +22,7 @@ struct MembersView: View {
                 NavigationLink(value: item) {
                     Row(headline: item.headline, caption: item.caption, image: item.image)
                         .onTapGesture {
-                            profileModel.updateItem(model: item)
+                            profileModel.updateItem()
                         }
                 }.swipeActions(edge: .leading) {
                     Button(role: .none) {
