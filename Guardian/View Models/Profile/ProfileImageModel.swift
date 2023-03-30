@@ -13,7 +13,7 @@ struct ProfileImageModel: View {
     
     var body: some View {
         switch imageState {
-        case .success(let image):
+        case  .success(let image):
             image.resizable()
         case .loading:
             ProgressView()

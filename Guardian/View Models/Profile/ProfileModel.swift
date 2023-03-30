@@ -239,10 +239,10 @@ import CloudKit
         }
     }
     func updateSaveAllergens(recordID: CKRecord.ID,allergens: [String]) {
-        let needToremove = allergensObject.filter { !allergens.contains($0.allergen)
+        let needToRemove = allergensObject.filter { !allergens.contains($0.allergen)
         }
         
-        needToremove.forEach {
+        needToRemove.forEach {
             deleteAllergens(recordID: $0.record.recordID)
         }
         let objects = allergensObject.map { $0.allergen
@@ -254,6 +254,9 @@ import CloudKit
             let myRecord = CKRecord(recordType: "Allergens", recordID: ckRecordID)
             
             myRecord["allergen"] = allergen
+            myRecord["totalNumberOfEpisodes"] = 0
+            myRecord["totalNumberOfMedicalTests"] = 0
+            
             let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
             myRecord["profile"] = reference as CKRecordValue
             print("profileID: ", recordID.recordName)

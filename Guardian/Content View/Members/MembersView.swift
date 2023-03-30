@@ -5,12 +5,12 @@ import PhotosUI
 import CloudKit
 
 struct MembersView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @StateObject var profileModel: ProfileModel
     @State private var isMainUserSettingPresented = false
     @State private var showingRemoveDiagnosisAlert = false
-    @StateObject var profileModel: ProfileModel 
     @State private var isUpdate = false
     @State private var editItem: MemberListModel?
+    @Environment(\.presentationMode) var presentationMode
     
     let onUpdateProfile = NotificationCenter.default.publisher(for: Notification.Name("updateProfile"))
     init() {
@@ -91,7 +91,6 @@ struct MembersView: View {
 }
 
 private extension MembersView {
-    
     func editItems() {
         
     }

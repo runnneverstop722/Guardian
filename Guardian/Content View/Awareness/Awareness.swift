@@ -1,5 +1,5 @@
 //
-//  IDcard   .swift
+//  Awareness   .swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct IDcard: View {
+struct Awareness: View {
 	var body: some View {
 		VStack(spacing: 16.0) {
 
@@ -58,8 +58,8 @@ struct IDcard: View {
 	}
 }
 
-struct AllergyID_Previews: PreviewProvider {
+struct Awareness_Previews: PreviewProvider {
 	static var previews: some View {
-		IDcard()
+		Awareness()
 	}
 }

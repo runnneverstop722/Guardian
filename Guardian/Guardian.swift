@@ -19,7 +19,7 @@ struct Guardian: App {
                     MembersView()
                 }
                 .tabItem { Label("管理メンバー", systemImage: "person.text.rectangle.fill") }
-                IDcard()
+                Awareness()
                     .tabItem { Label("周知", systemImage: "exclamationmark.bubble") }
                 EmptyView()
                     .tabItem { Label("Fourth", systemImage: "wind") }

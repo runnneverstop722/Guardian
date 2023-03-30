@@ -23,23 +23,23 @@
 		051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* AllergensView.swift */; };
 		051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DD29D1C4ED00A890D0 /* __nn.swift */; };
 		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
+		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
 		05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714229C6BD28008A2010 /* ImagePicker.swift */; };
-		05B0714729C707E3008A2010 /* ProfileItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714629C707E3008A2010 /* ProfileItemModel.swift */; };
+		05B0714729C707E3008A2010 /* ______ProfileItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */; };
 		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
 		635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */; };
 		9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */; };
-		aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */; };
 		ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */; };
 		b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */; };
 		d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */; };
 		e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */; };
 		ee9f3546aa38d27092b3e536a7a85016 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */; };
-		fa062cddd79a3dd3f60488861fe99eee /* IDcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ba5b8ef6a08eac2d1f30e768b5339ae4 /* IDcard.swift */; };
+		fa062cddd79a3dd3f60488861fe99eee /* Awareness.swift in Sources */ = {isa = PBXBuildFile; fileRef = ba5b8ef6a08eac2d1f30e768b5339ae4 /* Awareness.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,13 +59,13 @@
 		051A27DA29D08DE400A890D0 /* AllergensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergensView.swift; sourceTree = "<group>"; };
 		051A27DD29D1C4ED00A890D0 /* __nn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = __nn.swift; sourceTree = "<group>"; };
 		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
+		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
 		05B0714029C5E755008A2010 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		05B0714229C6BD28008A2010 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		05B0714629C707E3008A2010 /* ProfileItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileItemModel.swift; sourceTree = "<group>"; };
-		0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "______ProfileItemModel.swift"; sourceTree = "<group>"; };
 		286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
 		7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListModel.swift; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryClinicalRecords.swift; sourceTree = "<group>"; };
 		b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		ba5b8ef6a08eac2d1f30e768b5339ae4 /* IDcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDcard.swift; sourceTree = "<group>"; };
+		ba5b8ef6a08eac2d1f30e768b5339ae4 /* Awareness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Awareness.swift; sourceTree = "<group>"; };
 		c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourRecordsView.swift; sourceTree = "<group>"; };
 		d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,15 +143,24 @@
 			path = Allergens;
 			sourceTree = "<group>";
 		};
+		051A27E629D53E1A00A890D0 /* List Models */ = {
+			isa = PBXGroup;
+			children = (
+				7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */,
+				051A27E429D5368000A890D0 /* AllergensListModel.swift */,
+				051A27B829CE881200A890D0 /* DiagnosisListModel.swift */,
+			);
+			path = "List Models";
+			sourceTree = "<group>";
+		};
 		05B0711D29C019FC008A2010 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				051A27E629D53E1A00A890D0 /* List Models */,
 				051A27E129D4293200A890D0 /* Allergens */,
-				05B0713F29C5739E008A2010 /* Members */,
 				05B0712C29C13B51008A2010 /* Profile */,
 				051A27BA29CE885400A890D0 /* EpisodeModel.swift */,
 				051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */,
-				051A27B829CE881200A890D0 /* DiagnosisListModel.swift */,
 				051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */,
 			);
 			path = "View Models";
@@ -166,27 +175,18 @@
 				051A27C929CE897E00A890D0 /* Diagnosis */,
 				051A27D629D005E500A890D0 /* MedicalData */,
 				051A27C029CE892400A890D0 /* Episode */,
-				05B0712329C01A81008A2010 /* IDcard */,
-				05B0712129C01A76008A2010 /* Scan */,
+				05B0712329C01A81008A2010 /* Awareness */,
 				05B0712529C01B27008A2010 /* Share */,
 			);
 			path = "Content View";
 			sourceTree = "<group>";
 		};
-		05B0712129C01A76008A2010 /* Scan */ = {
+		05B0712329C01A81008A2010 /* Awareness */ = {
 			isa = PBXGroup;
 			children = (
-				0d52f5c9eb9cc2096dbd7dbc551d1263 /* ScanView.swift */,
+				ba5b8ef6a08eac2d1f30e768b5339ae4 /* Awareness.swift */,
 			);
-			path = Scan;
-			sourceTree = "<group>";
-		};
-		05B0712329C01A81008A2010 /* IDcard */ = {
-			isa = PBXGroup;
-			children = (
-				ba5b8ef6a08eac2d1f30e768b5339ae4 /* IDcard.swift */,
-			);
-			path = IDcard;
+			path = Awareness;
 			sourceTree = "<group>";
 		};
 		05B0712429C01AF1008A2010 /* Extensions */ = {
@@ -214,17 +214,8 @@
 			children = (
 				05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */,
 				05B0712F29C13DD1008A2010 /* ProfileModel.swift */,
-				05B0714629C707E3008A2010 /* ProfileItemModel.swift */,
 			);
 			path = Profile;
-			sourceTree = "<group>";
-		};
-		05B0713F29C5739E008A2010 /* Members */ = {
-			isa = PBXGroup;
-			children = (
-				7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */,
-			);
-			path = Members;
 			sourceTree = "<group>";
 		};
 		95D396F2291C4B380053F8C8 = {
@@ -260,6 +251,7 @@
 				05B0711D29C019FC008A2010 /* View Models */,
 				05B0711F29C01A11008A2010 /* Content View */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
+				05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */,
 				051A27DD29D1C4ED00A890D0 /* __nn.swift */,
 				051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */,
 				051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */,
@@ -339,7 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */,
-				fa062cddd79a3dd3f60488861fe99eee /* IDcard.swift in Sources */,
+				fa062cddd79a3dd3f60488861fe99eee /* Awareness.swift in Sources */,
 				051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
@@ -350,7 +342,7 @@
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
-				05B0714729C707E3008A2010 /* ProfileItemModel.swift in Sources */,
+				05B0714729C707E3008A2010 /* ______ProfileItemModel.swift in Sources */,
 				051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */,
 				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
@@ -364,9 +356,9 @@
 				051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */,
 				5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */,
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
-				aaf9ecf51bdc9aad6fb85af0b3118246 /* ScanView.swift in Sources */,
 				051A27C829CE897500A890D0 /* ____EpisodeDetails.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
+				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,
 				051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */,
 			);
