@@ -10,25 +10,22 @@
 		051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */; };
 		051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B829CE881200A890D0 /* DiagnosisListModel.swift */; };
 		051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BA29CE885400A890D0 /* EpisodeModel.swift */; };
-		051A27BD29CE88BF00A890D0 /* ______UpdateProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */; };
 		051A27BF29CE891300A890D0 /* MedicalTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BE29CE891300A890D0 /* MedicalTestView.swift */; };
 		051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C129CE893C00A890D0 /* EpisodeView.swift */; };
 		051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C329CE895600A890D0 /* SelectSymptoms.swift */; };
 		051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C529CE896800A890D0 /* SelectLocations.swift */; };
-		051A27C829CE897500A890D0 /* ____EpisodeDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */; };
 		051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CC29CE89A100A890D0 /* DiagnosisView.swift */; };
 		051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */; };
 		051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D129CE8BE900A890D0 /* ExportDataView.swift */; };
 		051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D329CE8C9500A890D0 /* AddAllergenView.swift */; };
 		051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* AllergensView.swift */; };
-		051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DD29D1C4ED00A890D0 /* __nn.swift */; };
 		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
 		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
+		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
 		05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714229C6BD28008A2010 /* ImagePicker.swift */; };
-		05B0714729C707E3008A2010 /* ______ProfileItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */; };
 		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
@@ -46,26 +43,23 @@
 		051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisModel.swift; sourceTree = "<group>"; };
 		051A27B829CE881200A890D0 /* DiagnosisListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisListModel.swift; sourceTree = "<group>"; };
 		051A27BA29CE885400A890D0 /* EpisodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeModel.swift; sourceTree = "<group>"; };
-		051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "______UpdateProfileView.swift"; sourceTree = "<group>"; };
 		051A27BE29CE891300A890D0 /* MedicalTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTestView.swift; sourceTree = "<group>"; };
 		051A27C129CE893C00A890D0 /* EpisodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeView.swift; sourceTree = "<group>"; };
 		051A27C329CE895600A890D0 /* SelectSymptoms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectSymptoms.swift; sourceTree = "<group>"; };
 		051A27C529CE896800A890D0 /* SelectLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectLocations.swift; sourceTree = "<group>"; };
-		051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "____EpisodeDetails.swift"; sourceTree = "<group>"; };
 		051A27CC29CE89A100A890D0 /* DiagnosisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisView.swift; sourceTree = "<group>"; };
 		051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataModel.swift; sourceTree = "<group>"; };
 		051A27D129CE8BE900A890D0 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
 		051A27D329CE8C9500A890D0 /* AddAllergenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAllergenView.swift; sourceTree = "<group>"; };
 		051A27DA29D08DE400A890D0 /* AllergensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergensView.swift; sourceTree = "<group>"; };
-		051A27DD29D1C4ED00A890D0 /* __nn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = __nn.swift; sourceTree = "<group>"; };
 		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
 		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
+		051A27E929D5554F00A890D0 /* EpisodeListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeListModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
 		05B0714029C5E755008A2010 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		05B0714229C6BD28008A2010 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "______ProfileItemModel.swift"; sourceTree = "<group>"; };
 		286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
 		7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListModel.swift; sourceTree = "<group>"; };
@@ -149,6 +143,7 @@
 				7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */,
 				051A27E429D5368000A890D0 /* AllergensListModel.swift */,
 				051A27B829CE881200A890D0 /* DiagnosisListModel.swift */,
+				051A27E929D5554F00A890D0 /* EpisodeListModel.swift */,
 			);
 			path = "List Models";
 			sourceTree = "<group>";
@@ -251,10 +246,6 @@
 				05B0711D29C019FC008A2010 /* View Models */,
 				05B0711F29C01A11008A2010 /* Content View */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
-				05B0714629C707E3008A2010 /* ______ProfileItemModel.swift */,
-				051A27DD29D1C4ED00A890D0 /* __nn.swift */,
-				051A27BC29CE88BF00A890D0 /* ______UpdateProfileView.swift */,
-				051A27C729CE897500A890D0 /* ____EpisodeDetails.swift */,
 				95D39704291C4B3A0053F8C8 /* Preview Content */,
 			);
 			path = Guardian;
@@ -337,13 +328,12 @@
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
 				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
+				051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */,
 				051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */,
 				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
-				05B0714729C707E3008A2010 /* ______ProfileItemModel.swift in Sources */,
-				051A27DE29D1C4ED00A890D0 /* __nn.swift in Sources */,
 				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
 				9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */,
@@ -351,12 +341,10 @@
 				05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */,
 				d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */,
 				051A27BF29CE891300A890D0 /* MedicalTestView.swift in Sources */,
-				051A27BD29CE88BF00A890D0 /* ______UpdateProfileView.swift in Sources */,
 				05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */,
 				051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */,
 				5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */,
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
-				051A27C829CE897500A890D0 /* ____EpisodeDetails.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
 				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,

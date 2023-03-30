@@ -10,25 +10,9 @@ import SwiftUI
 import CoreTransferable
 import CloudKit
 
-struct episodeInfoModel: Identifiable {
-    let id = UUID().uuidString
-    let data: Data? //image
-    let episodeDate: Date
-    let firstKnownExposure: Bool = false
-    let wentToHospital: Bool = false
-    let typeOfExposure: [String] = []
-    let symptoms: [String] = []
-    let leadTimeToSymptoms: String = ""
-    let treatments: [String] = []
-    let otherTreatment: String = ""
-    let episodePhoto: Image?
-    let episodeInfoModel: [EpisodeDetails] = []
-    let record: CKRecord
-}
-
 @MainActor class EpisodeModel: ObservableObject {
-  
-    // MARK: - Profile Properties
+    
+    // MARK: - Episode Properties
     
     @Published var episodeDate: Date = Date()
     @Published var firstKnownExposure: Bool = false
@@ -39,18 +23,60 @@ struct episodeInfoModel: Identifiable {
     @Published var leadTimeToSymptoms: String = ""
     @Published var treatments: [String] = []
     @Published var otherTreatment: String = ""
-    @Published var episodePhoto: [EpisodePhoto]  = []
-    @Published var episodeInfoModel: [EpisodeDetails] = []
-
+    @Published var data: [Data] = []
+    @Published var episodePhoto: [EpisodePhoto] = []
+    @Published var episodeInfo: [EpisodeListModel] = []
+    @Published var allergens: [AllergensListModel] = []
+    
     @Published var symptomCategories = ["皮膚", "呼吸器", "循環器", "消化器", "その他"]
     @Published var typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
     @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間以降"]
     @Published var treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
     
-    init() {
+    let record: CKRecord
+    var isUpdated: Bool = false
+    
+    init(record: CKRecord) {
+        self.record = record
         fetchItemsFromCloud()
+        fetchAllergens()
     }
-
+    
+    init(episode: CKRecord) {
+        record = episode
+        guard let episodeDate = episode["episodeDate"] as? Date,
+              let firstKnownExposure = episode["firstKnownExposure"] as? Bool,
+              let wentToHospital = episode["wentToHospital"] as? Bool,
+              let leadTimeToSymptoms = episode["leadTimeToSymptoms"] as? String
+        else {
+            return
+        }
+        let typeOfExposure = episode["typeOfExposure"] as? [String]
+        let symptoms = episode["symptoms"] as? [String]
+        let skinSymptoms = episode["skinSymptoms"] as? [String]
+        let treatments = episode["treatments"] as? [String]
+        let otherTreatment = episode["otherTreatment"] as? String
+        let data = episode["data"] as? [Data]?
+        
+        if let data = episode["data"] as? CKAsset, let url = data.fileURL {
+            let imageURL = try? Data(contentsOf: url)
+            //self.data = imageURL
+            self.imageState = .success(Image(uiImage: UIImage(data: imageURL!)!))
+        } else {
+            print("No Image File")
+        }
+        
+        self.episodeDate = episodeDate
+        self.firstKnownExposure = firstKnownExposure
+        self.wentToHospital = wentToHospital
+        self.typeOfExposure = typeOfExposure ?? [""]
+        self.symptoms = symptoms ?? [""]
+        self.skinSymptoms = skinSymptoms ?? [""]
+        self.leadTimeToSymptoms = leadTimeToSymptoms
+        self.treatments = treatments ?? [""]
+        self.otherTreatment = otherTreatment ?? ""
+        isUpdated = true
+    }
     
     // MARK: - Profile Image
     enum ImageState {
@@ -70,21 +96,21 @@ struct episodeInfoModel: Identifiable {
         
         static var transferRepresentation: some TransferRepresentation {
             DataRepresentation(importedContentType: .image) { data in
-                #if canImport(AppKit)
+#if canImport(AppKit)
                 guard let nsImage = NSImage(data: data) else {
                     throw TransferError.importFailed
                 }
                 let image = Image(nsImage: nsImage)
                 return EpisodePhoto(image: image, data: data)
-                #elseif canImport(UIKit)
+#elseif canImport(UIKit)
                 guard let uiImage = UIImage(data: data) else {
                     throw TransferError.importFailed
                 }
                 let image = Image(uiImage: uiImage)
                 return EpisodePhoto(image: image, data: data)
-                #else
+#else
                 throw TransferError.importFailed
-                #endif
+#endif
             }
         }
     }
@@ -112,7 +138,7 @@ struct episodeInfoModel: Identifiable {
                 switch result {
                 case .success(let episodePhoto?):
                     self.imageState = .success(episodePhoto.image)
-                    self.episodePhoto.append(episodePhoto)
+                    self.data = [episodePhoto.data]
                 case .success(nil):
                     self.imageState = .empty
                 case .failure(let error):
@@ -128,7 +154,7 @@ struct episodeInfoModel: Identifiable {
         var imageURLs = [URL]()
         if data.isEmpty { return nil }
         for image in data {
-    
+            
             let documentsDirectoryPath:NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
             let tempImageName = String(format: "%@.jpg", UUID().uuidString)
             let path:String = documentsDirectoryPath.appendingPathComponent(tempImageName)
@@ -144,10 +170,8 @@ struct episodeInfoModel: Identifiable {
     
     func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
-        guard !typeOfExposure.isEmpty else { return }
-        guard !symptoms.isEmpty else { return }
         guard !leadTimeToSymptoms.isEmpty else { return }
-        guard !treatments.isEmpty else { return }
+        
         addItem(
             episodeDate: episodeDate,
             firstKnownExposure: firstKnownExposure,
@@ -157,7 +181,8 @@ struct episodeInfoModel: Identifiable {
             leadTimeToSymptoms: leadTimeToSymptoms,
             treatments: treatments,
             otherTreatment: otherTreatment,
-            episodePhoto: getImageURL(for: episodePhoto))
+            episodePhoto: getImageURL(for: episodePhoto)
+        )
     }
     
     private func addItem(
@@ -177,8 +202,7 @@ struct episodeInfoModel: Identifiable {
             if let episodePhoto = episodePhoto {
                 let urls = episodePhoto.map { return CKAsset(fileURL: $0)
                 }
-                
-                myRecord["episodePhoto"] = urls
+                myRecord["data"] = urls
             }
             myRecord["episodeDate"] = episodeDate
             myRecord["firstKnownExposure"] = firstKnownExposure
@@ -202,26 +226,52 @@ struct episodeInfoModel: Identifiable {
     //MARK: - Fetch from CK Private DataBase
     
     func fetchItemsFromCloud() {
-        let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: "episodeInfo", predicate: predicate)
+        let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
+        let predicate = NSPredicate(format: "episode == %@", reference)
+        
+        let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
+        
+        self.episodeInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
-//            if let episodeDetails = EpisodeDetails(record: returnedRecord) {
-//                self.episodeInfoModel.append(episodeDetails)
-//            }
+            DispatchQueue.main.async {
+                if let episodeItem = EpisodeListModel(record: returnedRecord) {
+                    self.episodeInfo.append(episodeItem)
+                }
+            }
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED queryResultBlock")
-//            DispatchQueue.main.async {
-//                self?.profileInfo = returnedItems
-//            }
+            print("RETURNED EpisodeInfo queryResultBlock")
+        }
+        addOperation(operation: queryOperation)
+    }
+    func addOperation(operation: CKDatabaseOperation) {
+        CKContainer.default().privateCloudDatabase.add(operation)
+    }
+    
+    private func fetchAllergens() {
+        let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
+        let predicate = NSPredicate(format: "profile == %@", reference)
+        
+        let query = CKQuery(recordType: "Allergens", predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let queryOperation = CKQueryOperation(query: query)
+
+        self.allergens = []
+        queryOperation.recordFetchedBlock = { (returnedRecord) in
+            DispatchQueue.main.async {
+                if let object = AllergensListModel(record: returnedRecord) {
+                    self.allergens.append(object)
+                }
+            }
+        }
+        queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED Allergens queryResultBlock")
         }
         addOperation(operation: queryOperation)
     }
     
-    func addOperation(operation: CKDatabaseOperation) {
-        CKContainer.default().privateCloudDatabase.add(operation)
-    }
 }

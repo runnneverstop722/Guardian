@@ -6,6 +6,7 @@
 //  Copyright © 2023 swifteff. All rights reserved.
 //
 import SwiftUI
+import CloudKit
 
 struct AllergensView: View {
     @State private var bloodTests: [BloodTest] = []
@@ -22,6 +23,7 @@ struct AllergensView: View {
     @State private var showMedicalTestView = false
     
     var allergenName: String = "Unknown Allergen"
+    let allergen: CKRecord
     
     var body: some View {
         List {
@@ -47,7 +49,7 @@ struct AllergensView: View {
                 }
                 
                 NavigationLink(
-                    destination: MedicalTestView(),
+                    destination: MedicalTestView(allergen: allergen),
                     isActive: $showMedicalTestView
                 ) {
                     Button("+ Add & Details") {
@@ -93,7 +95,7 @@ struct AllergensView: View {
                     showNewEpisode.toggle()
                 }
                 .sheet(isPresented: $showNewEpisode) {
-                    EpisodeView()
+                    EpisodeView(allergen: allergen)
                 }
             }
             

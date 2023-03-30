@@ -24,7 +24,7 @@ struct MembersView: View {
         List {
             ForEach(profileModel.profileInfo, id: \.self) { item in
                 NavigationLink(value: item) {
-                    Row(headline: item.headline, caption: item.caption, image: item.image)
+                    MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
                         .onTapGesture {
                             profileModel.updateItem()
                         }
@@ -101,7 +101,7 @@ private extension MembersView {
 }
 
 extension MembersView {
-    struct Row: View {
+    struct MembersListRow: View {
         let headline: String
         let caption: String
         let image: Image?

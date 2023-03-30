@@ -9,23 +9,25 @@ import SwiftUI
 import CloudKit
 
 struct YourRecordsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @StateObject var diagnosisModel: DiagnosisModel
+    @StateObject var profileModel: ProfileModel
+    @StateObject var episodeModel: EpisodeModel
     @State private var showUpdateProfile = false
     @State private var showExportPDF = false
     @State private var isAddingNewDiagnosis = false
     @State private var showingRemoveAllergensAlert = false
-    @StateObject var diagnosisModel: DiagnosisModel
-    @StateObject var profileModel: ProfileModel
+    @Environment(\.presentationMode) var presentationMode
     
     let profile: CKRecord
-    
     let onDeleteDiagnosis = NotificationCenter.default.publisher(for: Notification.Name("removeDiagnosis"))
     
     init(profile: CKRecord) {
         self.profile = profile
-        _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
+        self._diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
+        self._profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
     }
-    
+
     var body: some View {
         List {
             Section(header: Text("Diagnosis")) {
@@ -69,18 +71,20 @@ struct YourRecordsView: View {
             }
             
             Section(header: Text("Allergens")) {
-                ForEach(profileModel.profileInfo, id: \.self) { item in
+                ForEach(episodeModel.allergens, id: \.self) { item in
+                    NavigationLink(
+                        destination: AllergensView(allergen: item.record),
+                        label: {
+                            AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
+                        })
                     NavigationLink(value: item) {
-                        Row(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
-                            .onTapGesture {
-                                profileModel.updateItem()
-                            }
+                        AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
                     }.swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        }
+//                        Button(role: .destructive) {
+//                            profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
+//                                presentationMode.wrappedValue.dismiss()
+//                            }
+//                        }
                     }
                     .alert(isPresented: $showingRemoveAllergensAlert) {
                         Alert(title: Text("Remove this item?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
@@ -114,7 +118,7 @@ struct YourRecordsView: View {
 }
 
 extension YourRecordsView {
-    struct Row: View {
+    struct AllergensListRow: View {
         let headline: String
         let caption1: String
         let caption2: String

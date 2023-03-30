@@ -6,12 +6,31 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct BloodTest: Identifiable {
     let id = UUID()
     var bloodTestDate: Date = Date()
     var bloodTestLevel: String = ""
     var bloodTestGrade: BloodTestGrade = .negative
+    var record: CKRecord?
+    
+    init?(record: CKRecord) {
+        self.record = record
+        guard let bloodTestDate = record["bloodTestDate"] as? Date,
+              let bloodTestLevel = record["bloodTestLevel"] as? String,
+              let grade = record["bloodTestGrade"] as? String,
+              let bloodTestGrade =  BloodTestGrade(rawValue: grade)
+        else {
+            return
+        }
+        self.bloodTestDate = bloodTestDate
+        self.bloodTestLevel = bloodTestLevel
+        self.bloodTestGrade = bloodTestGrade
+    }
+    init() {
+        
+    }
 }
 
 struct SkinTest: Identifiable {
@@ -19,6 +38,13 @@ struct SkinTest: Identifiable {
     var skinTestDate: Date = Date()
     var SkinTestResultValue: String = ""
     var SkinTestResult: Bool = false
+    var record: CKRecord?
+    init?(record: CKRecord) {
+        
+    }
+    init() {
+        
+    }
 }
 
 struct OralFoodChallenge: Identifiable {
@@ -26,6 +52,13 @@ struct OralFoodChallenge: Identifiable {
     var oralFoodChallengeDate: Date = Date()
     var oralFoodChallengeQuantity: String = ""
     var oralFoodChallengeResult: Bool = false
+    var record: CKRecord?
+    init?(record: CKRecord) {
+        
+    }
+    init() {
+        
+    }
 }
 
 enum BloodTestGrade: String, CaseIterable {
@@ -46,10 +79,79 @@ struct MedicalTestView: View {
     @State private var bloodTests: [BloodTest] = []
     @State private var skinTests: [SkinTest] = []
     @State private var oralFoodChallenges: [OralFoodChallenge] = []
-    
+//    private var bloodTestObjects: [CKRecord] = []
+//    private var skinTestObjects: [CKRecord] = []
+//    private var oralFoodTestObjects: [CKRecord] = []
     @Environment(\.presentationMode) var presentationMode
     
+    var allergen: CKRecord
     
+    init(allergen: CKRecord) {
+        self.allergen = allergen
+        fetchData()
+    }
+    
+    func addOperation(operation: CKDatabaseOperation) {
+        CKContainer.default().privateCloudDatabase.add(operation)
+    }
+    
+    private func fetchData() {
+        let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+        let predicate = NSPredicate(format: "allergen == %@", reference)
+        
+        let bloodQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
+        bloodQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let bloodQueryOperation = CKQueryOperation(query: bloodQuery)
+
+        bloodQueryOperation.recordFetchedBlock = { (returnedRecord) in
+            DispatchQueue.main.async {
+                if let object = BloodTest(record: returnedRecord) {
+                    self.bloodTests.append(object)
+                }
+            }
+        }
+        bloodQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED Allergens queryResultBlock")
+        }
+        addOperation(operation: bloodQueryOperation)
+        
+        
+        let skinQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
+        skinQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+        let skinQueryOperation = CKQueryOperation(query: skinQuery)
+
+        skinQueryOperation.recordFetchedBlock = { (returnedRecord) in
+            DispatchQueue.main.async {
+                if let object = SkinTest(record: returnedRecord) {
+                    self.skinTests.append(object)
+                }
+            }
+        }
+        skinQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED Allergens queryResultBlock")
+        }
+        let oralQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
+        oralQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let oralQueryOperation = CKQueryOperation(query: oralQuery)
+
+        oralQueryOperation.recordFetchedBlock = { (returnedRecord) in
+            DispatchQueue.main.async {
+                if let object = OralFoodChallenge(record: returnedRecord) {
+                    self.oralFoodChallenges.append(object)
+                }
+            }
+        }
+        oralQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED Allergens queryResultBlock")
+        }
+        addOperation(operation: skinQueryOperation)
+    }
+    func fetchSkinTests() {
+        
+    }
     var totalNumberOfMedicalTest: String {
         return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTests.count + skinTests.count + oralFoodChallenges.count)"
     }
@@ -84,10 +186,70 @@ struct MedicalTestView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
+                        saveData()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
+        }
+    }
+    
+    func saveData() {
+        updateData()
+        
+        let newBloodTests = bloodTests.filter { $0.record == nil }
+        let newSkinTests = skinTests.filter { $0.record == nil }
+        let neworalTests = oralFoodChallenges.filter { $0.record == nil }
+        
+        newBloodTests.forEach {
+            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "BloodTest", recordID: ckRecordID)
+            
+            myRecord["bloodTestDate"] = $0.bloodTestDate
+            myRecord["bloodTestLevel"] = $0.bloodTestLevel
+            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
+            
+            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            myRecord["allergen"] = reference as CKRecordValue
+            save(record: myRecord)
+        }
+        newSkinTests.forEach {
+            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "SkinTest", recordID: ckRecordID)
+     
+            myRecord["skinTestDate"] = $0.skinTestDate
+            myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
+            myRecord["SkinTestResult"] = $0.SkinTestResult
+            
+            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            myRecord["allergen"] = reference as CKRecordValue
+            save(record: myRecord)
+        }
+        neworalTests.forEach {
+            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "OralFoodChallenge", recordID: ckRecordID)
+            
+            myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
+            myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
+            myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
+            
+            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            myRecord["allergen"] = reference as CKRecordValue
+            save(record: myRecord)
+        }
+    }
+    
+    func updateData() {
+        
+    }
+    
+    private func save(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
+            print("Record: \(String(describing: returnedRecord))")
+            print("Error: \(String(describing: returnedError))")
         }
     }
 }
@@ -97,13 +259,11 @@ struct BloodTestSection: View {
     
     var body: some View {
         VStack {
+            
             List {
-                ForEach(bloodTests.indices, id: \.self) { index in
-                    BloodTestFormView(bloodTest: $bloodTests[index])
+                ForEach($bloodTests) { test in
+                    BloodTestFormView(bloodTest: test)
                 }
-                .onDelete(perform: { indexSet in
-                    bloodTests.remove(atOffsets: indexSet)
-                })
             }
             
             Button(action: {
@@ -272,9 +432,9 @@ struct OralFoodChallengeFormView: View {
     }
 }
 
-
-struct MedicalTestView_Previews: PreviewProvider {
-    static var previews: some View {
-        MedicalTestView()
-    }
-}
+//
+//struct MedicalTestView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MedicalTestView()
+//    }
+//}

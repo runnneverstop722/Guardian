@@ -6,8 +6,10 @@
 //
 import SwiftUI
 
+import CloudKit
+
 struct EpisodeView: View {
-    @StateObject var episodeModel = EpisodeModel()
+    @StateObject var episodeModel: EpisodeModel
     @State private var episodeDate = Date()
     @State private var firstKnownExposure: Bool = false
     @State private var wentToHospital: Bool = false
@@ -28,6 +30,12 @@ struct EpisodeView: View {
     private let leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間以降"]
     private let treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
 
+    private let allergen: CKRecord
+    init(allergen: CKRecord) {
+        self.allergen = allergen
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
+    }
+    
     var body: some View {
         NavigationView {
             Form {
@@ -134,9 +142,9 @@ struct EpisodeView: View {
     }
 }
 
-struct Episode_Previews: PreviewProvider {
-    static var previews: some View {
-        EpisodeView()
-    }
-}
+//struct Episode_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EpisodeView()
+//    }
+//}
 
