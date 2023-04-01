@@ -196,7 +196,7 @@ import CloudKit
         otherTreatment: String,
         episodePhoto: [URL]?) {
             
-            let ckRecordZoneID = CKRecordZone(zoneName: "Episode")
+            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "EpisodeInfo", recordID: ckRecordID)
             if let episodePhoto = episodePhoto {
@@ -233,6 +233,7 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
+        queryOperation.queuePriority = .veryHigh
         
         self.episodeInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -259,6 +260,7 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
+        queryOperation.queuePriority = .veryHigh
 
         self.allergens = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in

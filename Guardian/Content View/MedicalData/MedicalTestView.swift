@@ -8,12 +8,14 @@
 import SwiftUI
 import CloudKit
 
+//MARK: - Struct: Blood Test
 struct BloodTest: Identifiable {
-    let id = UUID()
+    let id = UUID().uuidString
     var bloodTestDate: Date = Date()
     var bloodTestLevel: String = ""
     var bloodTestGrade: BloodTestGrade = .negative
     var record: CKRecord?
+    @State private var isUpdate = false
     
     init?(record: CKRecord) {
         self.record = record
@@ -32,35 +34,6 @@ struct BloodTest: Identifiable {
         
     }
 }
-
-struct SkinTest: Identifiable {
-    let id = UUID()
-    var skinTestDate: Date = Date()
-    var SkinTestResultValue: String = ""
-    var SkinTestResult: Bool = false
-    var record: CKRecord?
-    init?(record: CKRecord) {
-        
-    }
-    init() {
-        
-    }
-}
-
-struct OralFoodChallenge: Identifiable {
-    let id = UUID()
-    var oralFoodChallengeDate: Date = Date()
-    var oralFoodChallengeQuantity: String = ""
-    var oralFoodChallengeResult: Bool = false
-    var record: CKRecord?
-    init?(record: CKRecord) {
-        
-    }
-    init() {
-        
-    }
-}
-
 enum BloodTestGrade: String, CaseIterable {
     case negative = "陰性(~0.35)"
     case grade1 = "1"
@@ -71,17 +44,53 @@ enum BloodTestGrade: String, CaseIterable {
     case grade6 = "6"
 }
 
+//MARK: - Struct: Skin Test
+
+struct SkinTest: Identifiable {
+    let id = UUID()
+    var skinTestDate: Date = Date()
+    var SkinTestResultValue: String = ""
+    var SkinTestResult: Bool = false
+    var record: CKRecord?
+    @State private var isUpdate = false
+    
+    init?(record: CKRecord) {
+        
+    }
+    init() {
+        
+    }
+}
+
+//MARK: - Struct: OFC
+struct OralFoodChallenge: Identifiable {
+    let id = UUID()
+    var oralFoodChallengeDate: Date = Date()
+    var oralFoodChallengeQuantity: String = ""
+    var oralFoodChallengeResult: Bool = false
+    var record: CKRecord?
+    @State private var isUpdate = false
+    
+    init?(record: CKRecord) {
+        
+    }
+    init() {
+        
+    }
+}
+
+//MARK: - MedicalTestView
 
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @State private var allergenName = "AllergenShrimp"
     
-    @State private var bloodTests: [BloodTest] = []
-    @State private var skinTests: [SkinTest] = []
-    @State private var oralFoodChallenges: [OralFoodChallenge] = []
-//    private var bloodTestObjects: [CKRecord] = []
-//    private var skinTestObjects: [CKRecord] = []
-//    private var oralFoodTestObjects: [CKRecord] = []
+    @State private var bloodTest: [BloodTest] = []
+    @State private var skinTest: [SkinTest] = []
+    @State private var oralFoodChallenge: [OralFoodChallenge] = []
+    //    private var bloodTestObjects: [CKRecord] = []
+    //    private var skinTestObjects: [CKRecord] = []
+    //    private var oralFoodTestObjects: [CKRecord] = []
     @Environment(\.presentationMode) var presentationMode
     
     var allergen: CKRecord
@@ -95,66 +104,82 @@ struct MedicalTestView: View {
         CKContainer.default().privateCloudDatabase.add(operation)
     }
     
+    //MARK: - Fetch
+    
     private func fetchData() {
         let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
-        let bloodQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
-        bloodQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        //MARK: - Blood
         
-        let bloodQueryOperation = CKQueryOperation(query: bloodQuery)
-
-        bloodQueryOperation.recordFetchedBlock = { (returnedRecord) in
+        let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
+        bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
+        bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = BloodTest(record: returnedRecord) {
-                    self.bloodTests.append(object)
+                    self.bloodTest.append(object)
                 }
             }
         }
-        bloodQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED Allergens queryResultBlock")
+        bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED 'Blood Test' queryResultBlock")
         }
-        addOperation(operation: bloodQueryOperation)
+        addOperation(operation: bloodTestQueryOperation)
         
+        //MARK: - Skin
         
-        let skinQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
-        skinQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-
-        let skinQueryOperation = CKQueryOperation(query: skinQuery)
-
-        skinQueryOperation.recordFetchedBlock = { (returnedRecord) in
+        let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
+        skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
+        skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
-                    self.skinTests.append(object)
+                    self.skinTest.append(object)
                 }
             }
         }
-        skinQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED Allergens queryResultBlock")
+        skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED 'Skin Test' queryResultBlock")
         }
-        let oralQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
-        oralQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        addOperation(operation: skinTestQueryOperation)
         
-        let oralQueryOperation = CKQueryOperation(query: oralQuery)
-
-        oralQueryOperation.recordFetchedBlock = { (returnedRecord) in
+        //MARK: - OFC
+        
+        let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
+        OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
+        
+        OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = OralFoodChallenge(record: returnedRecord) {
-                    self.oralFoodChallenges.append(object)
+                    self.oralFoodChallenge.append(object)
                 }
             }
         }
-        oralQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED Allergens queryResultBlock")
+        OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
+            print("RETURNED 'Oral Food Challenge' queryResultBlock")
         }
-        addOperation(operation: skinQueryOperation)
+        
+        addOperation(operation: OFCQueryOperation)
+    }
+    
+    func fetchBloodTests() {
+        
     }
     func fetchSkinTests() {
         
     }
-    var totalNumberOfMedicalTest: String {
-        return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTests.count + skinTests.count + oralFoodChallenges.count)"
+    func fetchOFC() {
+        
     }
+    
+    var totalNumberOfMedicalTest: String {
+        return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTest.count + skinTest.count + oralFoodChallenge.count)"
+    }
+    
+    //MARK: - Body View
     
     var body: some View {
         NavigationView {
@@ -162,22 +187,20 @@ struct MedicalTestView: View {
                 Text(allergenName)
                     .font(.largeTitle)
                     .padding()
-                
-                Picker(selection: $selectedTestIndex, label: Text("Test Type")) {
-                    Text("血液検査").tag(0)
-                    Text("皮膚プリックテスト").tag(1)
-                    Text("経口負荷試験(OFC)").tag(2)
+                Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
+                    Text("Blood Test").tag(0)
+                    Text("Skin Test").tag(1)
+                    Text("Oral Food Challenge").tag(2)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-                
                 VStack {
                     if selectedTestIndex == 0 {
-                        BloodTestSection(bloodTests: $bloodTests)
+                        BloodTestSection(bloodTests: $bloodTest)
                     } else if selectedTestIndex == 1 {
-                        SkinTestSection(skinTests: $skinTests)
+                        SkinTestSection(skinTests: $skinTest)
                     } else {
-                        OralFoodChallengeSection(oralFoodChallenges: $oralFoodChallenges)
+                        OralFoodChallengeSection(oralFoodChallenges: $oralFoodChallenge)
                     }
                 }
                 .animation(.default, value: selectedTestIndex)
@@ -194,12 +217,13 @@ struct MedicalTestView: View {
         }
     }
     
+    //MARK: - Func Save
     func saveData() {
         updateData()
         
-        let newBloodTests = bloodTests.filter { $0.record == nil }
-        let newSkinTests = skinTests.filter { $0.record == nil }
-        let neworalTests = oralFoodChallenges.filter { $0.record == nil }
+        let newBloodTests = bloodTest.filter { $0.record == nil }
+        let newSkinTests = skinTest.filter { $0.record == nil }
+        let neworalTests = oralFoodChallenge.filter { $0.record == nil }
         
         newBloodTests.forEach {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
@@ -218,7 +242,7 @@ struct MedicalTestView: View {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "SkinTest", recordID: ckRecordID)
-     
+            
             myRecord["skinTestDate"] = $0.skinTestDate
             myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
             myRecord["SkinTestResult"] = $0.SkinTestResult
@@ -242,6 +266,7 @@ struct MedicalTestView: View {
         }
     }
     
+    //MARK: - Func Update
     func updateData() {
         
     }
@@ -254,18 +279,18 @@ struct MedicalTestView: View {
     }
 }
 
+
+//MARK: - View: Blood Test Section
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     
     var body: some View {
         VStack {
-            
             List {
                 ForEach($bloodTests) { test in
                     BloodTestFormView(bloodTest: test)
                 }
             }
-            
             Button(action: {
                 bloodTests.append(BloodTest())
             }) {
@@ -276,6 +301,7 @@ struct BloodTestSection: View {
     }
 }
 
+//MARK: - View: Skin Test Section
 struct SkinTestSection: View {
     @Binding var skinTests: [SkinTest]
     
@@ -300,6 +326,7 @@ struct SkinTestSection: View {
     }
 }
 
+//MARK: - View: OFC Section
 struct OralFoodChallengeSection: View {
     @Binding var oralFoodChallenges: [OralFoodChallenge]
     
@@ -324,19 +351,21 @@ struct OralFoodChallengeSection: View {
     }
 }
 
+//MARK: - Form View: Blood Test
+
 struct BloodTestFormView: View {
     @Binding var bloodTest: BloodTest
     
     private var textFieldBinding: Binding<String> {
-            Binding(
-                get: { bloodTest.bloodTestGrade.rawValue },
-                set: { newValue in
-                    if let newGrade = BloodTestGrade(rawValue: newValue) {
-                        bloodTest.bloodTestGrade = newGrade
-                    }
+        Binding(
+            get: { bloodTest.bloodTestGrade.rawValue },
+            set: { newValue in
+                if let newGrade = BloodTestGrade(rawValue: newValue) {
+                    bloodTest.bloodTestGrade = newGrade
                 }
-            )
-        }
+            }
+        )
+    }
     
     var body: some View {
         VStack {
@@ -346,7 +375,6 @@ struct BloodTestFormView: View {
                 DatePicker("", selection: $bloodTest.bloodTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
-            
             HStack {
                 Text("IgEレベル(UA/mL):")
                 Spacer()
@@ -354,7 +382,6 @@ struct BloodTestFormView: View {
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
-            
             VStack(alignment: .leading) {
                 Picker("IgEクラス:", selection: $bloodTest.bloodTestGrade) {
                     ForEach(BloodTestGrade.allCases, id: \.self) { grade in
@@ -368,6 +395,8 @@ struct BloodTestFormView: View {
     }
 }
 
+//MARK: - Form View: Skin Test
+
 struct SkinTestFormView: View {
     @Binding var skinTest: SkinTest
     
@@ -379,7 +408,6 @@ struct SkinTestFormView: View {
                 DatePicker("", selection: $skinTest.skinTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
-            
             HStack {
                 Text("結果(mm):")
                 Spacer()
@@ -390,7 +418,6 @@ struct SkinTestFormView: View {
                         .multilineTextAlignment(.trailing)
                 }
             }
-            
             HStack {
                 Text("陽性?:")
                 Spacer()
@@ -401,9 +428,9 @@ struct SkinTestFormView: View {
     }
 }
 
+//MARK: - Form View: OFC
 struct OralFoodChallengeFormView: View {
     @Binding var oralFoodChallenge: OralFoodChallenge
-    
     
     var body: some View {
         VStack {
@@ -413,7 +440,6 @@ struct OralFoodChallengeFormView: View {
                 DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
-            
             HStack {
                 Text("食べた量(mm):")
                 Spacer()
@@ -421,7 +447,6 @@ struct OralFoodChallengeFormView: View {
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
-            
             HStack {
                 Text("症状あり:")
                 Spacer()

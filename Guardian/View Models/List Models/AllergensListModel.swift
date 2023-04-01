@@ -18,15 +18,15 @@ struct AllergensListModel: Identifiable, Hashable {
     let record: CKRecord
     
     init?(record: CKRecord) {
-        guard let allergens = record["allergen"] as? String,
+        guard let allergen = record["allergen"] as? String,
               let totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int,
               let totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int else {
             return nil
         }
         
-        headline = allergens
-        caption1 = String(totalNumberOfEpisodes)
-        caption2 = String(totalNumberOfMedicalTests)
+        headline = allergen
+        caption1 = String(totalNumberOfMedicalTests)
+        caption2 = String(totalNumberOfEpisodes)
         self.record = record
         //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }

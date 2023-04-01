@@ -18,7 +18,7 @@
 		051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */; };
 		051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D129CE8BE900A890D0 /* ExportDataView.swift */; };
 		051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27D329CE8C9500A890D0 /* AddAllergenView.swift */; };
-		051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* AllergensView.swift */; };
+		051A27DB29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27DA29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift */; };
 		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
 		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
 		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
@@ -51,7 +51,7 @@
 		051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataModel.swift; sourceTree = "<group>"; };
 		051A27D129CE8BE900A890D0 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
 		051A27D329CE8C9500A890D0 /* AddAllergenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAllergenView.swift; sourceTree = "<group>"; };
-		051A27DA29D08DE400A890D0 /* AllergensView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergensView.swift; sourceTree = "<group>"; };
+		051A27DA29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MedicalTestAndEpisodeView.swift; sourceTree = "<group>"; };
 		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
 		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
 		051A27E929D5554F00A890D0 /* EpisodeListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeListModel.swift; sourceTree = "<group>"; };
@@ -124,7 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */,
-				051A27DA29D08DE400A890D0 /* AllergensView.swift */,
+				051A27DA29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift */,
 			);
 			path = "Your Record";
 			sourceTree = "<group>";
@@ -348,7 +348,7 @@
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
 				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,
-				051A27DB29D08DE400A890D0 /* AllergensView.swift in Sources */,
+				051A27DB29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

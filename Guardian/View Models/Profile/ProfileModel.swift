@@ -14,7 +14,7 @@ import CloudKit
         case 男, 女, 選択なし
         var id: String { self.rawValue }
     }
-
+    
     @Published var data: Data? //image
     @Published var firstName: String = ""
     @Published var lastName: String = ""
@@ -42,10 +42,10 @@ import CloudKit
               let birthDate = profile["birthDate"] as? Date,
               let gender = (profile["gender"] as? String),
               let genderEnum = Gender(rawValue: gender)
-                else {
+        else {
             return
         }
-//        let allergens = profile["allergens"] as? [String] ?? []
+        //        let allergens = profile["allergens"] as? [String] ?? []
         let hospitalName = profile["hospitalName"] as? String
         let allergist = profile["allergist"] as? String
         let allergistContactInfo = profile["allergistContactInfo"] as? String
@@ -77,7 +77,8 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-
+        queryOperation.queuePriority = .veryHigh
+        
         self.allergens = []
         self.allergensObject = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -112,21 +113,21 @@ import CloudKit
         
         static var transferRepresentation: some TransferRepresentation {
             DataRepresentation(importedContentType: .image) { data in
-                #if canImport(AppKit)
+#if canImport(AppKit)
                 guard let nsImage = NSImage(data: data) else {
                     throw TransferError.importFailed
                 }
                 let image = Image(nsImage: nsImage)
                 return ProfileImage(image: image, data: data)
-                #elseif canImport(UIKit)
+#elseif canImport(UIKit)
                 guard let uiImage = UIImage(data: data) else {
                     throw TransferError.importFailed
                 }
                 let image = Image(uiImage: uiImage)
                 return ProfileImage(image: image, data: data)
-                #else
+#else
                 throw TransferError.importFailed
-                #endif
+#endif
             }
         }
     }
@@ -208,33 +209,35 @@ import CloudKit
         allergist: String,
         allergistContactInfo: String,
         allergens: [String]
-    ) {
-            
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "ProfileInfo", recordID: ckRecordID)
-            if let profileImage = profileImage {
-                let url = CKAsset(fileURL: profileImage)
-                myRecord["profileImage"] = url
-            }
-            myRecord["firstName"] = firstName
-            myRecord["lastName"] = lastName
-            myRecord["gender"] = gender.rawValue
-            myRecord["birthDate"] = birthDate
-            myRecord["hospitalName"] = hospitalName
-            myRecord["allergist"] = allergist
-            myRecord["allergistContactInfo"] = allergistContactInfo
-//            myRecord["allergens"] = allergens
+    )
+    {
+        
+        let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+        let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+        let myRecord = CKRecord(recordType: "ProfileInfo", recordID: ckRecordID)
+        if let profileImage = profileImage {
+            let url = CKAsset(fileURL: profileImage)
+            myRecord["profileImage"] = url
+        }
+        myRecord["firstName"] = firstName
+        myRecord["lastName"] = lastName
+        myRecord["gender"] = gender.rawValue
+        myRecord["birthDate"] = birthDate
+        myRecord["hospitalName"] = hospitalName
+        myRecord["allergist"] = allergist
+        myRecord["allergistContactInfo"] = allergistContactInfo
+        myRecord["allergens"] = allergens
         saveItem(record: myRecord) { [weak self] recordID in
             guard let id = recordID else { return }
             self?.updateSaveAllergens(recordID: id, allergens: allergens)
         }
-        }
+    }
     
     private func deleteAllergens(recordID: CKRecord.ID) {
         
         CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { recordID, error in
             DispatchQueue.main.async {
+                
             }
         }
     }
@@ -295,6 +298,7 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
+        queryOperation.queuePriority = .veryHigh
         
         self.profileInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -314,30 +318,30 @@ import CloudKit
     }
     
     //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
-
+    
     func updateItem() {
-            guard let myRecord = record else { return }
-            if let profileImage = getImageURL(for: data) {
-                let url = CKAsset(fileURL: profileImage)
-                myRecord["profileImage"] = url
-            }
-            myRecord["firstName"] = firstName
-            myRecord["lastName"] = lastName
-            myRecord["gender"] = gender.rawValue
-            myRecord["birthDate"] = birthDate
-            myRecord["hospitalName"] = hospitalName
-            myRecord["allergist"] = allergist
-            myRecord["allergistContactInfo"] = allergistContactInfo
-//            myRecord["allergens"] = allergens
-            saveItem(record: myRecord) { [weak self, allergens] recordID in
-                guard let recordID = recordID else { return }
-                self?.updateSaveAllergens(recordID: recordID, allergens: allergens)
-            }
+        guard let myRecord = record else { return }
+        if let profileImage = getImageURL(for: data) {
+            let url = CKAsset(fileURL: profileImage)
+            myRecord["profileImage"] = url
         }
+        myRecord["firstName"] = firstName
+        myRecord["lastName"] = lastName
+        myRecord["gender"] = gender.rawValue
+        myRecord["birthDate"] = birthDate
+        myRecord["hospitalName"] = hospitalName
+        myRecord["allergist"] = allergist
+        myRecord["allergistContactInfo"] = allergistContactInfo
+        //            myRecord["allergens"] = allergens
+        saveItem(record: myRecord) { [weak self, allergens] recordID in
+            guard let recordID = recordID else { return }
+            self?.updateSaveAllergens(recordID: recordID, allergens: allergens)
+        }
+    }
     
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
-
+    
     func deleteItemsFromCloud(record: CKRecord, completion: @escaping ((Bool)->Void)) {
         CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
             DispatchQueue.main.async {

@@ -69,8 +69,6 @@ struct ProfileView: View {
                             DatePicker("生年月日",
                                        selection: $profileModel.birthDate,
                                        displayedComponents: [.date])
-//                            .environment(\.locale, Locale(identifier: "ja_JP"))
-                            //.environment(\.calendar, Calendar(identifier: .japanese))
                             .foregroundColor(Color(uiColor: .placeholderText))
                         }
                         .fontWeight(.bold)
@@ -104,6 +102,28 @@ struct ProfileView: View {
                         AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
                     }
                 }
+                if isUpdate {
+                    Button(action: {
+                        showingRemoveDiagnosisAlert.toggle()
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Remove")
+                                .foregroundColor(.red)
+                            Spacer()
+                        }
+                    }
+                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                            // Handle removal of diagnosis
+                            profileModel.deleteItemsFromCloud(record: profile!) { isSuccess in
+                                if isSuccess {
+                                    presentationMode.wrappedValue.dismiss()
+                                }
+                            }
+                        }, secondaryButton: .cancel())
+                    }
+                }
             })
             .navigationTitle("プロフィール")
             .toolbar {
@@ -117,26 +137,6 @@ struct ProfileView: View {
                               message: Text(""), dismissButton: .default(Text("Close"), action: {
                             dismiss()
                         }))
-                    }
-                }
-                if isUpdate {
-                    ToolbarItem(placement: .destructiveAction) {
-                        Button(action: {
-                            showingRemoveDiagnosisAlert.toggle()
-                        }) {
-                            Text("Remove")
-                                .foregroundColor(.red)
-                        }
-                        .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                            Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                                // Handle removal of diagnosis
-                                profileModel.deleteItemsFromCloud(record: profile!) { isSuccess in
-                                    if isSuccess {
-                                        presentationMode.wrappedValue.dismiss()
-                                    }
-                                }
-                            }, secondaryButton: .cancel())
-                        }
                     }
                 }
             }

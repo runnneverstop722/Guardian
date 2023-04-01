@@ -113,7 +113,8 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-
+        queryOperation.queuePriority = .veryHigh
+        
         self.diagnosisInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {

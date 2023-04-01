@@ -4,7 +4,7 @@ import SwiftUI
 import CloudKit
 
 struct DiagnosisView: View {
-    @Environment(\.presentationMode) var presentationMode
+    
     @StateObject var diagnosisModel: DiagnosisModel
     
     @State private var showingAddAllergen = false
@@ -15,6 +15,8 @@ struct DiagnosisView: View {
     
     @State private var isShowingActionSheet = false
     @State private var isUpdate = false
+    @Environment(\.presentationMode) var presentationMode
+    
     init(profile: CKRecord) {
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
     }
@@ -48,7 +50,7 @@ struct DiagnosisView: View {
                     TextField("Hospital", text: $diagnosisModel.diagnosedHospital)
                     TextField("Allergist", text: $diagnosisModel.diagnosedAllergist)
                 }
-
+                
                 Section(header: Text("Allergens")) {
                     ForEach(diagnosisModel.allergens, id: \.self) { allergen in
                         Text(allergen)
@@ -61,8 +63,31 @@ struct DiagnosisView: View {
                         AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $diagnosisModel.allergens)
                     }
                 }
+                if isUpdate {
+                    
+                    Button(action: {
+                        showingRemoveDiagnosisAlert.toggle()
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Remove")
+                                .foregroundColor(.red)
+                            Spacer()
+                        }
+                    }
+                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                            // Handle removal of diagnosis
+                            diagnosisModel.deleteItemsFromCloud { isSuccess in
+                                if isSuccess {
+                                    presentationMode.wrappedValue.dismiss()
+                                }
+                            }
+                        }, secondaryButton: .cancel())
+                    }
+                }
             }
-            .navigationTitle("New Diagnosis")
+            .navigationTitle("Diagnosis")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
@@ -70,34 +95,13 @@ struct DiagnosisView: View {
                     }
                 }
             }
-            .toolbar {
-                if isUpdate {
-                    ToolbarItem(placement: .bottomBar) {
-                        Button(action: {
-                            showingRemoveDiagnosisAlert.toggle()
-                        }) {
-                            Text("Remove this diagnosis")
-                                .foregroundColor(.red)
-                        }
-                        .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                            Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                                // Handle removal of diagnosis
-                                diagnosisModel.deleteItemsFromCloud { isSuccess in
-                                    if isSuccess {
-                                        presentationMode.wrappedValue.dismiss()
-                                    }
-                                }
-                            }, secondaryButton: .cancel())
-                        }
-                    }
-                }
-            }
+            
             .alert(isPresented: $showingSaveConfirmationAlert) {
                 Alert(title: Text("Save Diagnosis?"),
                       message: Text("Do you want to save this diagnosis?"),
                       primaryButton: .default(Text("Save")) {
                     diagnosisModel.addButtonPressed()
-
+                    presentationMode.wrappedValue.dismiss()
                 },
                       secondaryButton: .cancel())
             }

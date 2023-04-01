@@ -36,12 +36,18 @@ struct YourRecordsView: View {
                         destination: DiagnosisView(record: item.record),
                         label: {
                             VStack(alignment: .leading) {
-                                Text(item.headline)
-                                    .font(.system(.headline, design: .rounded))
-                                Text(item.caption1)
-                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                HStack {
+                                    Text(item.headline)
+                                        .foregroundColor(.blue)
+                                        .lineSpacing(10)
+                                    Spacer()
+                                    Text(item.caption1)
+                                        .font(.caption)
+                                        
+                                }
                                 Text(item.caption2.joined(separator: ", "))
-                                    .font(.system(.caption, design: .rounded, weight: .light))
+                                    .font(.caption)
+                                    
                             }
                         })
                 }
@@ -73,19 +79,19 @@ struct YourRecordsView: View {
             Section(header: Text("Allergens")) {
                 ForEach(episodeModel.allergens, id: \.self) { item in
                     NavigationLink(
-                        destination: AllergensView(allergen: item.record),
+                        destination: MedicalTestAndEpisodeView(profile: item.record, allergen: item.record, episode: item.record),
                         label: {
                             AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
                         })
-                    NavigationLink(value: item) {
-                        AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
-                    }.swipeActions(edge: .trailing) {
+//                    NavigationLink(value: item) {
+//                        AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
+//                    }.swipeActions(edge: .trailing) {
 //                        Button(role: .destructive) {
 //                            profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
 //                                presentationMode.wrappedValue.dismiss()
 //                            }
 //                        }
-                    }
+//                    }
                     .alert(isPresented: $showingRemoveAllergensAlert) {
                         Alert(title: Text("Remove this item?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
                             // Handle removal of item
@@ -100,7 +106,7 @@ struct YourRecordsView: View {
             //profileModel.fetchItemsFromCloud()
         }
         .listStyle(.plain)
-        .navigationTitle("あなたの記録")
+        .navigationTitle("Your Records")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
@@ -124,17 +130,26 @@ extension YourRecordsView {
         let caption2: String
         
         var body: some View {
-            HStack(spacing: 16.0) {
+            VStack(alignment: .leading) {
                 Text(headline)
-                    .font(.headline)
-                Spacer()
-                Text(caption1)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Text(caption2)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
+//                    .font(.subheadline)
+                    .lineSpacing(10)
+                    .foregroundColor(.accentColor)
+                HStack(spacing: 16.0) {
+                    Image(systemName: "cross.case")
+                    Text("Medical Test: ")
+                    Text(caption1)
+//                        .font(.caption)
+//                        .foregroundColor(.secondary)
+                    Text("  /  ")
+                    Image(systemName: "note.text")
+                    Text("Episode: ")
+                    Text(caption2)
+//                        .font(.caption)
+//                        .foregroundColor(.secondary)
+                }
+                .font(.caption)
+                .fontDesign(.rounded)                
             }
         }
     }

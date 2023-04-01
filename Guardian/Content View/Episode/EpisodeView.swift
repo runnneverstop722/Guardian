@@ -10,31 +10,28 @@ import CloudKit
 
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
-    @State private var episodeDate = Date()
-    @State private var firstKnownExposure: Bool = false
-    @State private var wentToHospital: Bool = false
-    @State private var typeOfExposure: [String] = []
-    @State private var symptoms: [String] = []
-    @State private var leadTimeToSymptoms: String = ""
-    @State private var treatments: [String] = []
-    @State private var otherTreatment: String = ""
-    @State private var episodeImage: Image?
     
-    @State private var showingSaveAlert = false
+    @StateObject var profileModel:ProfileModel
     @State private var showingSelectSymptoms = false
     @State private var showingSelectLocations = false
     @State private var selectedCategory = []
+    @State private var showingAlert = false
+    @State private var isUpdate = false
+    @Environment(\.dismiss) private var dismiss
 
-    private let symptomCategories = ["皮膚", "呼吸器", "循環器", "消化器", "その他"]
-    private let typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
-    private let leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間以降"]
-    private let treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
-
-    private let allergen: CKRecord
-    init(allergen: CKRecord) {
-        self.allergen = allergen
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
+    let profile: CKRecord
+    
+//    init(allergen: CKRecord) {
+//        self.allergen = allergen
+//        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
+//    }
+    init(profile: CKRecord) {
+        self.profile = profile
+        self._episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
+        self._profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
     }
+    
     
     var body: some View {
         NavigationView {
@@ -129,14 +126,19 @@ struct EpisodeView: View {
                 }
             }
             .navigationBarTitle("Episode")
-            .navigationBarItems(trailing: Button("保存") {
-                showingSaveAlert.toggle()
-            })
-            .alert(isPresented: $showingSaveAlert) {
-                Alert(title: Text("この内容で保存しましか？"),
-                      primaryButton: .default(Text("保存")) {
-                    // Handle saving the episode
-                }, secondaryButton: .cancel(Text("キャンセル")))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        episodeModel.addButtonPressed()
+                        showingAlert = true
+                    }
+                    .alert(isPresented: $showingAlert) {
+                        Alert(title: Text("データが保存されました。"),
+                              message: Text(""), dismissButton: .default(Text("Close"), action: {
+                            dismiss()
+                        }))
+                    }
+                }
             }
         }
     }
