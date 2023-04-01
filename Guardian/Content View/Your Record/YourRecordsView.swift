@@ -18,13 +18,16 @@ struct YourRecordsView: View {
     @State private var showingRemoveAllergensAlert = false
     @Environment(\.presentationMode) var presentationMode
     
+    var selectedMemberName: String = "Unknown Member"
+    
     let profile: CKRecord
-    let onDeleteDiagnosis = NotificationCenter.default.publisher(for: Notification.Name("removeDiagnosis"))
+    let existingDiagnosisData = NotificationCenter.default.publisher(for: Notification.Name("existingDiagnosisData"))
     
     init(profile: CKRecord) {
         self.profile = profile
         self._diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
         self._profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
+        selectedMemberName = profile["firstName"] as? String ?? ""
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
     }
 
@@ -67,7 +70,7 @@ struct YourRecordsView: View {
                         isActive: $isAddingNewDiagnosis,
                         label: {}
                     )
-                ).onReceive(onDeleteDiagnosis) { data in
+                ).onReceive(existingDiagnosisData) { data in
                     if let data = data.object as? DiagnosisListModel {
                         diagnosisModel.diagnosisInfo.insert(data, at: 0)
                     } else {
@@ -79,7 +82,7 @@ struct YourRecordsView: View {
             Section(header: Text("Allergens")) {
                 ForEach(episodeModel.allergens, id: \.self) { item in
                     NavigationLink(
-                        destination: MedicalTestAndEpisodeView(profile: item.record, allergen: item.record, episode: item.record),
+                        destination: MedicalTestAndEpisodeView(allergen: item.record),
                         label: {
                             AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
                         })
@@ -105,8 +108,9 @@ struct YourRecordsView: View {
             //profileModel.profileInfo = []
             //profileModel.fetchItemsFromCloud()
         }
-        .listStyle(.plain)
-        .navigationTitle("Your Records")
+        .listStyle(InsetGroupedListStyle())
+//        .listStyle(.plain)
+        .navigationTitle(selectedMemberName)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {

@@ -57,7 +57,6 @@ import CloudKit
         let treatments = episode["treatments"] as? [String]
         let otherTreatment = episode["otherTreatment"] as? String
         let data = episode["data"] as? [Data]?
-        
         if let data = episode["data"] as? CKAsset, let url = data.fileURL {
             let imageURL = try? Data(contentsOf: url)
             //self.data = imageURL
@@ -212,7 +211,11 @@ import CloudKit
             myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
             myRecord["treatments"] = treatments
             myRecord["otherTreatment"] = otherTreatment
+            let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
+            myRecord["allergen"] = reference as CKRecordValue
             saveItem(record: myRecord)
+            // Counting `totalNumberOfEpisodes`
+            record["totalNumberOfEpisodes"]
         }
     
     private func saveItem(record: CKRecord) {
@@ -227,7 +230,7 @@ import CloudKit
     
     func fetchItemsFromCloud() {
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
-        let predicate = NSPredicate(format: "episode == %@", reference)
+        let predicate = NSPredicate(format: "allergen == %@", reference)
         
         let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]

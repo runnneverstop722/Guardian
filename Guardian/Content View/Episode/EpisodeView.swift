@@ -10,8 +10,7 @@ import CloudKit
 
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
-    
-    @StateObject var profileModel:ProfileModel
+
     @State private var showingSelectSymptoms = false
     @State private var showingSelectLocations = false
     @State private var selectedCategory = []
@@ -19,17 +18,20 @@ struct EpisodeView: View {
     @State private var isUpdate = false
     @Environment(\.dismiss) private var dismiss
 
-    let profile: CKRecord
+    let allergen: CKRecord
     
 //    init(allergen: CKRecord) {
 //        self.allergen = allergen
 //        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
 //    }
-    init(profile: CKRecord) {
-        self.profile = profile
-        self._episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
-        self._profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
+    init(allergen: CKRecord) {
+        self.allergen = allergen
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
+    }
+    
+    init(episode: CKRecord) {
+        self.allergen = episode
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
     }
     
     

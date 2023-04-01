@@ -9,7 +9,6 @@ import SwiftUI
 import CloudKit
 
 struct MedicalTestAndEpisodeView: View {
-    @StateObject var profileModel:ProfileModel
     @StateObject var episodeModel:EpisodeModel
     @State private var bloodTest: [BloodTest] = []
     @State private var skinTest: [SkinTest] = []
@@ -28,17 +27,12 @@ struct MedicalTestAndEpisodeView: View {
     var allergenName: String = "Unknown Allergen"
     
     let allergen: CKRecord
-    let profile: CKRecord
-    let episode: CKRecord
-    let onDeleteEpisode = NotificationCenter.default.publisher(for: Notification.Name("removeDiagnosis"))
+    let existingEpisodeData = NotificationCenter.default.publisher(for: Notification.Name("existingEpisodeData"))
     
-    init(profile: CKRecord, allergen: CKRecord, episode: CKRecord) {
-        self.profile = profile
+    init(allergen: CKRecord) {
         self.allergen = allergen
-        self.episode = episode
-        self._episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
-        self._profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
+        allergenName = allergen["allergen"] as? String ?? ""
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
     }
     
     
@@ -85,7 +79,7 @@ struct MedicalTestAndEpisodeView: View {
             Section(header: Text("Episodes")) {
                 ForEach(episodeModel.episodeInfo, id: \.self) { item in
                     NavigationLink(
-                        destination: EpisodeView(profile: item.record),
+                        destination: EpisodeView(episode: item.record),
                         label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
                         })
                     .swipeActions {
@@ -112,12 +106,12 @@ struct MedicalTestAndEpisodeView: View {
                 }
                 .background(
                     NavigationLink(
-                        destination: EpisodeView(profile: profile),
+                        destination: EpisodeView(allergen: allergen),
                         isActive: $isAddingNewEpisode,
                         label: {}
                     )
                 )
-                .onReceive(onDeleteEpisode) { data in
+                .onReceive(existingEpisodeData) { data in
                     if let data = data.object as? EpisodeListModel {
                         episodeModel.episodeInfo.insert(data, at: 0)
                     } else {
@@ -137,6 +131,10 @@ struct MedicalTestAndEpisodeView: View {
         }
         .navigationTitle(allergenName)
         .listStyle(InsetGroupedListStyle())
+        .refreshable {
+            episodeModel.episodeInfo = []
+            episodeModel.fetchItemsFromCloud()
+        }
         .toolbar {
             Button("Delete") {
                 showAlert.toggle()
@@ -168,18 +166,21 @@ extension MedicalTestAndEpisodeView {
         let caption3: String
         
         var body: some View {
-            HStack(spacing: 16.0) {
-                Text(headline)
-                    .foregroundColor(.accentColor)
-                Spacer()
-                Text(caption1)
-                Spacer()
-                Text(caption2)
-                Spacer()
-                Text(caption3)
+            VStack {
+                HStack(spacing: 16.0) {
+                    Text(headline)
+                        .foregroundColor(.accentColor)
+                    Spacer()
+                    Text(caption1)
+                    Text(caption2)
+                }
+                HStack {
+                    Text(caption3)
+                    Spacer()
+                }
+                .lineSpacing(10)
+                .fontDesign(.rounded)
             }
-            .lineSpacing(10)
-            .fontDesign(.rounded)
         }
     }
 }
