@@ -9,6 +9,7 @@ import PhotosUI
 import SwiftUI
 import CoreTransferable
 import CloudKit
+import Combine
 
 @MainActor class EpisodeModel: ObservableObject {
     
@@ -20,11 +21,11 @@ import CloudKit
     @Published var typeOfExposure: [String] = []
     @Published var symptoms: [String] = []
     @Published var skinSymptoms: [String] = []
-    @Published var leadTimeToSymptoms: String = ""
+    @Published var leadTimeToSymptoms: String = "5分以内"
     @Published var treatments: [String] = []
     @Published var otherTreatment: String = ""
     @Published var data: [Data] = []
-    @Published var episodePhoto: [EpisodePhoto] = []
+    @Published var episodeImages: [EpisodeImage] = []
     @Published var episodeInfo: [EpisodeListModel] = []
     @Published var allergens: [AllergensListModel] = []
     
@@ -36,10 +37,15 @@ import CloudKit
     let record: CKRecord
     var isUpdated: Bool = false
     
-    init(record: CKRecord) {
+    init(record: CKRecord, isAllergen: Bool = false) {
+        isUpdated = true
         self.record = record
+        if !isAllergen {
+                    fetchStoredImages()
+                }
         fetchItemsFromCloud()
         fetchAllergens()
+        fetchStoredImages()
     }
     
     init(episode: CKRecord) {
@@ -56,8 +62,12 @@ import CloudKit
         let skinSymptoms = episode["skinSymptoms"] as? [String]
         let treatments = episode["treatments"] as? [String]
         let otherTreatment = episode["otherTreatment"] as? String
+        
+        
+        
+        
         let data = episode["data"] as? [Data]?
-        if let data = episode["data"] as? CKAsset, let url = data.fileURL {
+        if let data = episode["episodeImages"] as? CKAsset, let url = data.fileURL {
             let imageURL = try? Data(contentsOf: url)
             //self.data = imageURL
             self.imageState = .success(Image(uiImage: UIImage(data: imageURL!)!))
@@ -89,7 +99,7 @@ import CloudKit
         case importFailed
     }
     
-    struct EpisodePhoto: Transferable {
+    struct EpisodeImage: Transferable {
         let image: Image
         let data: Data
         
@@ -106,7 +116,7 @@ import CloudKit
                     throw TransferError.importFailed
                 }
                 let image = Image(uiImage: uiImage)
-                return EpisodePhoto(image: image, data: data)
+                return EpisodeImage(image: image, data: data)
 #else
                 throw TransferError.importFailed
 #endif
@@ -128,7 +138,7 @@ import CloudKit
     }
     // Private Methods
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
-        return imageSelection.loadTransferable(type: EpisodePhoto.self) { result in
+        return imageSelection.loadTransferable(type: EpisodeImage.self) { result in
             DispatchQueue.main.async {
                 guard imageSelection == self.imageSelection else {
                     print("Failed to get the selected item.")
@@ -137,7 +147,7 @@ import CloudKit
                 switch result {
                 case .success(let episodePhoto?):
                     self.imageState = .success(episodePhoto.image)
-                    self.data = [episodePhoto.data]
+                    self.episodeImages = [episodePhoto]
                 case .success(nil):
                     self.imageState = .empty
                 case .failure(let error):
@@ -149,7 +159,7 @@ import CloudKit
     
     //MARK: - Save an image as a CKAsset with CloudKit
     
-    func getImageURL(for data:[EpisodePhoto]) -> [URL]? {
+    func getImageURL(for data:[EpisodeImage]) -> [URL]? {
         var imageURLs = [URL]()
         if data.isEmpty { return nil }
         for image in data {
@@ -180,7 +190,7 @@ import CloudKit
             leadTimeToSymptoms: leadTimeToSymptoms,
             treatments: treatments,
             otherTreatment: otherTreatment,
-            episodePhoto: getImageURL(for: episodePhoto)
+            episodePhoto: getImageURL(for: episodeImages)
         )
     }
     
@@ -277,6 +287,25 @@ import CloudKit
             print("RETURNED Allergens queryResultBlock")
         }
         addOperation(operation: queryOperation)
+    }
+    
+    func fetchStoredImages() {
+        if let assets = record["data"] as? [CKAsset] {
+            print("Number of assets: \(assets.count)") // Add this line
+            for asset in assets {
+                if let imageURL = asset.fileURL {
+                    if let imageData = try? Data(contentsOf: imageURL) {
+                        if let uiImage = UIImage(data: imageData) {
+                            let image = Image(uiImage: uiImage)
+                            let episodeImage = EpisodeImage(image: image, data: imageData)
+                            self.episodeImages.append(episodeImage)
+                        }
+                    }
+                }
+            }
+        } else {
+            print("No assets found.") // Add this line
+        }
     }
     
 }

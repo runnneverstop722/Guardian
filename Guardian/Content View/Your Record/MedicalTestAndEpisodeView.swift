@@ -79,7 +79,7 @@ struct MedicalTestAndEpisodeView: View {
             Section(header: Text("Episodes")) {
                 ForEach(episodeModel.episodeInfo, id: \.self) { item in
                     NavigationLink(
-                        destination: EpisodeView(episode: item.record),
+                        destination: EpisodeView(record: item.record, isAllergen: true),
                         label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
                         })
                     .swipeActions {
@@ -106,7 +106,7 @@ struct MedicalTestAndEpisodeView: View {
                 }
                 .background(
                     NavigationLink(
-                        destination: EpisodeView(allergen: allergen),
+                        destination: EpisodeView(record: allergen, isAllergen: true),
                         isActive: $isAddingNewEpisode,
                         label: {}
                     )

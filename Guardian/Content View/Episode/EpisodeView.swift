@@ -5,12 +5,13 @@
 //  Created by Teff on 2023/03/22.
 //
 import SwiftUI
-
 import CloudKit
+import PhotosUI
+import CoreTransferable
 
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
-
+    @State private var isPickerPresented: Bool = false
     @State private var showingSelectSymptoms = false
     @State private var showingSelectLocations = false
     @State private var selectedCategory = []
@@ -24,15 +25,22 @@ struct EpisodeView: View {
 //        self.allergen = allergen
 //        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
 //    }
-    init(allergen: CKRecord) {
-        self.allergen = allergen
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
-    }
+//    init(allergen: CKRecord) {
+//        self.allergen = allergen
+//        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
+//        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: allergen))
+//    }
+//
+//    init(episode: CKRecord) {
+//        self.allergen = episode
+//        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
+//    }
     
-    init(episode: CKRecord) {
-        self.allergen = episode
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
+    init(record: CKRecord, isAllergen: Bool = false) {
+        self.allergen = record
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: record, isAllergen: isAllergen))
     }
+
     
     
     var body: some View {
@@ -108,23 +116,39 @@ struct EpisodeView: View {
                     }
                 }
                 Section(header: Text("添付写真")) {
-                    
-                    HStack {
-                        Button(action: {
-                            // Action to add photo
-                            
+                    Button(action: {
+                            isPickerPresented = true
                         }) {
-                            Image(systemName: "photo")
-                                .frame(width: 80, height: 80)
-                                .background(Color.gray.opacity(0.1))
-                                .clipShape(Circle())
+                            Text("Select Images")
                         }
-                        
-                        // Additional photo thumbnails can be added here
-                        
-                        // Also Need a botton to delete whole data for this allergen
-                        
-                    }
+                        .sheet(isPresented: $isPickerPresented) {
+                            PhotoPicker(selectedImages: $episodeModel.episodeImages)
+                        }
+
+                        // Add this line to print the count of episode images
+                        Text("Image count: \(episodeModel.episodeImages.count)")
+
+
+                        // Display the selected image thumbnails
+                        ScrollView(.horizontal) {
+                            HStack {
+                                ForEach(episodeModel.episodeImages, id: \.data) { episodeImage in
+                                    if let data = episodeImage.data, let uiImage = UIImage(data: data) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 100, height: 100)
+                                            .clipped()
+                                    } else {
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 100, height: 100)
+                                            .clipped()
+                                    }
+                                }
+                            }
+                        }
                 }
             }
             .navigationBarTitle("Episode")
