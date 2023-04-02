@@ -15,6 +15,7 @@ struct EpisodeView: View {
     @State private var showingSelectSymptoms = false
     @State private var showingSelectLocations = false
     @State private var selectedCategory = []
+    @State private var selectedImages: [Image] = []
     @State private var showingAlert = false
     @State private var isUpdate = false
     @Environment(\.dismiss) private var dismiss
@@ -126,11 +127,13 @@ struct EpisodeView: View {
                         }
 
                         // Add this line to print the count of episode images
-                        Text("Image count: \(episodeModel.episodeImages.count)")
+                        Text("Selected Images: \(episodeModel.episodeImages.count)")
+                        .font(.headline)
 
 
                         // Display the selected image thumbnails
-                        ScrollView(.horizontal) {
+                    ScrollView(.horizontal) {
+                        VStack(alignment: .leading) {
                             HStack {
                                 ForEach(episodeModel.episodeImages, id: \.data) { episodeImage in
                                     if let data = episodeImage.data, let uiImage = UIImage(data: data) {
@@ -148,7 +151,20 @@ struct EpisodeView: View {
                                     }
                                 }
                             }
+                            LazyVGrid(columns: createAdaptiveColumns(), spacing: 10) {
+                                ForEach(selectedImages.indices, id: \.self) { index in
+                                    selectedImages[index]
+                                        .resizable()
+                                        .scaledToFit()
+                                        .cornerRadius(8)
+                                        .shadow(radius: 4)
+                                }
+                            }
+//                            .padding(.top, 10)
+//                            Spacer()
                         }
+//                        .padding()
+                    }
                 }
             }
             .navigationBarTitle("Episode")
@@ -168,6 +184,14 @@ struct EpisodeView: View {
             }
         }
     }
+    private func createAdaptiveColumns() -> [GridItem] {
+            let minWidth: CGFloat = 100
+            let spacing: CGFloat = 10
+            let adaptiveColumns = [
+                GridItem(.adaptive(minimum: minWidth, maximum: minWidth), spacing: spacing)
+            ]
+            return adaptiveColumns
+        }
 }
 
 //struct Episode_Previews: PreviewProvider {
