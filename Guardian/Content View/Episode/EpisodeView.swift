@@ -107,25 +107,7 @@ struct EpisodeView: View {
                         TextField("その他の対応処置", text: $episodeModel.otherTreatment)
                     }
                 }
-                Section(header: Text("添付写真")) {
-                    
-                    HStack {
-                        Button(action: {
-                            // Action to add photo
-                            
-                        }) {
-                            Image(systemName: "photo")
-                                .frame(width: 80, height: 80)
-                                .background(Color.gray.opacity(0.1))
-                                .clipShape(Circle())
-                        }
-                        
-                        // Additional photo thumbnails can be added here
-                        
-                        // Also Need a botton to delete whole data for this allergen
-                        
-                    }
-                }
+                
             }
             .navigationBarTitle("Episode")
             .toolbar {

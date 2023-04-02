@@ -22,6 +22,7 @@
 		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
 		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
 		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
+		05422C8829D992D3004BB4A5 /* MedicalTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05422C8729D992D3004BB4A5 /* MedicalTestModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -55,6 +56,7 @@
 		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
 		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
 		051A27E929D5554F00A890D0 /* EpisodeListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeListModel.swift; sourceTree = "<group>"; };
+		05422C8729D992D3004BB4A5 /* MedicalTestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTestModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				051A27E129D4293200A890D0 /* Allergens */,
 				05B0712C29C13B51008A2010 /* Profile */,
 				051A27BA29CE885400A890D0 /* EpisodeModel.swift */,
+				05422C8729D992D3004BB4A5 /* MedicalTestModel.swift */,
 				051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */,
 				051A27CF29CE8B6300A890D0 /* ExportDataModel.swift */,
 			);
@@ -326,6 +329,7 @@
 				051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
+				05422C8829D992D3004BB4A5 /* MedicalTestModel.swift in Sources */,
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
 				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
 				051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */,

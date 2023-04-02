@@ -82,101 +82,34 @@ struct OralFoodChallenge: Identifiable {
 //MARK: - MedicalTestView
 
 struct MedicalTestView: View {
-    @State private var selectedTestIndex = 0
-    @State private var allergenName = "AllergenShrimp"
+    @StateObject var medicalTestModel: MedicalTestModel
     
-    @State private var bloodTest: [BloodTest] = []
-    @State private var skinTest: [SkinTest] = []
-    @State private var oralFoodChallenge: [OralFoodChallenge] = []
-    //    private var bloodTestObjects: [CKRecord] = []
-    //    private var skinTestObjects: [CKRecord] = []
-    //    private var oralFoodTestObjects: [CKRecord] = []
+    @State private var selectedTestIndex = 0
+//    @State private var allergenName = "AllergenShrimp"
+    
     @Environment(\.presentationMode) var presentationMode
     
-    var allergen: CKRecord
+    var allergenNameInMedicalTest: String = "Unknown Allergen"
+    
+    let allergen: CKRecord
+    let existingMedicalTestData = NotificationCenter.default.publisher(for: Notification.Name("existingMedicalTestData"))
     
     init(allergen: CKRecord) {
         self.allergen = allergen
-        fetchData()
+        allergenNameInMedicalTest = allergen["allergen"] as? String ?? ""
+        _medicalTestModel = StateObject(wrappedValue: MedicalTestModel(record: allergen))
     }
-    
-    func addOperation(operation: CKDatabaseOperation) {
-        CKContainer.default().privateCloudDatabase.add(operation)
+    var totalNumberOfBloodTest: String {
+        return "\(allergenNameInMedicalTest)TotalNumberOfBloodTest: \(medicalTestModel.bloodTestInfo.count)"
     }
-    
-    //MARK: - Fetch
-    
-    private func fetchData() {
-        let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
-        let predicate = NSPredicate(format: "allergen == %@", reference)
-        
-        //MARK: - Blood
-        
-        let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
-        bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
-        bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = BloodTest(record: returnedRecord) {
-                    self.bloodTest.append(object)
-                }
-            }
-        }
-        bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Blood Test' queryResultBlock")
-        }
-        addOperation(operation: bloodTestQueryOperation)
-        
-        //MARK: - Skin
-        
-        let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
-        skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
-        skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = SkinTest(record: returnedRecord) {
-                    self.skinTest.append(object)
-                }
-            }
-        }
-        skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Skin Test' queryResultBlock")
-        }
-        addOperation(operation: skinTestQueryOperation)
-        
-        //MARK: - OFC
-        
-        let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
-        OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        
-        let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
-        
-        OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = OralFoodChallenge(record: returnedRecord) {
-                    self.oralFoodChallenge.append(object)
-                }
-            }
-        }
-        OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Oral Food Challenge' queryResultBlock")
-        }
-        
-        addOperation(operation: OFCQueryOperation)
+    var totalNumberOSkinest: String {
+        return "\(allergenNameInMedicalTest)totalNumberOSkinest: \(medicalTestModel.skinTestInfo.count)"
     }
-    
-    func fetchBloodTests() {
-        
+    var totalNumberOfOFC: String {
+        return "\(allergenNameInMedicalTest)totalNumberOfOFC: \(medicalTestModel.OFCInfo.count)"
     }
-    func fetchSkinTests() {
-        
-    }
-    func fetchOFC() {
-        
-    }
-    
     var totalNumberOfMedicalTest: String {
-        return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTest.count + skinTest.count + oralFoodChallenge.count)"
+        return "\(allergenNameInMedicalTest)TotalNumberOfMedicalTest: \(medicalTestModel.bloodTestInfo.count + medicalTestModel.skinTestInfo.count + medicalTestModel.OFCInfo.count)"
     }
     
     //MARK: - Body View
@@ -184,7 +117,7 @@ struct MedicalTestView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text(allergenName)
+                Text(allergenNameInMedicalTest)
                     .font(.largeTitle)
                     .padding()
                 Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
@@ -196,11 +129,11 @@ struct MedicalTestView: View {
                 .padding()
                 VStack {
                     if selectedTestIndex == 0 {
-                        BloodTestSection(bloodTests: $bloodTest)
+                        BloodTestSection(bloodTests: $medicalTestModel.bloodTestInfo)
                     } else if selectedTestIndex == 1 {
-                        SkinTestSection(skinTests: $skinTest)
+                        SkinTestSection(skinTests: $medicalTestModel.skinTestInfo)
                     } else {
-                        OralFoodChallengeSection(oralFoodChallenges: $oralFoodChallenge)
+                        OralFoodChallengeSection(oralFoodChallenges: $medicalTestModel.OFCInfo)
                     }
                 }
                 .animation(.default, value: selectedTestIndex)
@@ -209,7 +142,7 @@ struct MedicalTestView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        saveData()
+                        medicalTestModel.saveData()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -217,68 +150,7 @@ struct MedicalTestView: View {
         }
     }
     
-    //MARK: - Func Save
-    func saveData() {
-        updateData()
-        
-        let newBloodTests = bloodTest.filter { $0.record == nil }
-        let newSkinTests = skinTest.filter { $0.record == nil }
-        let neworalTests = oralFoodChallenge.filter { $0.record == nil }
-        
-        newBloodTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "BloodTest", recordID: ckRecordID)
-            
-            myRecord["bloodTestDate"] = $0.bloodTestDate
-            myRecord["bloodTestLevel"] = $0.bloodTestLevel
-            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
-            
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
-            myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
-        }
-        newSkinTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "SkinTest", recordID: ckRecordID)
-            
-            myRecord["skinTestDate"] = $0.skinTestDate
-            myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
-            myRecord["SkinTestResult"] = $0.SkinTestResult
-            
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
-            myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
-        }
-        neworalTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "OralFoodChallenge", recordID: ckRecordID)
-            
-            myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
-            myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
-            myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
-            
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
-            myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
-        }
-    }
-    
-    //MARK: - Func Update
-    func updateData() {
-        
-    }
-    
-    private func save(record: CKRecord) {
-        CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
-            print("Record: \(String(describing: returnedRecord))")
-            print("Error: \(String(describing: returnedError))")
-        }
-    }
 }
-
 
 //MARK: - View: Blood Test Section
 struct BloodTestSection: View {

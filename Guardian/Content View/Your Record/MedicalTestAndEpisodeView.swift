@@ -9,7 +9,8 @@ import SwiftUI
 import CloudKit
 
 struct MedicalTestAndEpisodeView: View {
-    @StateObject var episodeModel:EpisodeModel
+    @StateObject var episodeModel: EpisodeModel
+    @StateObject var medicalTestModel: MedicalTestModel
     @State private var bloodTest: [BloodTest] = []
     @State private var skinTest: [SkinTest] = []
     @State private var oralFoodChallenge: [OralFoodChallenge] = []
@@ -32,6 +33,7 @@ struct MedicalTestAndEpisodeView: View {
     init(allergen: CKRecord) {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
+        _medicalTestModel = StateObject(wrappedValue: MedicalTestModel(record: allergen))
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
     }
     
@@ -43,19 +45,19 @@ struct MedicalTestAndEpisodeView: View {
                     HStack {
                         Text("Blood Test")
                         Spacer()
-                        Text("\(bloodTest.count) records")
+                        Text("\(medicalTestModel.totalNumberOfBloodTest) records")
                     }
                     Divider()
                     HStack {
                         Text("Skin Test")
                         Spacer()
-                        Text("\(skinTest.count) records")
+                        Text("\(medicalTestModel.totalNumberOfSkinTest) records")
                     }
                     Divider()
                     HStack {
                         Text("Oral Food Challenge")
                         Spacer()
-                        Text("\(oralFoodChallenge.count) records")
+                        Text("\(medicalTestModel.totalNumberOfOFC) records")
                     }
                 }
                 
