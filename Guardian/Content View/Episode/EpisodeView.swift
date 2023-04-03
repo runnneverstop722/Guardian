@@ -18,6 +18,7 @@ struct EpisodeView: View {
     @State private var selectedImages: [Image] = []
     @State private var showingAlert = false
     @State private var isUpdate = false
+    @State private var showRemoveAlert = false
     @Environment(\.dismiss) private var dismiss
 
     let allergen: CKRecord
@@ -32,14 +33,15 @@ struct EpisodeView: View {
 //        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: allergen))
 //    }
 //
-//    init(episode: CKRecord) {
-//        self.allergen = episode
-//        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
-//    }
+    init(episode: CKRecord) {
+        self.allergen = episode
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
+        _isUpdate = State(wrappedValue: true)
+    }
     
-    init(record: CKRecord, isAllergen: Bool = false) {
+    init(record: CKRecord) {
         self.allergen = record
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: record, isAllergen: isAllergen))
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: record))
     }
 
     
@@ -164,6 +166,30 @@ struct EpisodeView: View {
 //                            Spacer()
                         }
 //                        .padding()
+                    }
+                }
+                
+                if isUpdate {
+                    Section {
+                        
+                        Button(action: {
+                            showRemoveAlert.toggle()
+                        }) {
+                            HStack {
+                                Spacer()
+                                Text("Remove")
+                                    .foregroundColor(.red)
+                                Spacer()
+                            }
+                        }
+                        .alert(isPresented: $showRemoveAlert) {
+                            Alert(title: Text("Remove this item?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
+                                // Handle removal of item
+                                episodeModel.deleteRecord(record: episodeModel.record)
+                                dismiss.callAsFunction()
+                                
+                            }, secondaryButton: .cancel())
+                        }
                     }
                 }
             }

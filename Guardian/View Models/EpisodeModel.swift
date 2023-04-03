@@ -37,15 +37,11 @@ import Combine
     let record: CKRecord
     var isUpdated: Bool = false
     
-    init(record: CKRecord, isAllergen: Bool = false) {
+    init(record: CKRecord) {
         isUpdated = true
         self.record = record
-        if !isAllergen {
-                    fetchStoredImages()
-                }
         fetchItemsFromCloud()
         fetchAllergens()
-        fetchStoredImages()
     }
     
     init(episode: CKRecord) {
@@ -64,16 +60,7 @@ import Combine
         let otherTreatment = episode["otherTreatment"] as? String
         
         
-        
-        
-        let data = episode["data"] as? [Data]?
-        if let data = episode["episodeImages"] as? CKAsset, let url = data.fileURL {
-            let imageURL = try? Data(contentsOf: url)
-            //self.data = imageURL
-            self.imageState = .success(Image(uiImage: UIImage(data: imageURL!)!))
-        } else {
-            print("No Image File")
-        }
+        fetchStoredImages()
         
         self.episodeDate = episodeDate
         self.firstKnownExposure = firstKnownExposure
@@ -180,18 +167,39 @@ import Combine
     func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !leadTimeToSymptoms.isEmpty else { return }
-        
-        addItem(
-            episodeDate: episodeDate,
-            firstKnownExposure: firstKnownExposure,
-            wentToHospital: wentToHospital,
-            typeOfExposure: typeOfExposure,
-            symptoms: symptoms,
-            leadTimeToSymptoms: leadTimeToSymptoms,
-            treatments: treatments,
-            otherTreatment: otherTreatment,
-            episodePhoto: getImageURL(for: episodeImages)
-        )
+        if isUpdated {
+            updateEpisode()
+        } else {
+            addItem(
+                episodeDate: episodeDate,
+                firstKnownExposure: firstKnownExposure,
+                wentToHospital: wentToHospital,
+                typeOfExposure: typeOfExposure,
+                symptoms: symptoms,
+                leadTimeToSymptoms: leadTimeToSymptoms,
+                treatments: treatments,
+                otherTreatment: otherTreatment,
+                episodePhoto: getImageURL(for: episodeImages)
+            )
+        }
+    }
+    
+    func updateEpisode() {
+        let myRecord = record
+        if let episodePhoto = getImageURL(for: episodeImages) {
+            let urls = episodePhoto.map { return CKAsset(fileURL: $0)
+            }
+            myRecord["data"] = urls
+        }
+        myRecord["episodeDate"] = episodeDate
+        myRecord["firstKnownExposure"] = firstKnownExposure
+        myRecord["wentToHospital"] = wentToHospital
+        myRecord["typeOfExposure"] = typeOfExposure
+        myRecord["symptoms"] = symptoms
+        myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
+        myRecord["treatments"] = treatments
+        myRecord["otherTreatment"] = otherTreatment
+        updateRecord(record: myRecord)
     }
     
     private func addItem(
@@ -225,8 +233,31 @@ import Combine
             myRecord["allergen"] = reference as CKRecordValue
             saveItem(record: myRecord)
             // Counting `totalNumberOfEpisodes`
-            record["totalNumberOfEpisodes"]
+            let totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int ?? 0
+            let totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int ?? 0
+            record["totalNumberOfEpisodes"]  = totalNumberOfMedicalTests + 1
+            record["totalNumberOfMedicalTests"]  = totalNumberOfMedicalTests + 1
+            updateRecord(record: record)
         }
+    
+    func updateRecord(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
+            
+        }
+    }
+    
+    func deleteRecord(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { _, _ in
+            
+        }
+    }
+    
+    func deleteAllData() {
+        for episode in episodeInfo {
+            deleteRecord(record: episode.record)
+        }
+        
+    }
     
     private func saveItem(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in

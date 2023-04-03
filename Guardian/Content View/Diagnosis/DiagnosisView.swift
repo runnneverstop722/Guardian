@@ -87,7 +87,7 @@ struct DiagnosisView: View {
                     }
                 }
             }
-            .navigationTitle("Diagnosis")
+            .navigationBarTitle("Diagnosis", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {

@@ -15,7 +15,6 @@ struct BloodTest: Identifiable {
     var bloodTestLevel: String = ""
     var bloodTestGrade: BloodTestGrade = .negative
     var record: CKRecord?
-    @State private var isUpdate = false
     
     init?(record: CKRecord) {
         self.record = record
@@ -52,10 +51,18 @@ struct SkinTest: Identifiable {
     var SkinTestResultValue: String = ""
     var SkinTestResult: Bool = false
     var record: CKRecord?
-    @State private var isUpdate = false
     
     init?(record: CKRecord) {
-        
+        self.record = record
+        guard let skinTestDate = record["skinTestDate"] as? Date,
+              let SkinTestResultValue = record["SkinTestResultValue"] as? String,
+              let SkinTestResult = record["SkinTestResult"] as? Bool
+        else {
+            return
+        }
+        self.skinTestDate = skinTestDate
+        self.SkinTestResultValue = SkinTestResultValue
+        self.SkinTestResult = SkinTestResult
     }
     init() {
         
@@ -69,10 +76,17 @@ struct OralFoodChallenge: Identifiable {
     var oralFoodChallengeQuantity: String = ""
     var oralFoodChallengeResult: Bool = false
     var record: CKRecord?
-    @State private var isUpdate = false
-    
     init?(record: CKRecord) {
-        
+        self.record = record
+        guard let oralFoodChallengeDate = record["oralFoodChallengeDate"] as? Date,
+              let oralFoodChallengeQuantity = record["oralFoodChallengeQuantity"] as? String,
+              let oralFoodChallengeResult = record["oralFoodChallengeResult"] as? Bool
+        else {
+            return
+        }
+        self.oralFoodChallengeDate = oralFoodChallengeDate
+        self.oralFoodChallengeQuantity = oralFoodChallengeQuantity
+        self.oralFoodChallengeResult = oralFoodChallengeResult
     }
     init() {
         
@@ -84,86 +98,14 @@ struct OralFoodChallenge: Identifiable {
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @State private var allergenName = "AllergenShrimp"
-    
-    @State private var bloodTest: [BloodTest] = []
-    @State private var skinTest: [SkinTest] = []
-    @State private var oralFoodChallenge: [OralFoodChallenge] = []
+    @EnvironmentObject var mediacalTest: MedicalTest
+    @State private var deleteIDs: [CKRecord.ID] = []
     //    private var bloodTestObjects: [CKRecord] = []
     //    private var skinTestObjects: [CKRecord] = []
     //    private var oralFoodTestObjects: [CKRecord] = []
     @Environment(\.presentationMode) var presentationMode
     
-    var allergen: CKRecord
-    
-    init(allergen: CKRecord) {
-        self.allergen = allergen
-        fetchData()
-    }
-    
-    func addOperation(operation: CKDatabaseOperation) {
-        CKContainer.default().privateCloudDatabase.add(operation)
-    }
-    
     //MARK: - Fetch
-    
-    private func fetchData() {
-        let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
-        let predicate = NSPredicate(format: "allergen == %@", reference)
-        
-        //MARK: - Blood
-        
-        let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
-        bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
-        bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = BloodTest(record: returnedRecord) {
-                    self.bloodTest.append(object)
-                }
-            }
-        }
-        bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Blood Test' queryResultBlock")
-        }
-        addOperation(operation: bloodTestQueryOperation)
-        
-        //MARK: - Skin
-        
-        let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
-        skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
-        skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = SkinTest(record: returnedRecord) {
-                    self.skinTest.append(object)
-                }
-            }
-        }
-        skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Skin Test' queryResultBlock")
-        }
-        addOperation(operation: skinTestQueryOperation)
-        
-        //MARK: - OFC
-        
-        let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
-        OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        
-        let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
-        
-        OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
-                if let object = OralFoodChallenge(record: returnedRecord) {
-                    self.oralFoodChallenge.append(object)
-                }
-            }
-        }
-        OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Oral Food Challenge' queryResultBlock")
-        }
-        
-        addOperation(operation: OFCQueryOperation)
-    }
     
     func fetchBloodTests() {
         
@@ -176,7 +118,7 @@ struct MedicalTestView: View {
     }
     
     var totalNumberOfMedicalTest: String {
-        return "\(allergenName)TotalNumberOfMedicalTestData: \(bloodTest.count + skinTest.count + oralFoodChallenge.count)"
+        return "\(allergenName)TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
     }
     
     //MARK: - Body View
@@ -196,11 +138,11 @@ struct MedicalTestView: View {
                 .padding()
                 VStack {
                     if selectedTestIndex == 0 {
-                        BloodTestSection(bloodTests: $bloodTest)
+                        BloodTestSection(bloodTests: $mediacalTest.bloodTest, deleteIDs: $deleteIDs)
                     } else if selectedTestIndex == 1 {
-                        SkinTestSection(skinTests: $skinTest)
+                        SkinTestSection(skinTests: $mediacalTest.skinTest, deleteIDs: $deleteIDs)
                     } else {
-                        OralFoodChallengeSection(oralFoodChallenges: $oralFoodChallenge)
+                        OralFoodChallengeSection(oralFoodChallenges: $mediacalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
                     }
                 }
                 .animation(.default, value: selectedTestIndex)
@@ -221,9 +163,9 @@ struct MedicalTestView: View {
     func saveData() {
         updateData()
         
-        let newBloodTests = bloodTest.filter { $0.record == nil }
-        let newSkinTests = skinTest.filter { $0.record == nil }
-        let neworalTests = oralFoodChallenge.filter { $0.record == nil }
+        let newBloodTests = mediacalTest.bloodTest.filter { $0.record == nil }
+        let newSkinTests = mediacalTest.skinTest.filter { $0.record == nil }
+        let neworalTests = mediacalTest.oralFoodChallenge.filter { $0.record == nil }
         
         newBloodTests.forEach {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
@@ -234,7 +176,7 @@ struct MedicalTestView: View {
             myRecord["bloodTestLevel"] = $0.bloodTestLevel
             myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
             
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
@@ -247,7 +189,7 @@ struct MedicalTestView: View {
             myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
             myRecord["SkinTestResult"] = $0.SkinTestResult
             
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
@@ -260,7 +202,7 @@ struct MedicalTestView: View {
             myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
             myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
             
-            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
@@ -268,7 +210,36 @@ struct MedicalTestView: View {
     
     //MARK: - Func Update
     func updateData() {
+        let bloodTests = mediacalTest.bloodTest.filter { $0.record != nil }
+        let skinTests = mediacalTest.skinTest.filter { $0.record != nil }
+        let oralTests = mediacalTest.oralFoodChallenge.filter { $0.record != nil }
         
+        var records = [CKRecord]()
+        bloodTests.forEach {
+            let myRecord = $0.record!
+            myRecord["bloodTestDate"] = $0.bloodTestDate
+            myRecord["bloodTestLevel"] = $0.bloodTestLevel
+            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
+            records.append(myRecord)
+        }
+        skinTests.forEach {
+            let myRecord = $0.record!
+            myRecord["skinTestDate"] = $0.skinTestDate
+            myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
+            myRecord["SkinTestResult"] = $0.SkinTestResult
+            records.append(myRecord)
+        }
+        oralTests.forEach {
+            let myRecord = $0.record!
+            myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
+            myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
+            myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
+            records.append(myRecord)
+        }
+        
+        CKContainer.default().privateCloudDatabase.modifyRecords(saving: records, deleting: deleteIDs) { result in
+            
+        }
     }
     
     private func save(record: CKRecord) {
@@ -283,13 +254,21 @@ struct MedicalTestView: View {
 //MARK: - View: Blood Test Section
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
-    
+    @Binding var deleteIDs: [CKRecord.ID]
     var body: some View {
         VStack {
             List {
                 ForEach($bloodTests) { test in
                     BloodTestFormView(bloodTest: test)
                 }
+                .onDelete(perform: { indexSet in
+                    for index in indexSet {
+                        if let id = bloodTests[index].record?.recordID {
+                            deleteIDs.append(id)
+                        }
+                    }
+                    bloodTests.remove(atOffsets: indexSet)
+                })
             }
             Button(action: {
                 bloodTests.append(BloodTest())
@@ -304,6 +283,7 @@ struct BloodTestSection: View {
 //MARK: - View: Skin Test Section
 struct SkinTestSection: View {
     @Binding var skinTests: [SkinTest]
+    @Binding var deleteIDs: [CKRecord.ID]
     
     var body: some View {
         VStack {
@@ -312,6 +292,11 @@ struct SkinTestSection: View {
                     SkinTestFormView(skinTest: $skinTests[index])
                 }
                 .onDelete(perform: { indexSet in
+                    for index in indexSet {
+                        if let id = skinTests[index].record?.recordID {
+                            deleteIDs.append(id)
+                        }
+                    }
                     skinTests.remove(atOffsets: indexSet)
                 })
             }
@@ -329,6 +314,7 @@ struct SkinTestSection: View {
 //MARK: - View: OFC Section
 struct OralFoodChallengeSection: View {
     @Binding var oralFoodChallenges: [OralFoodChallenge]
+    @Binding var deleteIDs: [CKRecord.ID]
     
     var body: some View {
         VStack {
@@ -337,6 +323,11 @@ struct OralFoodChallengeSection: View {
                     OralFoodChallengeFormView(oralFoodChallenge: $oralFoodChallenges[index])
                 }
                 .onDelete(perform: { indexSet in
+                    for index in indexSet {
+                        if let id = oralFoodChallenges[index].record?.recordID {
+                            deleteIDs.append(id)
+                        }
+                    }
                     oralFoodChallenges.remove(atOffsets: indexSet)
                 })
             }
