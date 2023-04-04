@@ -23,6 +23,7 @@
 		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
 		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
 		05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */; };
+		05422C8F29DBCEEE004BB4A5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -31,7 +32,6 @@
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
 		635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */; };
-		9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */; };
 		ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */; };
 		b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */; };
 		d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */; };
@@ -57,6 +57,8 @@
 		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
 		051A27E929D5554F00A890D0 /* EpisodeListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeListModel.swift; sourceTree = "<group>"; };
 		05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeImageModel.swift; sourceTree = "<group>"; };
+		05422C8D29DBCE2D004BB4A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -70,7 +72,6 @@
 		984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDiaryClinicalRecords.swift; sourceTree = "<group>"; };
 		b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ba5b8ef6a08eac2d1f30e768b5339ae4 /* Awareness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Awareness.swift; sourceTree = "<group>"; };
-		c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourRecordsView.swift; sourceTree = "<group>"; };
 		d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Guardian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -166,7 +167,6 @@
 		05B0711F29C01A11008A2010 /* Content View */ = {
 			isa = PBXGroup;
 			children = (
-				c91ab46f2219a301d5cbadee1bf356b7 /* LandingPage.swift */,
 				051A27D529CE8E9400A890D0 /* Members */,
 				051A27DC29D08E0000A890D0 /* Your Record */,
 				051A27C929CE897E00A890D0 /* Diagnosis */,
@@ -193,6 +193,7 @@
 				05B0714029C5E755008A2010 /* DateFormatter.swift */,
 				05B0714229C6BD28008A2010 /* ImagePicker.swift */,
 				051A27D329CE8C9500A890D0 /* AddAllergenView.swift */,
+				05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -243,6 +244,7 @@
 		d6683324c14f01660adbd8ba4f1f943a /* Guardian */ = {
 			isa = PBXGroup;
 			children = (
+				05422C8D29DBCE2D004BB4A5 /* Info.plist */,
 				05B0713129C173C5008A2010 /* Guardian.entitlements */,
 				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
 				05B0712429C01AF1008A2010 /* Extensions */,
@@ -312,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05422C8F29DBCEEE004BB4A5 /* Launch Screen.storyboard in Resources */,
 				ee9f3546aa38d27092b3e536a7a85016 /* Preview Assets.xcassets in Resources */,
 				37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */,
 			);
@@ -340,7 +343,6 @@
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
 				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
-				9fa47d49b4259f8b6e4647520ca7a546 /* LandingPage.swift in Sources */,
 				4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */,
 				05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */,
 				d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */,
@@ -485,11 +487,14 @@
 				DEVELOPMENT_TEAM = FZ7NL6565P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Guardian/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -515,11 +520,14 @@
 				DEVELOPMENT_TEAM = FZ7NL6565P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Guardian/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -19,7 +19,7 @@ import CloudKit
 }
 
 struct MedicalTestAndEpisodeView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var episodeModel:EpisodeModel
     @StateObject private var mediacalTest: MedicalTest
     @State private var episodeDate: Date = Date()
@@ -63,6 +63,11 @@ struct MedicalTestAndEpisodeView: View {
         }
         bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Blood Test' queryResultBlock")
+            DispatchQueue.main.async {
+                self.mediacalTest.bloodTest = self.mediacalTest.bloodTest.sorted(by: { item1, item2 in
+                    return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedAscending
+                })
+            }
         }
         addOperation(operation: bloodTestQueryOperation)
         
@@ -80,6 +85,11 @@ struct MedicalTestAndEpisodeView: View {
         }
         skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Skin Test' queryResultBlock")
+            DispatchQueue.main.async {
+                self.mediacalTest.skinTest = self.mediacalTest.skinTest.sorted(by: { item1, item2 in
+                    return item1.skinTestDate.compare(item2.skinTestDate) == .orderedAscending
+                })
+            }
         }
         addOperation(operation: skinTestQueryOperation)
         
@@ -99,6 +109,11 @@ struct MedicalTestAndEpisodeView: View {
         }
         OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Oral Food Challenge' queryResultBlock")
+            DispatchQueue.main.async {
+                self.mediacalTest.oralFoodChallenge = self.mediacalTest.oralFoodChallenge.sorted(by: { item1, item2 in
+                    return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedAscending
+                })
+            }
         }
         
         addOperation(operation: OFCQueryOperation)
@@ -110,22 +125,23 @@ struct MedicalTestAndEpisodeView: View {
     
     var body: some View {
         List {
-            Section(header: Text("Medical Test")) {
+            Section(header: Text("医療検査の記録") // Medical Test
+                .font(.headline)) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Blood Test")
+                        Text("血液検査") // Blood Test
                         Spacer()
                         Text("\(mediacalTest.bloodTest.count) records")
                     }
                     Divider()
                     HStack {
-                        Text("Skin Test")
+                        Text("皮膚プリックテスト") // Skin Test
                         Spacer()
                         Text("\(mediacalTest.skinTest.count) records")
                     }
                     Divider()
                     HStack {
-                        Text("Oral Food Challenge")
+                        Text("食物経口負荷試験") // Oral Food Challenge
                         Spacer()
                         Text("\(mediacalTest.oralFoodChallenge.count) records")
                     }
@@ -139,8 +155,11 @@ struct MedicalTestAndEpisodeView: View {
                         showMedicalTestView = true
                     }) {
                         HStack {
-                            Image(systemName: "plus")
-                            Text("Add & Details")
+                            Image(systemName: "square.and.pencil")
+                            Text("新規作成") // Add New
+                            Text("＆")
+                            Image(systemName: "doc.text.magnifyingglass")
+                            Text("記録内容の確認") // Confirm Details
                             Spacer()
                         }
                         .foregroundColor(.blue)
@@ -148,29 +167,20 @@ struct MedicalTestAndEpisodeView: View {
                 }
             }
             
-            Section(header: Text("Episodes")) {
+            Section(header: Text("発症記録") // Episode
+                .font(.headline)) {
                 ForEach(episodeModel.episodeInfo, id: \.self) { item in
                     NavigationLink(
                         destination: EpisodeView(episode: item.record),
                         label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
                         })
-                    .swipeActions {
-                        Button("Edit") {
-                            // Edit action
-                        }
-                        .tint(.blue)
-                        
-                        Button("Delete") {
-                        }
-                        .tint(.red)
-                    }
                 }
                 Button(action: {
                     showEpisodeView = true
                 }) {
                     HStack {
-                        Image(systemName: "plus")
-                        Text("Add & Details")
+                        Image(systemName: "square.and.pencil")
+                        Text("新規作成") // Add New
                         Spacer()
                     }
                     .foregroundColor(.blue)
@@ -194,7 +204,8 @@ struct MedicalTestAndEpisodeView: View {
             
             
             
-            Section(header: Text("Allergist's Comment")) {
+            Section(header: Text("担当医のコメント") // Allergist's Comment
+                .font(.headline)) {
                 ZStack(alignment: .bottomTrailing) {
                     TextEditor(text: $allergistComment)
                     
@@ -208,20 +219,19 @@ struct MedicalTestAndEpisodeView: View {
             episodeModel.fetchItemsFromCloud()
         }
         .toolbar {
-            Button("Delete") {
+            Button() {
                 showAlert.toggle()
-                // Action:
-                // 1. Delete all records from `Medical Test`, `Episode`, `Allergist's Comment`.
-                // 2. Unselect this allergen from the record type: `Allergens` and `ProfileInfo`.
-                
+            } label: {
+                Image(systemName: "trash")
+                    .font(.caption)
             }
             .tint(.red)
         }
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("Are you sure?"),
-                message: Text("This data will be deleted and it can't be undone."),
-                primaryButton: .destructive(Text("Delete")) {
+                title: Text("医療検査・発症記録を\n削除します。\nよろしいですか？"), // Delete all items from the medical data and the episode. Are you sure?
+                message: Text(""),
+                primaryButton: .destructive(Text("削除")) { // Delete
                     // Delete all data action
                     episodeModel.deleteAllData()
                     for test in mediacalTest.bloodTest where test.record != nil {
@@ -233,10 +243,9 @@ struct MedicalTestAndEpisodeView: View {
                     for test in mediacalTest.oralFoodChallenge where test.record != nil {
                         episodeModel.deleteRecord(record: test.record!)
                     }
-                    dismiss.callAsFunction()
-                    
+                    presentationMode.wrappedValue.dismiss()
                 },
-                secondaryButton: .cancel()
+                secondaryButton: .cancel(Text("キャンセル")) // Cancel
             )
         }
         .onAppear {
@@ -269,7 +278,6 @@ extension MedicalTestAndEpisodeView {
                     Spacer()
                 }
                 .lineSpacing(10)
-                .fontDesign(.rounded)
             }
         }
     }

@@ -7,9 +7,9 @@ import CloudKit
 struct MembersView: View {
     @StateObject var profileModel: ProfileModel
     @State private var isMainUserSettingPresented = false
-    @State private var showingRemoveDiagnosisAlert = false
     @State private var isUpdate = false
     @State private var editItem: MemberListModel?
+    @State private var deleteItem: MemberListModel?
     @Environment(\.presentationMode) var presentationMode
     
     let onUpdateProfile = NotificationCenter.default.publisher(for: Notification.Name("updateProfile"))
@@ -25,9 +25,6 @@ struct MembersView: View {
             ForEach(profileModel.profileInfo, id: \.self) { item in
                 NavigationLink(value: item) {
                     MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
-                        .onTapGesture {
-                            profileModel.updateItem()
-                        }
                 }.swipeActions(edge: .leading) {
                     Button(role: .none) {
                         editItem = item
@@ -37,25 +34,20 @@ struct MembersView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        // Delete Item Action
-                        profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
-                            if isSuccess {
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        }
-                        
+                        deleteItem = item
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
-                    }
-                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                            // Handle removal of diagnosis
-                            
-                        }, secondaryButton: .cancel())
                     }
                 }
             }
             .onMove(perform: move(fromOffsets:toOffset:))
+            .alert(item: $deleteItem, content: { item in
+                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
+                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
+                    }
+                }, secondaryButton: .cancel(Text("キャンセル")))
+                
+            })
         }
         .refreshable {
             profileModel.profileInfo = []
@@ -65,8 +57,15 @@ struct MembersView: View {
         .navigationTitle("管理メンバー")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("+新規") {
+                Button(action: {
                     profileModel.isAddMemberPresented = true
+                }) {
+                    HStack {
+                        Image(systemName: "person.crop.circle.badge.plus")
+                        Text("メンバーを追加")
+                        Spacer()
+                    }
+                    .foregroundColor(.blue)
                 }
             }
         }

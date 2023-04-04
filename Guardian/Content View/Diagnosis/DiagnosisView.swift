@@ -25,122 +25,100 @@ struct DiagnosisView: View {
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(diagnosis: record))
     }
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    HStack {
-                        Text("Diagnosis")
-                        Spacer()
-                        Text(diagnosisModel.diagnosis.isEmpty ? "Please select" : diagnosisModel.diagnosis)
-                            .foregroundColor(diagnosisModel.diagnosis.isEmpty ? .secondary : .primary)
-                    }
-                    .onTapGesture {
-                        isShowingActionSheet = true
-                    }
-                    .actionSheet(isPresented: $isShowingActionSheet) {
-                        ActionSheet(title: Text("Select a diagnosis"), buttons: diagnosisOptions.map { option in
-                                .default(Text(option)) {
-                                    diagnosisModel.diagnosis = option
-                                }
-                        })
-                    }
+        Form {
+            Section {
+                HStack {
+                    Text("診断名") // Diagnosis Result
+                    Spacer()
+                    Text(diagnosisModel.diagnosis.isEmpty ? "選択する" : diagnosisModel.diagnosis) // Select
+                        .foregroundColor(diagnosisModel.diagnosis.isEmpty ? .secondary : .accentColor)
                 }
-                Section(header: Text("First Diagnosed")) {
-                    DatePicker("Diagnosed Date", selection: $diagnosisModel.diagnosisDate, displayedComponents: .date)
-                    TextField("Hospital", text: $diagnosisModel.diagnosedHospital)
-                    TextField("Allergist", text: $diagnosisModel.diagnosedAllergist)
+                .onTapGesture {
+                    isShowingActionSheet = true
                 }
-                
-                Section(header: Text("Allergens")) {
-                    ForEach(diagnosisModel.allergens, id: \.self) { allergen in
-                        Text(allergen)
-                    }
-                    .onDelete(perform: deleteAllergen)
-                    Button("Add Allergen") {
-                        showingAddAllergen.toggle()
-                    }
-                    .sheet(isPresented: $showingAddAllergen) {
-                        AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $diagnosisModel.allergens)
-                    }
-                }
-                if isUpdate {
-                    
-                    Button(action: {
-                        showingRemoveDiagnosisAlert.toggle()
-                    }) {
-                        HStack {
-                            Spacer()
-                            Text("Remove")
-                                .foregroundColor(.red)
-                            Spacer()
-                        }
-                    }
-                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                            // Handle removal of diagnosis
-                            diagnosisModel.deleteItemsFromCloud { isSuccess in
-                                if isSuccess {
-                                    presentationMode.wrappedValue.dismiss()
-                                }
+                .actionSheet(isPresented: $isShowingActionSheet) {
+                    ActionSheet(title: Text("診断結果を選択してください。"), buttons: diagnosisOptions.map { option in // Select the diagnosis result
+                            .default(Text(option)) {
+                                diagnosisModel.diagnosis = option
                             }
-                        }, secondaryButton: .cancel())
-                    }
+                    } + [.cancel(Text("キャンセル"))]) // Cancel
                 }
             }
-            .navigationBarTitle("Diagnosis", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        showingSaveConfirmationAlert.toggle()
+            Section(header: Text("医療機関")
+                .font(.headline)) { // Medical Facility
+                DatePicker("診断日", selection: $diagnosisModel.diagnosisDate, displayedComponents: .date) // Diagnosis Date
+                TextField("病院名", text: $diagnosisModel.diagnosedHospital) // Hospital Name
+                TextField("担当医", text: $diagnosisModel.diagnosedAllergist) // Allergist Name
+            }
+            
+            Section(header: Text("アレルゲン（複数選択可）")
+                .font(.headline)) {
+                ForEach(diagnosisModel.allergens, id: \.self) { allergen in
+                    Text(allergen)
+                }
+                .onDelete(perform: deleteAllergen)
+                Button(action: {
+                    showingAddAllergen.toggle()
+                }) {
+                    HStack {
+                        Image(systemName: "allergens")
+                        Text("アレルゲンを追加")
                     }
+                }
+                .sheet(isPresented: $showingAddAllergen) {
+                    AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $diagnosisModel.allergens, selectedItems: Set($diagnosisModel.allergens.wrappedValue))
                 }
             }
             
-            .alert(isPresented: $showingSaveConfirmationAlert) {
-                Alert(title: Text("Save Diagnosis?"),
-                      message: Text("Do you want to save this diagnosis?"),
-                      primaryButton: .default(Text("Save")) {
-                    diagnosisModel.addButtonPressed()
-                    presentationMode.wrappedValue.dismiss()
-                },
-                      secondaryButton: .cancel())
+            if isUpdate {
+                
+                Button(action: {
+                    showingRemoveDiagnosisAlert.toggle()
+                }) {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "trash")
+                        Text("この診断記録を削除する")
+                        Spacer()
+                    }
+                    .foregroundColor(.red)
+                }
+                .alert(isPresented: $showingRemoveDiagnosisAlert) {
+                    Alert(title: Text(""),
+                          message: Text("医療検査・発症記録を削除します。\nよろしいですか？"),
+                          primaryButton: .destructive(Text("削除")) {
+                        // Handle removal of diagnosis
+                        diagnosisModel.deleteItemsFromCloud { isSuccess in
+                            if isSuccess {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                    }, secondaryButton: .cancel(Text("キャンセル")))
+                }
+            }
+        }
+        .navigationBarTitle("診断記録")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button() {
+                    showingSaveConfirmationAlert.toggle()
+                } label: {
+                    Text("完了")
+                }
+                .alert(isPresented: $showingSaveConfirmationAlert) {
+                    Alert(title: Text("データが保存されました。"),
+                          message: Text(""),
+                          dismissButton: .default(Text("閉じる"), action: {
+                        diagnosisModel.addButtonPressed()
+                        presentationMode.wrappedValue.dismiss()
+                    }))
+                }
             }
         }
     }
     
     private func deleteAllergen(at offsets: IndexSet) {
         diagnosisModel.allergens.remove(atOffsets: offsets)
-    }
-    
-    struct AddAllergenView: View {
-        let allergenOptions: [String]
-        @Binding var selectedAllergens: [String]
-        @Environment(\.presentationMode) var presentationMode
-        @State private var selectedItems = Set<String>()
-        
-        var body: some View {
-            NavigationView {
-                List(allergenOptions, id: \.self, selection: $selectedItems) { item in
-                    Text(item)
-                }
-                .navigationBarTitle("Select Allergens")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Cancel") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Done") {
-                            selectedAllergens.append(contentsOf: selectedItems)
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                }
-                .listStyle(PlainListStyle())
-                .environment(\.editMode, .constant(EditMode.active))
-            }
-        }
     }
 }
 

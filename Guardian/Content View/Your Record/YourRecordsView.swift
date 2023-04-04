@@ -33,7 +33,10 @@ struct YourRecordsView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Diagnosis")) {
+            Section(
+                header: Text("診断記録") // Diagnosis
+                    .font(.headline),
+                footer: Text("※医療機関で食物アレルギーと診断された時の記録です。")) { // This is for the first diagnosis result of the selected allergen.
                 ForEach(diagnosisModel.diagnosisInfo, id: \.self) { item in
                     NavigationLink(
                         destination: DiagnosisView(record: item.record),
@@ -58,8 +61,8 @@ struct YourRecordsView: View {
                     isAddingNewDiagnosis = true
                 }) {
                     HStack {
-                        Image(systemName: "plus")
-                        Text("Add")
+                        Image(systemName: "square.and.pencil")
+                        Text("新規作成") // Add New
                         Spacer()
                     }
                     .foregroundColor(.blue)
@@ -79,28 +82,16 @@ struct YourRecordsView: View {
                 }
             }
             
-            Section(header: Text("Allergens")) {
+            Section(
+                header: Text("アレルゲン") // Allergens
+                    .font(.headline),
+                footer: Text("※プロフィールで設定したアレルゲンが表示されます。")) { // The listed allergens are set from the profile
                 ForEach(episodeModel.allergens, id: \.self) { item in
                     NavigationLink(
                         destination: MedicalTestAndEpisodeView(allergen: item.record),
                         label: {
                             AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
                         })
-//                    NavigationLink(value: item) {
-//                        AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
-//                    }.swipeActions(edge: .trailing) {
-//                        Button(role: .destructive) {
-//                            profileModel.deleteItemsFromCloud(record: item.record) { isSuccess in
-//                                presentationMode.wrappedValue.dismiss()
-//                            }
-//                        }
-//                    }
-                    .alert(isPresented: $showingRemoveAllergensAlert) {
-                        Alert(title: Text("Remove this item?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                            // Handle removal of item
-                            
-                        }, secondaryButton: .cancel())
-                    }
                 }
             }
         }
@@ -109,21 +100,20 @@ struct YourRecordsView: View {
             //profileModel.fetchItemsFromCloud()
         }
         .listStyle(InsetGroupedListStyle())
-//        .listStyle(.plain)
         .navigationTitle(selectedMemberName)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image("Members.Item.0")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40, height: 40)
-                        .clipShape(Circle())
-                }
-            }
-        }
+//        .toolbar {
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button(action: {
+//                    presentationMode.wrappedValue.dismiss()
+//                }) {
+//                    Image("Members.Item.0")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 40, height: 40)
+//                        .clipShape(Circle())
+//                }
+//            }
+//        }
     }
 }
 
@@ -135,26 +125,24 @@ extension YourRecordsView {
         
         var body: some View {
             VStack(alignment: .leading) {
-                Text(headline)
-//                    .font(.subheadline)
-                    .lineSpacing(10)
-                    .foregroundColor(.accentColor)
+                HStack {
+                    Text(headline)
+                }
+                .font(.body)
+                .foregroundColor(.accentColor)
                 HStack(spacing: 16.0) {
                     Image(systemName: "cross.case")
-                    Text("Medical Test: ")
+                    Text("医療検査:") // Medical Tests
                     Text(caption1)
-//                        .font(.caption)
-//                        .foregroundColor(.secondary)
-                    Text("  /  ")
+                    Text(" | ")
                     Image(systemName: "note.text")
-                    Text("Episode: ")
+                    Text("発症:") // Episodes
                     Text(caption2)
-//                        .font(.caption)
-//                        .foregroundColor(.secondary)
                 }
-                .font(.caption)
-                .fontDesign(.rounded)                
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             }
+            .lineSpacing(10)
         }
     }
 }

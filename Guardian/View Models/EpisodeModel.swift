@@ -38,7 +38,6 @@ import Combine
     var isUpdated: Bool = false
     
     init(record: CKRecord) {
-        isUpdated = true
         self.record = record
         fetchItemsFromCloud()
         fetchAllergens()
@@ -89,6 +88,7 @@ import Combine
     struct EpisodeImage: Transferable {
         let image: Image
         let data: Data
+        var id: String = ""
         
         static var transferRepresentation: some TransferRepresentation {
             DataRepresentation(importedContentType: .image) { data in
@@ -235,7 +235,7 @@ import Combine
             // Counting `totalNumberOfEpisodes`
             let totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int ?? 0
             let totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int ?? 0
-            record["totalNumberOfEpisodes"]  = totalNumberOfMedicalTests + 1
+            record["totalNumberOfEpisodes"]  = totalNumberOfEpisodes + 1
             record["totalNumberOfMedicalTests"]  = totalNumberOfMedicalTests + 1
             updateRecord(record: record)
         }

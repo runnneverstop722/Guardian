@@ -47,15 +47,13 @@ struct EpisodeView: View {
     
     
     var body: some View {
-        NavigationView {
             Form {
                 DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: .date)
-
                 Toggle("初症状ですか？", isOn: $episodeModel.firstKnownExposure)
-
                 Toggle("病院で受診しましたか？", isOn: $episodeModel.wentToHospital)
 
-                Section(header: Text("どのような形でアレルゲンに触れましたか？（複数選択可）")) {
+                Section(header: Text("接触タイプ（複数選択可）")
+                    .font(.headline)) {
                     ForEach(episodeModel.typeOfExposureOptions, id: \.self) { option in
                         Button(action: {
                             if let index = episodeModel.typeOfExposure.firstIndex(of: option) {
@@ -75,7 +73,8 @@ struct EpisodeView: View {
                     }
                 }
 
-                Section(header: Text("どのような症状が出ましたか?")) {
+                Section(header: Text("現れた症状（複数選択可）")
+                    .font(.headline)) {
                     ForEach(episodeModel.symptomCategories, id: \.self) { category in
                         NavigationLink(destination: SelectSymptoms(category: category, selectedSymptoms: $episodeModel.symptoms)) {
                             HStack {
@@ -88,15 +87,17 @@ struct EpisodeView: View {
                     }
                 }
 
-                Section(header: Text("アレルゲンに触れてからどれほど時間が経ってから症状が現れましたか?")) {
-                    Picker("Lead Time", selection: $episodeModel.leadTimeToSymptoms) {
+                Section(header: Text("アレルゲンと接触から発症まで")
+                    .font(.headline)) {
+                    Picker("経過時間", selection: $episodeModel.leadTimeToSymptoms) {
                         ForEach(episodeModel.leadTimeToSymptomsOptions, id: \.self) {
                             Text($0)
                         }
                     }
                 }
 
-                Section(header: Text("どんな対応を取りましたか?（複数選択可）")) {
+                Section(header: Text("取った対応（複数選択可）")
+                    .font(.headline)) {
                     ForEach(episodeModel.treatmentsOptions, id: \.self) { treatment in
                         Button(action: {
                             if let index = episodeModel.treatments.firstIndex(of: treatment) {
@@ -115,23 +116,26 @@ struct EpisodeView: View {
                         }
                     }
                     if episodeModel.treatments.contains("その他") {
-                        TextField("その他の対応処置", text: $episodeModel.otherTreatment)
+                        TextField("その他", text: $episodeModel.otherTreatment)
                     }
                 }
-                Section(header: Text("添付写真")) {
+                Section(header: Text("添付写真")
+                    .font(.headline)) { // Picture Attachment
                     Button(action: {
                             isPickerPresented = true
                         }) {
-                            Text("Select Images")
+                            HStack{
+                                Image(systemName: "photo")
+                                Text("写真を選択") // Select Images
+                                Spacer()
+                                Text("選択中: \(episodeModel.episodeImages.count)") // Selected Items
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
                         }
                         .sheet(isPresented: $isPickerPresented) {
                             PhotoPicker(selectedImages: $episodeModel.episodeImages)
                         }
-
-                        // Add this line to print the count of episode images
-                        Text("Selected Images: \(episodeModel.episodeImages.count)")
-                        .font(.headline)
-
 
                         // Display the selected image thumbnails
                     ScrollView(.horizontal) {
@@ -162,53 +166,54 @@ struct EpisodeView: View {
                                         .shadow(radius: 4)
                                 }
                             }
-//                            .padding(.top, 10)
-//                            Spacer()
                         }
-//                        .padding()
                     }
                 }
                 
                 if isUpdate {
                     Section {
-                        
                         Button(action: {
                             showRemoveAlert.toggle()
                         }) {
                             HStack {
                                 Spacer()
-                                Text("Remove")
-                                    .foregroundColor(.red)
+                                Image(systemName: "trash")
+                                Text("この発症記録を削除する") // Delete this episode.
                                 Spacer()
                             }
+                            .foregroundColor(.red)
                         }
                         .alert(isPresented: $showRemoveAlert) {
-                            Alert(title: Text("Remove this item?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                                // Handle removal of item
+                            Alert(title: Text("この発症記録を削除します。\nよろしいですか？"),
+                                  message: Text(""), // Delete this episode, are you sure?
+                                  primaryButton: .destructive(Text("削除")) { // Delete
                                 episodeModel.deleteRecord(record: episodeModel.record)
                                 dismiss.callAsFunction()
                                 
-                            }, secondaryButton: .cancel())
+                            }, secondaryButton: .cancel(Text("キャンセル"))) // Cancel
                         }
                     }
                 }
             }
-            .navigationBarTitle("Episode")
+            .navigationBarTitle("発症記録")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
-                        episodeModel.addButtonPressed()
+                    Button(role: .none) {
                         showingAlert = true
+                    } label: {
+                        Text("完了")
                     }
                     .alert(isPresented: $showingAlert) {
                         Alert(title: Text("データが保存されました。"),
-                              message: Text(""), dismissButton: .default(Text("Close"), action: {
+                              message: Text(""),
+                              dismissButton: .default(Text("閉じる"), action: {
+                            episodeModel.addButtonPressed()
                             dismiss()
+                            
                         }))
                     }
                 }
             }
-        }
     }
     private func createAdaptiveColumns() -> [GridItem] {
             let minWidth: CGFloat = 100
@@ -219,10 +224,3 @@ struct EpisodeView: View {
             return adaptiveColumns
         }
 }
-
-//struct Episode_Previews: PreviewProvider {
-//    static var previews: some View {
-//        EpisodeView()
-//    }
-//}
-

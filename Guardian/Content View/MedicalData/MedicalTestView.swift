@@ -35,12 +35,12 @@ struct BloodTest: Identifiable {
 }
 enum BloodTestGrade: String, CaseIterable {
     case negative = "陰性(~0.35)"
-    case grade1 = "1"
-    case grade2 = "2"
-    case grade3 = "3"
-    case grade4 = "4"
-    case grade5 = "5"
-    case grade6 = "6"
+    case grade1 = "1グレード"
+    case grade2 = "2グレード"
+    case grade3 = "3グレード"
+    case grade4 = "4グレード"
+    case grade5 = "5グレード"
+    case grade6 = "6グレード"
 }
 
 //MARK: - Struct: Skin Test
@@ -97,63 +97,58 @@ struct OralFoodChallenge: Identifiable {
 
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
-    @State private var allergenName = "AllergenShrimp"
     @EnvironmentObject var mediacalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
     //    private var bloodTestObjects: [CKRecord] = []
     //    private var skinTestObjects: [CKRecord] = []
     //    private var oralFoodTestObjects: [CKRecord] = []
+    @State private var showingAlert = false
     @Environment(\.presentationMode) var presentationMode
     
-    //MARK: - Fetch
-    
-    func fetchBloodTests() {
-        
-    }
-    func fetchSkinTests() {
-        
-    }
-    func fetchOFC() {
-        
-    }
-    
     var totalNumberOfMedicalTest: String {
-        return "\(allergenName)TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
+        return "TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
     }
     
     //MARK: - Body View
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Text(allergenName)
-                    .font(.largeTitle)
-                    .padding()
-                Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
-                    Text("Blood Test").tag(0)
-                    Text("Skin Test").tag(1)
-                    Text("Oral Food Challenge").tag(2)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                VStack {
-                    if selectedTestIndex == 0 {
-                        BloodTestSection(bloodTests: $mediacalTest.bloodTest, deleteIDs: $deleteIDs)
-                    } else if selectedTestIndex == 1 {
-                        SkinTestSection(skinTests: $mediacalTest.skinTest, deleteIDs: $deleteIDs)
-                    } else {
-                        OralFoodChallengeSection(oralFoodChallenges: $mediacalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
-                    }
-                }
-                .animation(.default, value: selectedTestIndex)
+        VStack {
+            Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
+                Text("血液検査").tag(0) // Blood Test
+                Text("皮膚プリックテスト").tag(1) // Skin Test
+                Text("食物経口負荷試験").tag(2) // Oral Food Challenge
             }
-            .navigationTitle("Medical Test")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            VStack {
+                if selectedTestIndex == 0 {
+                    BloodTestSection(bloodTests: $mediacalTest.bloodTest, deleteIDs: $deleteIDs)
+                } else if selectedTestIndex == 1 {
+                    SkinTestSection(skinTests: $mediacalTest.skinTest, deleteIDs: $deleteIDs)
+                } else {
+                    OralFoodChallengeSection(oralFoodChallenges: $mediacalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
+                }
+            }
+            .animation(.default, value: selectedTestIndex)
+        }
+        .navigationTitle("医療検査記録") // Medical Test
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(role: .none) {
+                    showingAlert = true
+                } label: {
+//                    Image(systemName: "square.and.arrow.up.on.square")
+//                        .font(.caption)
+//                        .fontWeight(.bold)
+                    Text("完了") // Save
+                }
+                .alert(isPresented: $showingAlert) {
+                    Alert(title: Text("データが保存されました。"), // Succeccfully Saved
+                          message: Text(""),
+                          dismissButton: .default(Text("閉じる"), action: { // Close
                         saveData()
                         presentationMode.wrappedValue.dismiss()
-                    }
+                    }))
                 }
             }
         }
@@ -258,6 +253,8 @@ struct BloodTestSection: View {
     var body: some View {
         VStack {
             List {
+                Text("昇順：「検査日」") // Order: Test Date Descending
+                    .foregroundColor(.secondary)
                 ForEach($bloodTests) { test in
                     BloodTestFormView(bloodTest: test)
                 }
@@ -273,7 +270,10 @@ struct BloodTestSection: View {
             Button(action: {
                 bloodTests.append(BloodTest())
             }) {
-                Text("+新しい記録")
+                HStack {
+                    Image(systemName: "square.and.pencil")
+                    Text("新しい記録") // Add New
+                }
             }
             .padding(.bottom)
         }
@@ -288,6 +288,8 @@ struct SkinTestSection: View {
     var body: some View {
         VStack {
             List {
+                Text("昇順：「検査日」") // Order: Test Date Descending
+                    .foregroundColor(.secondary)
                 ForEach(skinTests.indices, id: \.self) { index in
                     SkinTestFormView(skinTest: $skinTests[index])
                 }
@@ -304,7 +306,10 @@ struct SkinTestSection: View {
             Button(action: {
                 skinTests.append(SkinTest())
             }) {
-                Text("+新しい記録")
+                HStack {
+                    Image(systemName: "square.and.pencil")
+                    Text("新しい記録") // Add New
+                }
             }
             .padding(.bottom)
         }
@@ -319,6 +324,8 @@ struct OralFoodChallengeSection: View {
     var body: some View {
         VStack {
             List {
+                Text("昇順：「検査日」") // Order: Test Date Descending
+                    .foregroundColor(.secondary)
                 ForEach(oralFoodChallenges.indices, id: \.self) { index in
                     OralFoodChallengeFormView(oralFoodChallenge: $oralFoodChallenges[index])
                 }
@@ -335,7 +342,10 @@ struct OralFoodChallengeSection: View {
             Button(action: {
                 oralFoodChallenges.append(OralFoodChallenge())
             }) {
-                Text("+新しい記録")
+                HStack {
+                    Image(systemName: "square.and.pencil")
+                    Text("新しい記録") // Add New
+                }
             }
             .padding(.bottom)
         }
@@ -361,20 +371,20 @@ struct BloodTestFormView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("日付:")
+                Text("検査日") // BloodTest Date
                 Spacer()
                 DatePicker("", selection: $bloodTest.bloodTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             HStack {
-                Text("IgEレベル(UA/mL):")
+                Text("IgEレベル(UA/mL)") // BloodTest Level
                 Spacer()
                 TextField("0.0", text: $bloodTest.bloodTestLevel)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
             VStack(alignment: .leading) {
-                Picker("IgEクラス:", selection: $bloodTest.bloodTestGrade) {
+                Picker("IgEクラス", selection: $bloodTest.bloodTestGrade) { // BloodTest Test Grade
                     ForEach(BloodTestGrade.allCases, id: \.self) { grade in
                         Text(grade.rawValue).tag(grade)
                     }
@@ -394,13 +404,13 @@ struct SkinTestFormView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("日付:")
+                Text("検査日") // SkinTest Date
                 Spacer()
                 DatePicker("", selection: $skinTest.skinTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             HStack {
-                Text("結果(mm):")
+                Text("結果(mm)") // SkinTest Result Value
                 Spacer()
                 HStack {
                     Spacer()
@@ -410,7 +420,7 @@ struct SkinTestFormView: View {
                 }
             }
             HStack {
-                Text("陽性?:")
+                Text("陽性有無") // SkinTest Result
                 Spacer()
                 Toggle("", isOn: $skinTest.SkinTestResult)
                     .toggleStyle(SwitchToggleStyle())
@@ -426,20 +436,20 @@ struct OralFoodChallengeFormView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("日付:")
+                Text("検査日") // OralFoodChallenge Date
                 Spacer()
                 DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
             }
             HStack {
-                Text("食べた量(mm):")
+                Text("食べた量(mm)") // OralFoodChallenge Quantity
                 Spacer()
                 TextField("0.0", text: $oralFoodChallenge.oralFoodChallengeQuantity)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
             }
             HStack {
-                Text("症状あり:")
+                Text("症状有無") // OralFoodChallenge Result
                 Spacer()
                 Toggle("", isOn: $oralFoodChallenge.oralFoodChallengeResult)
                     .toggleStyle(SwitchToggleStyle())

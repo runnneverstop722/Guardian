@@ -9,39 +9,32 @@ import SwiftUI
 
 struct AddAllergenView: View {
     let allergenOptions: [String]
-    @Binding var selectedAllergen: [String]
-    @State private var selected: String = ""
+    @Binding var selectedAllergens: [String]
     @Environment(\.presentationMode) var presentationMode
+    @State var selectedItems = Set<String>()
     
     var body: some View {
-        VStack {
-            Text("Select Allergen")
-                .font(.headline)
-            Picker("Allergen", selection: $selected) {
-                ForEach(allergenOptions, id: \.self) { allergen in
-                    Text(allergen)
+        NavigationView {
+            List(allergenOptions, id: \.self, selection: $selectedItems) { item in
+                Text(item)
+            }
+            .navigationBarTitle("アレルゲン選択(複数可)")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("キャンセル") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("確認") {
+                        selectedAllergens = []
+                        selectedAllergens.append(contentsOf: selectedItems)
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             }
-            .labelsHidden()
-            .pickerStyle(WheelPickerStyle())
-            
-            Button("Add") {
-                selectedAllergen.append(selected)
-                presentationMode.wrappedValue.dismiss()
-            }
-            .padding()
-            .foregroundColor(.white)
-            .background(Color.blue)
-            .cornerRadius(10)
+            .listStyle(PlainListStyle())
+            .environment(\.editMode, .constant(EditMode.active))
         }
-        .padding()
-    }
-}
-
-struct AddAllergenView_Previews: PreviewProvider {
-    @State static private var sampleAllergens: [String] = []
-
-    static var previews: some View {
-        AddAllergenView(allergenOptions: ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"], selectedAllergen: $sampleAllergens)
     }
 }

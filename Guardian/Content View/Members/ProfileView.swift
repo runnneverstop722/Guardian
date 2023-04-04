@@ -12,10 +12,9 @@ import CloudKit
 struct ProfileView: View {
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
-    @State private var showingRemoveDiagnosisAlert = false
+    @State private var showingRemoveAlert = false
     @State private var showingAlert = false
     @State private var isUpdate = false
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
     
     var profile: CKRecord?
@@ -35,7 +34,8 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             Form(content: {
-                Section(header: Text("ユーザー")) {
+                Section(header: Text("ユーザー") // User
+                    .font(.headline)) {
                     VStack {
                         Section {
                             HStack {
@@ -50,13 +50,13 @@ struct ProfileView: View {
 #endif
                         
                         Section {
-                            TextField("姓",
+                            TextField("姓", // Last Name
                                       text: $profileModel.lastName,
-                                      prompt: Text("姓"))
+                                      prompt: Text("姓")) // Last Name
                             Divider()
-                            TextField("名",
+                            TextField("名", // First Name
                                       text: $profileModel.firstName,
-                                      prompt: Text("名"))
+                                      prompt: Text("名")) // First Name
                             Divider()
                             Spacer()
                             Picker("Gender", selection: $profileModel.gender) {
@@ -66,7 +66,7 @@ struct ProfileView: View {
                             }
                             .pickerStyle(SegmentedPickerStyle())
                             Spacer()
-                            DatePicker("生年月日",
+                            DatePicker("生年月日", // Date of Birth
                                        selection: $profileModel.birthDate,
                                        displayedComponents: [.date])
                             .foregroundColor(Color(uiColor: .placeholderText))
@@ -75,112 +75,71 @@ struct ProfileView: View {
                     }
                 }
                 
-                Section(header: Text("通院先")) {
+                Section(header: Text("通院先") // Clinical Information
+                    .font(.headline)) {
                     TextField("Hospital",
                               text: $profileModel.hospitalName,
-                              prompt: Text("病院名"))
+                              prompt: Text("病院名")) // Hospital Name
                     TextField("Allergist",
                               text: $profileModel.allergist,
-                              prompt: Text("担当医"))
+                              prompt: Text("担当医")) // Allergist Name
                     TextField("Allergist's Contact Info",
                               text: $profileModel.allergistContactInfo,
-                              prompt: Text("担当医連絡先"))
+                              prompt: Text("担当医連絡先")) // Allergist's Contact Information
                     .keyboardType(.phonePad)
                 }
                 .fontWeight(.bold)
                 
                 // Added this selector in ProfileView
-                Section(header: Text("管理対象のアレルゲン")) {
+                Section(header: Text("管理するアレルゲン") // Allergens that will be managed
+                    .font(.headline)) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in
                         Text(allergen)
                     }
                     .onDelete(perform: deleteAllergen)
-                    Button("+ 追加") {
+                    Button(action: {
                         showingAddAllergen.toggle()
+                    }) {
+                        HStack {
+                            Image(systemName: "allergens")
+                            Text("アレルゲンを追加") // Add Allergens
+                        }
                     }
                     .sheet(isPresented: $showingAddAllergen) {
                         AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
                     }
                 }
-                if isUpdate {
-                    Button(action: {
-                        showingRemoveDiagnosisAlert.toggle()
-                    }) {
-                        HStack {
-                            Spacer()
-                            Text("Remove")
-                                .foregroundColor(.red)
-                            Spacer()
-                        }
-                    }
-                    .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                        Alert(title: Text("Remove this diagnosis?"), message: Text("This action cannot be undone."), primaryButton: .destructive(Text("Remove")) {
-                            // Handle removal of diagnosis
-                            profileModel.deleteItemsFromCloud(record: profile!) { isSuccess in
-                                if isSuccess {
-                                    presentationMode.wrappedValue.dismiss()
-                                }
-                            }
-                        }, secondaryButton: .cancel())
-                    }
-                }
             })
-            .navigationTitle("プロフィール")
+            .navigationTitle("プロフィール") // Profile
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
+                    Button() {
                         profileModel.addButtonPressed()
                         showingAlert = true
+                    } label: {
+                        Text("完了") // Save
                     }
                     .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("データが保存されました。"),
-                              message: Text(""), dismissButton: .default(Text("Close"), action: {
-                            dismiss()
+                        Alert(title: Text("データが保存されました。"), // Data has been successfully saved
+                              message: Text(""),
+                              dismissButton: .default(Text("閉じる"), action: { // Close
+                            presentationMode.wrappedValue.dismiss()
                         }))
                     }
                 }
             }
+            .navigationBarItems(leading: cancelButton)
         }
     }
+    private var cancelButton: some View {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Text("キャンセル") // Cancel
+            })
+        }
     private func deleteAllergen(at offsets: IndexSet) {
         profileModel.allergens.remove(atOffsets: offsets)
     }
     
-    struct AddAllergenView: View {
-        let allergenOptions: [String]
-        @Binding var selectedAllergens: [String]
-        @Environment(\.presentationMode) var presentationMode
-        @State var selectedItems = Set<String>()
-        
-//        init(allergenOptions: [String], selectedAllergens: Binding<[String]>) {
-//            self.allergenOptions = allergenOptions
-//            _selectedAllergens = selectedAllergens
-//            let selected = Set(selectedAllergens.wrappedValue)
-//            _selectedItems = State(wrappedValue: selected)
-//        }
-        var body: some View {
-            NavigationView {
-                List(allergenOptions, id: \.self, selection: $selectedItems) { item in
-                    Text(item)
-                }
-                .navigationBarTitle("Select Allergens")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Cancel") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Done") {
-                            selectedAllergens = []
-                            selectedAllergens.append(contentsOf: selectedItems)
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                }
-                .listStyle(PlainListStyle())
-                .environment(\.editMode, .constant(EditMode.active))
-            }
-        }
-    }
 }
