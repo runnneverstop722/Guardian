@@ -49,6 +49,7 @@ struct EpisodeView: View {
     var body: some View {
             Form {
                 DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: .date)
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
                 Toggle("初症状ですか？", isOn: $episodeModel.firstKnownExposure)
                 Toggle("病院で受診しましたか？", isOn: $episodeModel.wentToHospital)
 
@@ -134,7 +135,7 @@ struct EpisodeView: View {
                             }
                         }
                         .sheet(isPresented: $isPickerPresented) {
-                            PhotoPicker(selectedImages: $episodeModel.episodeImages)
+                            EpisodePhotoPicker(selectedImages: $episodeModel.episodeImages)
                         }
 
                         // Display the selected image thumbnails
@@ -143,11 +144,23 @@ struct EpisodeView: View {
                             HStack {
                                 ForEach(episodeModel.episodeImages, id: \.data) { episodeImage in
                                     if let data = episodeImage.data, let uiImage = UIImage(data: data) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 100, height: 100)
-                                            .clipped()
+                                        ZStack(alignment: .topTrailing) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 100, height: 100)
+                                                .clipped()
+                                            Button {
+                                                episodeModel.episodeImages.removeAll { $0.id == episodeImage.id }
+                                            } label: {
+                                                Image(systemName: "x.circle.fill")
+                                                    .resizable()
+                                                    .foregroundColor(.red)
+                                                    .scaledToFit()
+                                                    .frame(width: 30, height: 30)
+                                                    .clipped()
+                                            }
+                                        }
                                     } else {
                                         Image(systemName: "photo")
                                             .resizable()
@@ -195,18 +208,18 @@ struct EpisodeView: View {
                     }
                 }
             }
-            .navigationBarTitle("発症記録")
+            .navigationBarTitle("発症記録") // Episode
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .none) {
                         showingAlert = true
                     } label: {
-                        Text("完了")
+                        Text("完了") // Save
                     }
                     .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("データが保存されました。"),
+                        Alert(title: Text("データが保存されました。"), // The data has successfully saved
                               message: Text(""),
-                              dismissButton: .default(Text("閉じる"), action: {
+                              dismissButton: .default(Text("閉じる"), action: { // Close
                             episodeModel.addButtonPressed()
                             dismiss()
                             

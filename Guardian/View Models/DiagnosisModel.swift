@@ -1,5 +1,11 @@
+//
 //  DiagnosisModel.swift
+//  Guardian
+//
+//  Created by Teff on 2023/03/24.
+//
 
+import PhotosUI
 import SwiftUI
 import CoreTransferable
 import CloudKit
@@ -23,25 +29,28 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     @Published var diagnosedHospital: String = ""
     @Published var diagnosedAllergist: String = ""
     @Published var allergens: [String] = []
-    
+    @Published var data: [Data] = []
+    @Published var diagnosisImages: [DiagnosisImage] = []
     @Published var diagnosisInfo: [DiagnosisListModel] = []
     let record: CKRecord
     var isUpdated: Bool = false
     
     init(record: CKRecord) {
         self.record = record
-        fetchItemsFromCloud()
     }
     
     init(diagnosis: CKRecord) {
         record = diagnosis
         guard let diagnosis = record["diagnosis"] as? String,
               let diagnosisDate = record["diagnosisDate"] as? Date,
-              let allergens = record["allergens"] as? [String] else {
+              let allergens = record["allergens"] as? [String]
+        else {
             return
         }
         let diagnosedHospital = record["diagnosedHospital"] as? String
         let diagnosedAllergist = record["diagnosedAllergist"] as? String
+        
+        fetchStoredImages()
         
         self.diagnosis = diagnosis
         self.diagnosisDate = diagnosisDate
@@ -50,13 +59,103 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         self.diagnosedAllergist = diagnosedAllergist ?? ""
         isUpdated = true
     }
-    //MARK: - Saving to Private DataBase Custom Zone
+    
+    // MARK: - Diagnosis Image
+    enum ImageState {
+        case empty
+        case loading(Progress)
+        case success(Image)
+        case failure(Error)
+    }
+    
+    enum TransferError: Error {
+        case importFailed
+    }
+    
+    struct DiagnosisImage: Transferable {
+        let image: Image
+        let data: Data
+        var id = UUID()
+        
+        static var transferRepresentation: some TransferRepresentation {
+            DataRepresentation(importedContentType: .image) { data in
+#if canImport(AppKit)
+                guard let nsImage = NSImage(data: data) else {
+                    throw TransferError.importFailed
+                }
+                let image = Image(nsImage: nsImage)
+                return DiagnosisPhoto(image: image, data: data)
+#elseif canImport(UIKit)
+                guard let uiImage = UIImage(data: data) else {
+                    throw TransferError.importFailed
+                }
+                let image = Image(uiImage: uiImage)
+                return DiagnosisImage(image: image, data: data)
+#else
+                throw TransferError.importFailed
+#endif
+            }
+        }
+    }
+    
+    @Published private(set) var imageState: ImageState = .empty
+    
+    @Published var imageSelection: PhotosPickerItem? = nil {
+        didSet {
+            if let imageSelection {
+                let progress = loadTransferable(from: imageSelection)
+                imageState = .loading(progress)
+            } else {
+                imageState = .empty
+            }
+        }
+    }
+    // Private Methods
+    private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+        return imageSelection.loadTransferable(type: DiagnosisImage.self) { result in
+            DispatchQueue.main.async {
+                guard imageSelection == self.imageSelection else {
+                    print("Failed to get the selected item.")
+                    return
+                }
+                switch result {
+                case .success(let diagnosisPhoto?):
+                    self.imageState = .success(diagnosisPhoto.image)
+                    self.diagnosisImages = [diagnosisPhoto]
+                case .success(nil):
+                    self.imageState = .empty
+                case .failure(let error):
+                    self.imageState = .failure(error)
+                }
+            }
+        }
+    }
+    
+    //MARK: - Save an image as a CKAsset with CloudKit
+    
+    func getImageURL(for data:[DiagnosisImage]) -> [URL]? {
+        var imageURLs = [URL]()
+        if data.isEmpty { return nil }
+        for image in data {
+            
+            let documentsDirectoryPath:NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
+            let tempImageName = String(format: "%@.jpg", UUID().uuidString)
+            let path:String = documentsDirectoryPath.appendingPathComponent(tempImageName)
+            //            try? image.jpegData(compressionQuality: 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+            let imageURL = URL(fileURLWithPath: path)
+            try? image.data.write(to: imageURL, options: [.atomic])
+            imageURLs.append(imageURL)
+        }
+        return imageURLs
+    }
+    
+    //MARK: - Saving to Private DataBase
     
     func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !allergens.isEmpty else { return }
         if isUpdated {
-            updateItem()
+            updateDiagnosis()
         } else {
             addItem(
                 record: record,
@@ -64,9 +163,29 @@ struct diagnosisInfoModel: Hashable, Identifiable {
                 diagnosisDate: diagnosisDate,
                 diagnosedHospital: diagnosedHospital,
                 diagnosedAllergist: diagnosedAllergist,
-                allergens: allergens)
+                allergens: allergens,
+                diagnosisPhoto: getImageURL(for: diagnosisImages)
+            )
         }
     }
+    
+    //MARK: - UPDATE/EDIT @CK Private DataBase
+        
+    func updateDiagnosis() {
+        let myRecord = record
+        if let diagnosisPhoto = getImageURL(for: diagnosisImages) {
+            let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
+            }
+            myRecord["data"] = urls
+        }
+
+        myRecord["diagnosisDate"] = diagnosisDate
+        myRecord["diagnosedHospital"] = diagnosedHospital
+        myRecord["diagnosedAllergist"] = diagnosedAllergist
+        myRecord["allergens"] = allergens
+        saveItem(record: myRecord)
+    }
+    
     
     private func addItem(
         record: CKRecord,
@@ -74,13 +193,17 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         diagnosisDate: Date,
         diagnosedHospital: String?,
         diagnosedAllergist: String?,
-        allergens: [String]
-        ) {
-            
+        allergens: [String],
+        diagnosisPhoto: [URL]?
+    ) {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "DiagnosisInfo", recordID: ckRecordID)
-
+            if let diagnosisPhoto = diagnosisPhoto {
+                let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
+                }
+                myRecord["data"] = urls
+            }
             myRecord["diagnosis"] = diagnosis
             myRecord["diagnosisDate"] = diagnosisDate
             myRecord["diagnosedHospital"] = diagnosedHospital
@@ -90,6 +213,24 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             myRecord["profile"] = reference as CKRecordValue
             saveItem(record: myRecord)
         }
+    
+    func updateRecord(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
+            
+        }
+    }
+    
+    func deleteRecord(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { _, _ in
+            
+        }
+    }
+    
+    func deleteAllData() {
+        for diagnosis in diagnosisInfo {
+            deleteRecord(record: diagnosis.record)
+        }
+    }
     
     private func saveItem(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
@@ -105,7 +246,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     
     //MARK: - Fetching from CK Private DataBase Custom Zone
     
-    func fetchItemsFromCloud() {
+    func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "profile == %@", reference)
         
@@ -125,6 +266,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED DiagnosisInfo queryResultBlock")
+            complete?()
         }
         addOperation(operation: queryOperation)
     }
@@ -132,18 +274,26 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         CKContainer.default().privateCloudDatabase.add(operation)
     }
     
-    //MARK: - UPDATE/EDIT @CK Private DataBase Custom Zone
-        
-    func updateItem() {
-        let myRecord = record
-
-        myRecord["diagnosisDate"] = diagnosisDate
-        myRecord["diagnosedHospital"] = diagnosedHospital
-        myRecord["diagnosedAllergist"] = diagnosedAllergist
-        myRecord["allergens"] = allergens
-        saveItem(record: myRecord)
+    func fetchStoredImages() {
+        if let assets = record["data"] as? [CKAsset] {
+            print("Number of assets: \(assets.count)") // Add this line
+            for asset in assets {
+                if let imageURL = asset.fileURL {
+                    if let imageData = try? Data(contentsOf: imageURL) {
+                        if let uiImage = UIImage(data: imageData) {
+                            let image = Image(uiImage: uiImage)
+                            let diagnosisImage = DiagnosisImage(image: image, data: imageData)
+                            self.diagnosisImages.append(diagnosisImage)
+                        }
+                    }
+                }
+            }
+        } else {
+            print("No assets found.") // Add this line
+        }
     }
     
+
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
 

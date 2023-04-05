@@ -70,6 +70,7 @@ struct ProfileView: View {
                                        selection: $profileModel.birthDate,
                                        displayedComponents: [.date])
                             .foregroundColor(Color(uiColor: .placeholderText))
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
                         }
                         .fontWeight(.bold)
                     }

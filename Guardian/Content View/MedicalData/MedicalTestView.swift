@@ -232,6 +232,9 @@ struct MedicalTestView: View {
             records.append(myRecord)
         }
         
+        let allergen = mediacalTest.allergen
+        allergen["totalNumberOfMedicalTests"] = mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count
+        records.append(allergen)
         CKContainer.default().privateCloudDatabase.modifyRecords(saving: records, deleting: deleteIDs) { result in
             
         }
@@ -375,6 +378,7 @@ struct BloodTestFormView: View {
                 Spacer()
                 DatePicker("", selection: $bloodTest.bloodTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             HStack {
                 Text("IgEレベル(UA/mL)") // BloodTest Level
@@ -408,6 +412,7 @@ struct SkinTestFormView: View {
                 Spacer()
                 DatePicker("", selection: $skinTest.skinTestDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             HStack {
                 Text("結果(mm)") // SkinTest Result Value
@@ -440,6 +445,7 @@ struct OralFoodChallengeFormView: View {
                 Spacer()
                 DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             HStack {
                 Text("食べた量(mm)") // OralFoodChallenge Quantity

@@ -25,6 +25,7 @@ struct MedicalTestAndEpisodeView: View {
     @State private var episodeDate: Date = Date()
     @State private var firstKnownExposure: Bool = false
     @State private var allergistComment: String = ""
+    @State private var isLoading = true
     
     @State private var showAlert = false
     @State private var showMedicalTestView = false
@@ -47,6 +48,7 @@ struct MedicalTestAndEpisodeView: View {
     
     
     private func fetchData() {
+        let dispatchWork = DispatchGroup()
         let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
@@ -54,6 +56,7 @@ struct MedicalTestAndEpisodeView: View {
         let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
         bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
+        dispatchWork.enter()
         bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = BloodTest(record: returnedRecord) {
@@ -67,6 +70,7 @@ struct MedicalTestAndEpisodeView: View {
                 self.mediacalTest.bloodTest = self.mediacalTest.bloodTest.sorted(by: { item1, item2 in
                     return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedAscending
                 })
+                dispatchWork.leave()
             }
         }
         addOperation(operation: bloodTestQueryOperation)
@@ -76,6 +80,7 @@ struct MedicalTestAndEpisodeView: View {
         let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
         skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
+        dispatchWork.enter()
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
@@ -89,12 +94,13 @@ struct MedicalTestAndEpisodeView: View {
                 self.mediacalTest.skinTest = self.mediacalTest.skinTest.sorted(by: { item1, item2 in
                     return item1.skinTestDate.compare(item2.skinTestDate) == .orderedAscending
                 })
+                dispatchWork.leave()
             }
         }
         addOperation(operation: skinTestQueryOperation)
         
         //MARK: - OFC
-        
+        dispatchWork.enter()
         let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
         OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
@@ -113,10 +119,20 @@ struct MedicalTestAndEpisodeView: View {
                 self.mediacalTest.oralFoodChallenge = self.mediacalTest.oralFoodChallenge.sorted(by: { item1, item2 in
                     return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedAscending
                 })
+                dispatchWork.leave()
             }
         }
         
         addOperation(operation: OFCQueryOperation)
+        
+        dispatchWork.enter()
+        episodeModel.fetchItemsFromCloud {
+            dispatchWork.leave()
+        }
+        
+        dispatchWork.notify(queue: DispatchQueue.main) {
+            isLoading = false
+        }
     }
     
     func addOperation(operation: CKDatabaseOperation) {
@@ -124,134 +140,136 @@ struct MedicalTestAndEpisodeView: View {
     }
     
     var body: some View {
-        List {
-            Section(header: Text("医療検査の記録") // Medical Test
-                .font(.headline)) {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("血液検査") // Blood Test
-                        Spacer()
-                        Text("\(mediacalTest.bloodTest.count) records")
-                    }
-                    Divider()
-                    HStack {
-                        Text("皮膚プリックテスト") // Skin Test
-                        Spacer()
-                        Text("\(mediacalTest.skinTest.count) records")
-                    }
-                    Divider()
-                    HStack {
-                        Text("食物経口負荷試験") // Oral Food Challenge
-                        Spacer()
-                        Text("\(mediacalTest.oralFoodChallenge.count) records")
-                    }
-                }
-                
-                NavigationLink(
-                    destination: MedicalTestView().environmentObject(mediacalTest),
-                    isActive: $showMedicalTestView
-                ) {
-                    Button(action: {
-                        showMedicalTestView = true
-                    }) {
-                        HStack {
-                            Image(systemName: "square.and.pencil")
-                            Text("新規作成") // Add New
-                            Text("＆")
-                            Image(systemName: "doc.text.magnifyingglass")
-                            Text("記録内容の確認") // Confirm Details
-                            Spacer()
+        LoadingView(isShowing: $isLoading) {
+            List {
+                Section(header: Text("医療検査の記録") // Medical Test
+                    .font(.headline)) {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text("血液検査") // Blood Test
+                                Spacer()
+                                Text("\(mediacalTest.bloodTest.count) records")
+                            }
+                            Divider()
+                            HStack {
+                                Text("皮膚プリックテスト") // Skin Test
+                                Spacer()
+                                Text("\(mediacalTest.skinTest.count) records")
+                            }
+                            Divider()
+                            HStack {
+                                Text("食物経口負荷試験") // Oral Food Challenge
+                                Spacer()
+                                Text("\(mediacalTest.oralFoodChallenge.count) records")
+                            }
                         }
-                        .foregroundColor(.blue)
+                        
+                        NavigationLink(
+                            destination: MedicalTestView().environmentObject(mediacalTest),
+                            isActive: $showMedicalTestView
+                        ) {
+                            Button(action: {
+                                showMedicalTestView = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "square.and.pencil")
+                                    Text("新規作成") // Add New
+                                    Text("＆")
+                                    Image(systemName: "doc.text.magnifyingglass")
+                                    Text("記録内容の確認") // Confirm Details
+                                    Spacer()
+                                }
+                                .foregroundColor(.blue)
+                            }
+                        }
                     }
-                }
-            }
-            
-            Section(header: Text("発症記録") // Episode
-                .font(.headline)) {
-                ForEach(episodeModel.episodeInfo, id: \.self) { item in
-                    NavigationLink(
-                        destination: EpisodeView(episode: item.record),
-                        label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
-                        })
-                }
-                Button(action: {
-                    showEpisodeView = true
-                }) {
-                    HStack {
-                        Image(systemName: "square.and.pencil")
-                        Text("新規作成") // Add New
-                        Spacer()
-                    }
-                    .foregroundColor(.blue)
-                }
-                .background(
-                    NavigationLink(
-                        destination: EpisodeView(record: allergen),
-                        isActive: $isAddingNewEpisode,
-                        label: {}
-                    )
-                )
-                .onReceive(existingEpisodeData) { data in
-                    if let data = data.object as? EpisodeListModel {
-                        episodeModel.episodeInfo.insert(data, at: 0)
-                    } else {
-                        episodeModel.fetchItemsFromCloud()
-                    }
-                }
                 
+                Section(header: Text("発症記録") // Episode
+                    .font(.headline)) {
+                        ForEach(episodeModel.episodeInfo, id: \.self) { item in
+                            NavigationLink(
+                                destination: EpisodeView(episode: item.record),
+                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
+                                })
+                        }
+                        Button(action: {
+                            showEpisodeView = true
+                        }) {
+                            HStack {
+                                Image(systemName: "square.and.pencil")
+                                Text("新規作成") // Add New
+                                Spacer()
+                            }
+                            .foregroundColor(.blue)
+                        }
+                        .background(
+                            NavigationLink(
+                                destination: EpisodeView(record: allergen),
+                                isActive: $isAddingNewEpisode,
+                                label: {}
+                            )
+                        )
+                        .onReceive(existingEpisodeData) { data in
+                            if let data = data.object as? EpisodeListModel {
+                                episodeModel.episodeInfo.insert(data, at: 0)
+                            } else {
+                                episodeModel.fetchItemsFromCloud()
+                            }
+                        }
+                        
+                    }
+                
+                
+                
+                Section(header: Text("担当医のコメント") // Allergist's Comment
+                    .font(.headline)) {
+                        ZStack(alignment: .bottomTrailing) {
+                            TextEditor(text: $allergistComment)
+                            
+                        }
+                    }
             }
-            
-            
-            
-            Section(header: Text("担当医のコメント") // Allergist's Comment
-                .font(.headline)) {
-                ZStack(alignment: .bottomTrailing) {
-                    TextEditor(text: $allergistComment)
-                    
+            .navigationTitle(allergenName)
+            .listStyle(InsetGroupedListStyle())
+            .refreshable {
+                episodeModel.episodeInfo = []
+                episodeModel.fetchItemsFromCloud()
+            }
+            .toolbar {
+                Button() {
+                    showAlert.toggle()
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.caption)
                 }
+                .tint(.red)
             }
-        }
-        .navigationTitle(allergenName)
-        .listStyle(InsetGroupedListStyle())
-        .refreshable {
-            episodeModel.episodeInfo = []
-            episodeModel.fetchItemsFromCloud()
-        }
-        .toolbar {
-            Button() {
-                showAlert.toggle()
-            } label: {
-                Image(systemName: "trash")
-                    .font(.caption)
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("医療検査・発症記録を\n削除します。\nよろしいですか？"), // Delete all items from the medical data and the episode. Are you sure?
+                    message: Text(""),
+                    primaryButton: .destructive(Text("削除")) { // Delete
+                        // Delete all data action
+                        episodeModel.deleteAllData()
+                        for test in mediacalTest.bloodTest where test.record != nil {
+                            episodeModel.deleteRecord(record: test.record!)
+                        }
+                        for test in mediacalTest.skinTest where test.record != nil {
+                            episodeModel.deleteRecord(record: test.record!)
+                        }
+                        for test in mediacalTest.oralFoodChallenge where test.record != nil {
+                            episodeModel.deleteRecord(record: test.record!)
+                        }
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    secondaryButton: .cancel(Text("キャンセル")) // Cancel
+                )
             }
-            .tint(.red)
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("医療検査・発症記録を\n削除します。\nよろしいですか？"), // Delete all items from the medical data and the episode. Are you sure?
-                message: Text(""),
-                primaryButton: .destructive(Text("削除")) { // Delete
-                    // Delete all data action
-                    episodeModel.deleteAllData()
-                    for test in mediacalTest.bloodTest where test.record != nil {
-                        episodeModel.deleteRecord(record: test.record!)
-                    }
-                    for test in mediacalTest.skinTest where test.record != nil {
-                        episodeModel.deleteRecord(record: test.record!)
-                    }
-                    for test in mediacalTest.oralFoodChallenge where test.record != nil {
-                        episodeModel.deleteRecord(record: test.record!)
-                    }
-                    presentationMode.wrappedValue.dismiss()
-                },
-                secondaryButton: .cancel(Text("キャンセル")) // Cancel
-            )
-        }
-        .onAppear {
-            if !viewDidLoad {
-                viewDidLoad = true
-                fetchData()
+            .onAppear {
+                if !viewDidLoad {
+                    viewDidLoad = true
+                    fetchData()
+                }
             }
         }
     }

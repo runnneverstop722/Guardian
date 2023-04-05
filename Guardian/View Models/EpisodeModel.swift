@@ -9,7 +9,6 @@ import PhotosUI
 import SwiftUI
 import CoreTransferable
 import CloudKit
-import Combine
 
 @MainActor class EpisodeModel: ObservableObject {
     
@@ -39,7 +38,6 @@ import Combine
     
     init(record: CKRecord) {
         self.record = record
-        fetchItemsFromCloud()
         fetchAllergens()
     }
     
@@ -57,7 +55,6 @@ import Combine
         let skinSymptoms = episode["skinSymptoms"] as? [String]
         let treatments = episode["treatments"] as? [String]
         let otherTreatment = episode["otherTreatment"] as? String
-        
         
         fetchStoredImages()
         
@@ -88,7 +85,7 @@ import Combine
     struct EpisodeImage: Transferable {
         let image: Image
         let data: Data
-        var id: String = ""
+        var id = UUID()
         
         static var transferRepresentation: some TransferRepresentation {
             DataRepresentation(importedContentType: .image) { data in
@@ -184,6 +181,8 @@ import Combine
         }
     }
     
+    //MARK: - UPDATE/EDIT @CK Private DataBase
+    
     func updateEpisode() {
         let myRecord = record
         if let episodePhoto = getImageURL(for: episodeImages) {
@@ -211,8 +210,8 @@ import Combine
         leadTimeToSymptoms: String,
         treatments: [String],
         otherTreatment: String,
-        episodePhoto: [URL]?) {
-            
+        episodePhoto: [URL]?
+    ) {
             let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
             let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "EpisodeInfo", recordID: ckRecordID)
@@ -236,17 +235,22 @@ import Combine
             let totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int ?? 0
             let totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int ?? 0
             record["totalNumberOfEpisodes"]  = totalNumberOfEpisodes + 1
-            record["totalNumberOfMedicalTests"]  = totalNumberOfMedicalTests + 1
             updateRecord(record: record)
         }
     
     func updateRecord(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
-            
+
         }
     }
     
     func deleteRecord(record: CKRecord) {
+        if record.recordType == "EpisodeInfo" {
+            let allergen = record
+            allergen["totalNumberOfEpisodes"] = episodeInfo.count
+            CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
+            }
+        }
         CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { _, _ in
             
         }
@@ -256,7 +260,13 @@ import Combine
         for episode in episodeInfo {
             deleteRecord(record: episode.record)
         }
-        
+        if record.recordType == "EpisodeInfo" {
+            let allergen = record
+            allergen["totalNumberOfEpisodes"] = 0
+            CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
+                
+            }
+        }
     }
     
     private func saveItem(record: CKRecord) {
@@ -269,7 +279,7 @@ import Combine
     
     //MARK: - Fetch from CK Private DataBase
     
-    func fetchItemsFromCloud() {
+    func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
@@ -289,6 +299,7 @@ import Combine
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED EpisodeInfo queryResultBlock")
+            complete?()
         }
         addOperation(operation: queryOperation)
     }
