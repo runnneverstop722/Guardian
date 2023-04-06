@@ -212,9 +212,9 @@ import CloudKit
     )
     {
         
-        let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-        let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-        let myRecord = CKRecord(recordType: "ProfileInfo", recordID: ckRecordID)
+//        let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//        let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+        let myRecord = CKRecord(recordType: "ProfileInfo")
         if let profileImage = profileImage {
             let url = CKAsset(fileURL: profileImage)
             myRecord["profileImage"] = url

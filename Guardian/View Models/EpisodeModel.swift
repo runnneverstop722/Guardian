@@ -247,7 +247,7 @@ import CloudKit
     func deleteRecord(record: CKRecord) {
         if record.recordType == "EpisodeInfo" {
             let allergen = record
-            allergen["totalNumberOfEpisodes"] = episodeInfo.count
+            allergen["totalNumberOfEpisodes"] = episodeInfo.count - 1
             CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
             }
         }
