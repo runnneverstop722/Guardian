@@ -143,7 +143,7 @@ struct EpisodeView: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 ForEach(episodeModel.episodeImages, id: \.data) { episodeImage in
-                                    if let data = episodeImage.data, let uiImage = UIImage(data: data) {
+                                    if let uiImage = UIImage(data: episodeImage.data) {
                                         ZStack(alignment: .topTrailing) {
                                             Image(uiImage: uiImage)
                                                 .resizable()

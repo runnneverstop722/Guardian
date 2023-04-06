@@ -98,7 +98,7 @@ struct DiagnosisView: View {
                     VStack(alignment: .leading) {
                         HStack {
                             ForEach(diagnosisModel.diagnosisImages, id: \.data) { diagnosisImage in
-                                if let data = diagnosisImage.data, let uiImage = UIImage(data: data) {
+                                if let uiImage = UIImage(data: diagnosisImage.data) {
                                     ZStack(alignment: .topTrailing) {
                                         Image(uiImage: uiImage)
                                             .resizable()

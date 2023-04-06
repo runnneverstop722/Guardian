@@ -163,9 +163,9 @@ struct MedicalTestView: View {
         let neworalTests = mediacalTest.oralFoodChallenge.filter { $0.record == nil }
         
         newBloodTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "BloodTest", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "BloodTest")
             
             myRecord["bloodTestDate"] = $0.bloodTestDate
             myRecord["bloodTestLevel"] = $0.bloodTestLevel
@@ -176,9 +176,9 @@ struct MedicalTestView: View {
             save(record: myRecord)
         }
         newSkinTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "SkinTest", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "SkinTest")
             
             myRecord["skinTestDate"] = $0.skinTestDate
             myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
@@ -189,9 +189,9 @@ struct MedicalTestView: View {
             save(record: myRecord)
         }
         neworalTests.forEach {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "OralFoodChallenge", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "OralFoodChallenge")
             
             myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
             myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity

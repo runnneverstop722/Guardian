@@ -196,9 +196,9 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         allergens: [String],
         diagnosisPhoto: [URL]?
     ) {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "DiagnosisInfo", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "DiagnosisInfo")
             if let diagnosisPhoto = diagnosisPhoto {
                 let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
                 }

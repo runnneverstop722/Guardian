@@ -226,7 +226,11 @@ import CloudKit
         myRecord["hospitalName"] = hospitalName
         myRecord["allergist"] = allergist
         myRecord["allergistContactInfo"] = allergistContactInfo
-        myRecord["allergens"] = allergens
+        if allergens.isEmpty {
+            myRecord["allergens"] = nil
+        } else {
+            myRecord["allergens"] = allergens
+        }
         saveItem(record: myRecord) { [weak self] recordID in
             guard let id = recordID else { return }
             self?.updateSaveAllergens(recordID: id, allergens: allergens)
@@ -252,9 +256,9 @@ import CloudKit
         }
         let needToAdd = allergens.filter { !objects.contains($0) }
         for allergen in needToAdd {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "Allergens", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "Allergens")
             
             myRecord["allergen"] = allergen
             myRecord["totalNumberOfEpisodes"] = 0

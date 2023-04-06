@@ -212,9 +212,9 @@ import CloudKit
         otherTreatment: String,
         episodePhoto: [URL]?
     ) {
-            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
-            let myRecord = CKRecord(recordType: "EpisodeInfo", recordID: ckRecordID)
+//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
+//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+            let myRecord = CKRecord(recordType: "EpisodeInfo")
             if let episodePhoto = episodePhoto {
                 let urls = episodePhoto.map { return CKAsset(fileURL: $0)
                 }
