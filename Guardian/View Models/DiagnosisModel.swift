@@ -274,6 +274,11 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED DiagnosisInfo queryResultBlock")
+            if let completion = complete {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
             complete?()
         }
         addOperation(operation: queryOperation)

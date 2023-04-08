@@ -279,7 +279,7 @@ import CloudKit
     
     //MARK: - Fetch from CK Private DataBase
     
-    func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
+    func fetchItemsFromCloud(complete: @escaping () -> Void) {
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
@@ -299,8 +299,11 @@ import CloudKit
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED EpisodeInfo queryResultBlock")
-            complete?()
+            DispatchQueue.main.async {
+                complete()
+            }
         }
+
         addOperation(operation: queryOperation)
     }
     func addOperation(operation: CKDatabaseOperation) {

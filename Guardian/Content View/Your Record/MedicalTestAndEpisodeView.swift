@@ -126,7 +126,9 @@ struct MedicalTestAndEpisodeView: View {
         
         dispatchWork.enter()
         episodeModel.fetchItemsFromCloud {
-            dispatchWork.leave()
+            DispatchQueue.main.async {
+                dispatchWork.leave()
+            }
         }
         
         dispatchWork.notify(queue: DispatchQueue.main) {
@@ -212,7 +214,8 @@ struct MedicalTestAndEpisodeView: View {
                             if let data = data.object as? EpisodeListModel {
                                 episodeModel.episodeInfo.insert(data, at: 0)
                             } else {
-                                episodeModel.fetchItemsFromCloud()
+                                episodeModel.fetchItemsFromCloud(complete: {})
+
                             }
                         }
                         
@@ -222,7 +225,8 @@ struct MedicalTestAndEpisodeView: View {
             .listStyle(InsetGroupedListStyle())
             .refreshable {
                 episodeModel.episodeInfo = []
-                episodeModel.fetchItemsFromCloud()
+                episodeModel.fetchItemsFromCloud(complete: {})
+
             }
             .toolbar {
                 Button() {

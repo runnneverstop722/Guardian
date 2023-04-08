@@ -52,16 +52,15 @@ struct YourRecordsView: View {
                                             
                                     }
                                     Text(item.caption2.joined(separator: ", "))
-                                        .font(.caption)
+                                    Divider()
                                     HStack {
-                                        Text(item.headline)
-                                            .foregroundColor(.blue)
-                                            .lineSpacing(10)
+                                        Text(item.caption3)
                                         Spacer()
-                                        Text(item.caption1)
-                                            .font(.caption)
-                                            
+                                        Text(item.caption4)
                                     }
+                                    Text(item.caption5)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
                                 }
                             })
                     }
@@ -114,9 +113,14 @@ struct YourRecordsView: View {
                 }
             }
             .refreshable {
-                //profileModel.profileInfo = []
-                //profileModel.fetchItemsFromCloud()
+                isLoading = true
+                diagnosisModel.fetchItemsFromCloud {
+                    episodeModel.fetchItemsFromCloud {
+                        isLoading = false
+                    }
+                }
             }
+            
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(selectedMemberName)
     //        .toolbar {
