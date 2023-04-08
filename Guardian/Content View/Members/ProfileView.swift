@@ -10,6 +10,7 @@ import PhotosUI
 import CloudKit
 
 struct ProfileView: View {
+
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
