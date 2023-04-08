@@ -24,7 +24,6 @@ struct MedicalTestAndEpisodeView: View {
     @StateObject private var mediacalTest: MedicalTest
     @State private var episodeDate: Date = Date()
     @State private var firstKnownExposure: Bool = false
-    @State private var allergistComment: String = ""
     @State private var isLoading = true
     
     @State private var showAlert = false
@@ -217,16 +216,6 @@ struct MedicalTestAndEpisodeView: View {
                             }
                         }
                         
-                    }
-                
-                
-                
-                Section(header: Text("担当医のコメント") // Allergist's Comment
-                    .font(.headline)) {
-                        ZStack(alignment: .bottomTrailing) {
-                            TextEditor(text: $allergistComment)
-                            
-                        }
                     }
             }
             .navigationTitle(allergenName)

@@ -16,6 +16,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     let diagnosisDate = Date()
     let diagnosedHospital: String = ""
     let diagnosedAllergist: String = ""
+    let diagnosedAllergistComment: String = ""
     let allergens: [String] = []
     
     let diagnosisInfo: [DiagnosisListModel] = []
@@ -28,6 +29,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     @Published var diagnosisDate = Date()
     @Published var diagnosedHospital: String = ""
     @Published var diagnosedAllergist: String = ""
+    @Published var diagnosedAllergistComment: String = ""
     @Published var allergens: [String] = []
     @Published var data: [Data] = []
     @Published var diagnosisImages: [DiagnosisImage] = []
@@ -49,6 +51,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
         let diagnosedHospital = record["diagnosedHospital"] as? String
         let diagnosedAllergist = record["diagnosedAllergist"] as? String
+        let diagnosedAllergistComment = record["diagnosedAllergistComment"] as? String
         
         fetchStoredImages()
         
@@ -57,6 +60,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         self.allergens = allergens
         self.diagnosedHospital = diagnosedHospital ?? ""
         self.diagnosedAllergist = diagnosedAllergist ?? ""
+        self.diagnosedAllergistComment = diagnosedAllergistComment ?? ""
         isUpdated = true
     }
     
@@ -163,6 +167,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
                 diagnosisDate: diagnosisDate,
                 diagnosedHospital: diagnosedHospital,
                 diagnosedAllergist: diagnosedAllergist,
+                diagnosedAllergistComment: diagnosedAllergistComment,
                 allergens: allergens,
                 diagnosisPhoto: getImageURL(for: diagnosisImages)
             )
@@ -182,6 +187,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         myRecord["diagnosisDate"] = diagnosisDate
         myRecord["diagnosedHospital"] = diagnosedHospital
         myRecord["diagnosedAllergist"] = diagnosedAllergist
+        myRecord["diagnosedAllergistComment"] = diagnosedAllergistComment
         myRecord["allergens"] = allergens
         saveItem(record: myRecord)
     }
@@ -193,6 +199,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         diagnosisDate: Date,
         diagnosedHospital: String?,
         diagnosedAllergist: String?,
+        diagnosedAllergistComment: String?,
         allergens: [String],
         diagnosisPhoto: [URL]?
     ) {
@@ -208,6 +215,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             myRecord["diagnosisDate"] = diagnosisDate
             myRecord["diagnosedHospital"] = diagnosedHospital
             myRecord["diagnosedAllergist"] = diagnosedAllergist
+            myRecord["diagnosedAllergistComment"] = diagnosedAllergistComment
             myRecord["allergens"] = allergens
             let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
             myRecord["profile"] = reference as CKRecordValue

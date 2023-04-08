@@ -53,6 +53,7 @@ struct DiagnosisView: View {
                         .environment(\.locale, Locale(identifier: "ja_JP"))
                 TextField("病院名", text: $diagnosisModel.diagnosedHospital) // Hospital Name
                 TextField("担当医", text: $diagnosisModel.diagnosedAllergist) // Allergist Name
+                TextField("担当医コメント", text: $diagnosisModel.diagnosedAllergistComment) // Allergist Comment
             }
             
             Section(header: Text("アレルゲン（複数選択可）") // Allergens (Available to select multiply)

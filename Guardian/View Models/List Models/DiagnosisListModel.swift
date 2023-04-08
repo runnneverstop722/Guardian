@@ -15,20 +15,24 @@ struct DiagnosisListModel: Identifiable, Hashable {
     let headline: String
     let caption1: String
     let caption2: [String]
+    let caption3: String
     let record: CKRecord
     
     init?(record: CKRecord) {
             guard let diagnosis = record["diagnosis"] as? String,
                   let diagnosisDate = record["diagnosisDate"] as? Date,
-                  let allergens = record["allergens"] as? [String] else {
+                  let allergens = record["allergens"] as? [String],
+                  let allergistComment = record["allergistComment"] as? String else {
                 return nil
             }
+        
         
         headline = String(format: "%@", diagnosis)
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         caption1 = dateFormatter.string(from: diagnosisDate)
         caption2 = allergens
+        caption3 = allergistComment
         self.record = record
         //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }

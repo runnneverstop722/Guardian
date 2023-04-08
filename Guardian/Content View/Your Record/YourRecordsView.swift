@@ -53,7 +53,15 @@ struct YourRecordsView: View {
                                     }
                                     Text(item.caption2.joined(separator: ", "))
                                         .font(.caption)
-                                        
+                                    HStack {
+                                        Text(item.headline)
+                                            .foregroundColor(.blue)
+                                            .lineSpacing(10)
+                                        Spacer()
+                                        Text(item.caption1)
+                                            .font(.caption)
+                                            
+                                    }
                                 }
                             })
                     }
