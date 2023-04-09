@@ -35,7 +35,7 @@ import CoreData
     var isUpdated: Bool = false
     
     init() {
-        fetchItemsFromLocalCache()
+//        fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
     init(profile: CKRecord) {

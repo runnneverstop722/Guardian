@@ -139,7 +139,7 @@ struct YourRecordsView: View {
                             }) {
                                 Image(uiImage: profileImage)
                                     .resizable()
-                                    .scaledToFit()
+                                    .scaledToFill()
                                     .frame(width: 40, height: 40)
                                     .clipShape(Circle())
                             }
