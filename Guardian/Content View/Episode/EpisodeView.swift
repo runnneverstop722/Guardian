@@ -9,6 +9,8 @@ import CloudKit
 import PhotosUI
 import CoreTransferable
 
+
+
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
     @State private var isPickerPresented: Bool = false
@@ -19,6 +21,7 @@ struct EpisodeView: View {
     @State private var showingAlert = false
     @State private var isUpdate = false
     @State private var showRemoveAlert = false
+    @FocusState private var focusedField: FormField?
     @Environment(\.dismiss) private var dismiss
 
     let allergen: CKRecord
@@ -118,6 +121,8 @@ struct EpisodeView: View {
                     }
                     if episodeModel.treatments.contains("その他") {
                         TextField("その他", text: $episodeModel.otherTreatment)
+                            .submitLabel(.done)
+                            .focused($focusedField, equals: .diagnosedAllergistComment)
                     }
                 }
                 Section(header: Text("添付写真")

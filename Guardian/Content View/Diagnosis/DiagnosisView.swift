@@ -3,6 +3,10 @@
 import SwiftUI
 import CloudKit
 
+enum FormField {
+    case diagnosedHospital, diagnosedAllergist, diagnosedAllergistComment
+}
+
 struct DiagnosisView: View {
     
     @StateObject var diagnosisModel: DiagnosisModel
@@ -17,6 +21,7 @@ struct DiagnosisView: View {
     
     @State private var isShowingActionSheet = false
     @State private var isUpdate = false
+    @FocusState private var focusedField: FormField?
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) private var dismiss
     
@@ -52,9 +57,26 @@ struct DiagnosisView: View {
                 DatePicker("診断日", selection: $diagnosisModel.diagnosisDate, displayedComponents: .date) // Diagnosis Date
                         .environment(\.locale, Locale(identifier: "ja_JP"))
                 TextField("病院名", text: $diagnosisModel.diagnosedHospital) // Hospital Name
+                        .submitLabel(.next)
+                        .focused($focusedField, equals: .diagnosedHospital)
                 TextField("担当医", text: $diagnosisModel.diagnosedAllergist) // Allergist Name
+                        .submitLabel(.next)
+                        .focused($focusedField, equals: .diagnosedAllergist)
                 TextField("担当医コメント", text: $diagnosisModel.diagnosedAllergistComment) // Allergist Comment
+                        .submitLabel(.done)
+                        .focused($focusedField, equals: .diagnosedAllergistComment)
             }
+                .onSubmit {
+                    switch focusedField {
+                    case .diagnosedHospital:
+                        focusedField = .diagnosedAllergist
+                    case .diagnosedAllergist:
+                        focusedField = .diagnosedAllergistComment
+                    default:
+                        focusedField = nil
+                    }
+                }
+            
             
             Section(header: Text("アレルゲン（複数選択可）") // Allergens (Available to select multiply)
                 .font(.headline)) {

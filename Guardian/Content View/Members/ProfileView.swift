@@ -8,6 +8,14 @@
 import SwiftUI
 import PhotosUI
 import CloudKit
+import UIKit
+
+enum FormField1 {
+    case lastName, firstName
+}
+enum FormField2 {
+    case hospitalName, allergist, allergistContactInfo
+}
 
 struct ProfileView: View {
 
@@ -16,6 +24,8 @@ struct ProfileView: View {
     @State private var showingRemoveAlert = false
     @State private var showingAlert = false
     @State private var isUpdate = false
+    @FocusState private var focusedField1: FormField1?
+    @FocusState private var focusedField2: FormField2?
     @Environment(\.presentationMode) var presentationMode
     
     var profile: CKRecord?
@@ -54,10 +64,15 @@ struct ProfileView: View {
                             TextField("姓", // Last Name
                                       text: $profileModel.lastName,
                                       prompt: Text("姓")) // Last Name
+                            .submitLabel(.next)
+                            .focused($focusedField1, equals: .lastName)
                             Divider()
                             TextField("名", // First Name
                                       text: $profileModel.firstName,
                                       prompt: Text("名")) // First Name
+                            .submitLabel(.done)
+                            .focused($focusedField1, equals: .firstName)
+                            
                             Divider()
                             Spacer()
                             Picker("Gender", selection: $profileModel.gender) {
@@ -82,13 +97,21 @@ struct ProfileView: View {
                     TextField("Hospital",
                               text: $profileModel.hospitalName,
                               prompt: Text("病院名")) // Hospital Name
+                    .submitLabel(.next)
+                    .focused($focusedField2, equals: .hospitalName)
+                        
                     TextField("Allergist",
                               text: $profileModel.allergist,
                               prompt: Text("担当医")) // Allergist Name
-                    TextField("Allergist's Contact Info",
-                              text: $profileModel.allergistContactInfo,
-                              prompt: Text("担当医連絡先")) // Allergist's Contact Information
+                    .submitLabel(.next)
+                    .focused($focusedField2, equals: .allergist)
+                        
+                    CustomTextField(text: $profileModel.allergistContactInfo,
+                                    placeholder: "担当医連絡先",
+                                    keyboardType: .phonePad) // Allergist's Contact Information
                     .keyboardType(.phonePad)
+                    .submitLabel(.done)
+                    .focused($focusedField2, equals: .allergistContactInfo)
                 }
                 .fontWeight(.bold)
                 
@@ -112,6 +135,23 @@ struct ProfileView: View {
                     }
                 }
             })
+            .onSubmit {
+                switch focusedField1 {
+                case .lastName:
+                    focusedField1 = .firstName
+                default:
+                    focusedField1 = nil
+                }
+                
+                switch focusedField2 {
+                case .hospitalName:
+                    focusedField2 = .allergist
+                case .allergist:
+                    focusedField2 = .allergistContactInfo
+                default:
+                    focusedField2 = nil
+                }
+            }
             .navigationTitle("プロフィール") // Profile
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

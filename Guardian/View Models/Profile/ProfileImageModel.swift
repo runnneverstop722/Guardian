@@ -34,15 +34,13 @@ struct CircularProfileImage: View {
     
     var body: some View {
         ProfileImageModel(imageState: imageState)
-            //.scaledToFill()
-            
-            .aspectRatio(contentMode: .fill)
+            .scaledToFill()
             .clipShape(Circle())
             .frame(width: 100, height: 100)
             .background {
                 Circle().fill(
                     LinearGradient(
-                        colors: [.yellow, .orange],
+                        colors: [.blue, .yellow],
                         startPoint: .top,
                         endPoint: .bottom
                     )

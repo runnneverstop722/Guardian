@@ -33,8 +33,10 @@ struct DiagnosisListModel: Identifiable, Hashable {
         
         headline = String(format: "%@", diagnosis)
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        caption1 = dateFormatter.string(from: diagnosisDate)
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        dateFormatter.locale = Locale(identifier: "ja_JP")
+        let formattedDate = dateFormatter.string(from: diagnosisDate)
+        caption1 = formattedDate
         caption2 = allergens
         caption3 = hospitalName
         caption4 = allergist

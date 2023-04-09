@@ -9,52 +9,49 @@
 import SwiftUI
 
 struct Awareness: View {
-	var body: some View {
-		VStack(spacing: 16.0) {
-
-            Group {
-                Text("食物アレルギーがあります")
-                    .font(.title2)
-                    .bold()
-                    .foregroundColor(.accentColor)
-                    .padding(.horizontal, 20.0)
-                HStack {
-                    Text("以下のアレルゲンは")
-                    Text("微量")
-                        .font(.title2)
+    var body: some View {
+            ZStack {
+                LinearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom)
+//                    .ignoresSafeArea()
+                VStack(spacing: 20) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .foregroundColor(.white)
+                        .frame(width: 100, height: 100)
+                        .padding(.top, 50)
+                    Text("Chef")
+                        .font(.title)
+                        .foregroundColor(.white)
                         .bold()
+                    
+                    Text("I have a Food Allergy")
+                        .multilineTextAlignment(.center)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                    Text("to:")
+                        .font(.title2)
+                        .foregroundColor(.white)
+                    Text("Shrimp, Egg, Peanuts")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                    Text("Please ensure that my menu is free from them.")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("Thank you for your understanding.")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    Spacer()
                 }
-                Text("でも食べられません。")
-                    .padding(.horizontal, 20.0)
-                Text("えび、かに、そば、卵、乳成分")
-                    .font(.title2)
-                    .bold()
-                    .foregroundColor(.accentColor)
-                    .padding(.horizontal, 20.0)
-                Text("ご理解の程、宜しくお願いいたします。")
-                    .padding(.horizontal, 20.0)
+                .padding(.horizontal)
             }
-                
-            Divider()
-            Group {
-                Text("緊急時には症状の回復の為")
-                    .font(.headline)
-                    .padding(.horizontal, 20.0)
-                Text("ぜひ手伝ってください")
-                    .font(.headline)
-                    .padding(.horizontal, 20.0)
-                Text("ーーーーーーーーーーーー")
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 20.0)
-            }
-			Button("📖 緊急対応マニュアル", action: {})
-				.buttonStyle(.bordered)
-		}
-	}
+        }	
 }
 
 struct Awareness_Previews: PreviewProvider {
-	static var previews: some View {
-		Awareness()
-	}
+    static var previews: some View {
+        Awareness()
+    }
 }

@@ -233,7 +233,7 @@ struct MedicalTestAndEpisodeView: View {
                     showAlert.toggle()
                 } label: {
                     Image(systemName: "trash")
-                        .font(.caption)
+//                        .font(.caption)
                 }
                 .tint(.red)
             }

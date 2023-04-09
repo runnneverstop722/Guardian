@@ -26,8 +26,10 @@ struct EpisodeListModel: Identifiable, Hashable {
             return nil
         }
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        headline = dateFormatter.string(from: episodeDate)
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        dateFormatter.locale = Locale(identifier: "ja_JP")
+        let formattedDate = dateFormatter.string(from: episodeDate)
+        headline = formattedDate
         caption1 = firstKnownExposure  ? "初症状" : ""
         caption2 = wentToHospital ? "外来済" : ""
         caption3 = typeOfExposure.joined(separator: ", ")

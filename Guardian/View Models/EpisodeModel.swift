@@ -289,7 +289,9 @@ import CloudKit
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
         
-        self.episodeInfo = []
+        DispatchQueue.main.async {
+            self.episodeInfo = []
+        }
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let episodeItem = EpisodeListModel(record: returnedRecord) {

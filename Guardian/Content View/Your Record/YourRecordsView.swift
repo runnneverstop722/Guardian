@@ -11,7 +11,7 @@ import CloudKit
 struct YourRecordsView: View {
     @StateObject var diagnosisModel: DiagnosisModel
     @StateObject var episodeModel: EpisodeModel
-    @State private var showUpdateProfile = false
+    @State private var isShowingProfileView = false
     @State private var showExportPDF = false
     @State private var isLoading = true
     @State private var isAddingNewDiagnosis = false
@@ -23,6 +23,15 @@ struct YourRecordsView: View {
     let profile: CKRecord
     let existingDiagnosisData = NotificationCenter.default.publisher(for: Notification.Name("existingDiagnosisData"))
     
+    var profileImage: UIImage {
+        if let asset = profile["profileImage"] as? CKAsset, let fileURL = asset.fileURL, let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
+            return image
+        } else {
+            return UIImage(systemName: "person.fill") ?? UIImage()
+        }
+    }
+
+
     init(profile: CKRecord) {
         self.profile = profile
         self._diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
@@ -123,19 +132,22 @@ struct YourRecordsView: View {
             
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(selectedMemberName)
-    //        .toolbar {
-    //            ToolbarItem(placement: .navigationBarTrailing) {
-    //                Button(action: {
-    //                    presentationMode.wrappedValue.dismiss()
-    //                }) {
-    //                    Image("Members.Item.0")
-    //                        .resizable()
-    //                        .scaledToFit()
-    //                        .frame(width: 40, height: 40)
-    //                        .clipShape(Circle())
-    //                }
-    //            }
-    //        }
+            .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                isShowingProfileView = true
+                            }) {
+                                Image(uiImage: profileImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $isShowingProfileView) {
+                        ProfileView(profile: profile)
+                    }
         }
     }
 }

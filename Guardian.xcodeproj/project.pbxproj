@@ -24,6 +24,8 @@
 		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
 		05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */; };
 		05422C8F29DBCEEE004BB4A5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */; };
+		05552CF829E2385B00F9AC0A /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CF729E2385B00F9AC0A /* CustomUITextField.swift */; };
+		05552CFA29E2388700F9AC0A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CF929E2388700F9AC0A /* CustomTextField.swift */; };
 		057F96DA29E0F43800E92220 /* ProfileContainer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */; };
 		057F96F029E13AAB00E92220 /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057F96EF29E13AAB00E92220 /* CoreDataViewModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
@@ -61,6 +63,8 @@
 		05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeImageModel.swift; sourceTree = "<group>"; };
 		05422C8D29DBCE2D004BB4A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		05552CF729E2385B00F9AC0A /* CustomUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITextField.swift; sourceTree = "<group>"; };
+		05552CF929E2388700F9AC0A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		057F96D929E0F43800E92220 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		057F96EF29E13AAB00E92220 /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
@@ -155,6 +159,15 @@
 			path = "List Models";
 			sourceTree = "<group>";
 		};
+		05552CFB29E238E000F9AC0A /* CustomKeyboard */ = {
+			isa = PBXGroup;
+			children = (
+				05552CF729E2385B00F9AC0A /* CustomUITextField.swift */,
+				05552CF929E2388700F9AC0A /* CustomTextField.swift */,
+			);
+			path = CustomKeyboard;
+			sourceTree = "<group>";
+		};
 		057F96EE29E13A9500E92220 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -206,6 +219,7 @@
 				05B0714229C6BD28008A2010 /* ImagePicker.swift */,
 				051A27D329CE8C9500A890D0 /* AddAllergenView.swift */,
 				05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */,
+				05552CFB29E238E000F9AC0A /* CustomKeyboard */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -343,6 +357,7 @@
 			files = (
 				635e1ae4a63db128d4b4c8c48246b4b0 /* MembersView.swift in Sources */,
 				057F96DA29E0F43800E92220 /* ProfileContainer.xcdatamodeld in Sources */,
+				05552CF829E2385B00F9AC0A /* CustomUITextField.swift in Sources */,
 				fa062cddd79a3dd3f60488861fe99eee /* Awareness.swift in Sources */,
 				051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */,
 				05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */,
@@ -360,6 +375,7 @@
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
 				4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */,
 				05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */,
+				05552CFA29E2388700F9AC0A /* CustomTextField.swift in Sources */,
 				d3da089e6c595be44adf2c4cf15984ff /* Guardian.swift in Sources */,
 				051A27BF29CE891300A890D0 /* MedicalTestView.swift in Sources */,
 				05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */,
