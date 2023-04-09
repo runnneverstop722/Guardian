@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import CloudKit
+import CoreData
 
 struct MemberListModel: Identifiable, Hashable {
     
@@ -33,6 +34,7 @@ struct MemberListModel: Identifiable, Hashable {
         var fileURL: URL?
         if let profileImage = record["profileImage"] as? CKAsset {
             fileURL = profileImage.fileURL
+            print("save url: model ", fileURL?.absoluteString)
         }
       
         headline = String(format: "%@ %@", firstName, lastName) // firstname + " " + lastname
@@ -41,5 +43,21 @@ struct MemberListModel: Identifiable, Hashable {
         caption = String(format: "%d 歳", age.year!)
         imageURL = fileURL
         self.record = record
+    }
+    
+    init?(entity: ProfileInfoEntity) {
+        let myRecord = CKRecord(recordType: "ProfileInfo", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        if let profileImage = entity.profileImageData, let url = URL(string: profileImage) {
+            let url = CKAsset(fileURL: url)
+            myRecord["profileImage"] = url
+        }
+        myRecord["firstName"] = entity.firstName
+        myRecord["lastName"] = entity.lastName
+        myRecord["gender"] = entity.gender
+        myRecord["birthDate"] = entity.birthDate
+        myRecord["hospitalName"] = entity.hospitalName
+        myRecord["allergist"] = entity.allergist
+        myRecord["allergistContactInfo"] = entity.allergistContactInfo
+        self.init(record: myRecord)
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22E252" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AllergenEntity" representedClassName="AllergenEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergen" attributeType="String"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -7,9 +7,9 @@
         <attribute name="recordID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="totalNumberOfEpisodes" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalNumberOfMedicalTests" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProfileEntity" inverseName="allergens" inverseEntity="ProfileEntity"/>
+        <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProfileInfoEntity" inverseName="allergens" inverseEntity="ProfileInfoEntity"/>
     </entity>
-    <entity name="ProfileEntity" representedClassName="ProfileEntity" syncable="YES" codeGenerationType="class">
+    <entity name="ProfileInfoEntity" representedClassName="ProfileInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergist" optional="YES" attributeType="String"/>
         <attribute name="allergistContactInfo" optional="YES" attributeType="String"/>
         <attribute name="birthDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -19,8 +19,13 @@
         <attribute name="hospitalName" optional="YES" attributeType="String"/>
         <attribute name="lastName" attributeType="String"/>
         <attribute name="modificationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="profileImageData" optional="YES" attributeType="Binary"/>
-        <attribute name="recordID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="profileImageData" optional="YES" attributeType="String"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
         <relationship name="allergens" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AllergenEntity" inverseName="profiles" inverseEntity="AllergenEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="recordID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
 </model>

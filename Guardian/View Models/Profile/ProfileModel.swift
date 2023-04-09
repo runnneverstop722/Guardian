@@ -8,13 +8,15 @@ import SwiftUI
 import PhotosUI
 import CoreTransferable
 import CloudKit
+import CoreData
 
 @MainActor class ProfileModel: ObservableObject  {
     enum Gender: String, CaseIterable, Identifiable {
         case 男, 女, 選択なし
         var id: String { self.rawValue }
     }
-    
+    private let context = PersistenceController.shared.container.viewContext
+
     @Published var data: Data? //image
     @Published var firstName: String = ""
     @Published var lastName: String = ""
@@ -33,6 +35,7 @@ import CloudKit
     var isUpdated: Bool = false
     
     init() {
+        fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
     init(profile: CKRecord) {
@@ -68,6 +71,44 @@ import CloudKit
         isUpdated = true
         fetchAllergens(recordID: record!.recordID)
     }
+    
+    func fetchItemsFromLocalCache() {
+            let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+            do {
+                let localProfileInfo = try context.fetch(fetchRequest)
+                self.profileInfo = localProfileInfo.compactMap { MemberListModel(entity: $0) }
+            } catch let error as NSError {
+                print("Could not fetch from local cache. \(error), \(error.userInfo)")
+            }
+        }
+
+        func saveToLocalCache(_ profileInfo: MemberListModel) {
+            let entity = ProfileInfoEntity(context: context)
+            entity.update(with: profileInfo.record)
+
+            do {
+                try context.save()
+            } catch let error as NSError {
+                print("Could not save to local cache. \(error), \(error.userInfo)")
+            }
+        }
+
+        func deleteFromLocalCache(_ profileInfo: MemberListModel) {
+            let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
+            fetchRequest.predicate = NSPredicate(format: "recordID == %@", profileInfo.record.recordID.recordName)
+
+            do {
+                let fetchedItems = try context.fetch(fetchRequest)
+                if let itemToDelete = fetchedItems.first {
+                    context.delete(itemToDelete)
+                    try context.save()
+                }
+            } catch let error as NSError {
+                print("Could not delete from local cache. \(error), \(error.userInfo)")
+            }
+        }
     
     private func fetchAllergens(recordID: CKRecord.ID) {
         let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
@@ -226,11 +267,6 @@ import CloudKit
         myRecord["hospitalName"] = hospitalName
         myRecord["allergist"] = allergist
         myRecord["allergistContactInfo"] = allergistContactInfo
-        if allergens.isEmpty {
-            myRecord["allergens"] = nil
-        } else {
-            myRecord["allergens"] = allergens
-        }
         saveItem(record: myRecord) { [weak self] recordID in
             guard let id = recordID else { return }
             self?.updateSaveAllergens(recordID: id, allergens: allergens)
@@ -287,6 +323,7 @@ import CloudKit
                     if !self.isUpdated {
                         NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: MemberListModel(record: record))
                     }
+                    PersistenceController.shared.addProfile(profile: record)
                 }
             }
             completion(returnedRecord?.recordID)
@@ -304,11 +341,15 @@ import CloudKit
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
         
-        self.profileInfo = []
+//        self.profileInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let member = MemberListModel(record: returnedRecord) {
-                    self.profileInfo.append(member)
+                    self.saveToLocalCache(member)
+                    let exist = self.profileInfo.first(where: { $0.record.recordID.recordName == member.record.recordID.recordName                    })
+                    if exist == nil {
+                        self.profileInfo.append(member)
+                    }
                 }
             }
         }

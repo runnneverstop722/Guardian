@@ -26,8 +26,8 @@
 		05422C8F29DBCEEE004BB4A5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */; };
 		05552CF829E2385B00F9AC0A /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CF729E2385B00F9AC0A /* CustomUITextField.swift */; };
 		05552CFA29E2388700F9AC0A /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CF929E2388700F9AC0A /* CustomTextField.swift */; };
+		05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CFE29E2AF9100F9AC0A /* PersistenceController.swift */; };
 		057F96DA29E0F43800E92220 /* ProfileContainer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */; };
-		057F96F029E13AAB00E92220 /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057F96EF29E13AAB00E92220 /* CoreDataViewModel.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -65,8 +65,8 @@
 		05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		05552CF729E2385B00F9AC0A /* CustomUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUITextField.swift; sourceTree = "<group>"; };
 		05552CF929E2388700F9AC0A /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		05552CFE29E2AF9100F9AC0A /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		057F96D929E0F43800E92220 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
-		057F96EF29E13AAB00E92220 /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -171,7 +171,7 @@
 		057F96EE29E13A9500E92220 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
-				057F96EF29E13AAB00E92220 /* CoreDataViewModel.swift */,
+				05552CFE29E2AF9100F9AC0A /* PersistenceController.swift */,
 			);
 			path = "Core Data";
 			sourceTree = "<group>";
@@ -370,6 +370,7 @@
 				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
+				05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
 				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
@@ -381,7 +382,6 @@
 				05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */,
 				051A27CD29CE89A100A890D0 /* DiagnosisView.swift in Sources */,
 				5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */,
-				057F96F029E13AAB00E92220 /* CoreDataViewModel.swift in Sources */,
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
 				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
