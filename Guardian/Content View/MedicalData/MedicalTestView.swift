@@ -95,6 +95,10 @@ struct OralFoodChallenge: Identifiable {
 
 //MARK: - MedicalTestView
 
+enum MedicalTestFormField {
+    case bloodTestLevel, SkinTestResultValue, oralFoodChallengeQuantity
+}
+
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @EnvironmentObject var mediacalTest: MedicalTest
@@ -378,6 +382,7 @@ struct OralFoodChallengeSection: View {
 
 struct BloodTestFormView: View {
     @Binding var bloodTest: BloodTest
+    @FocusState private var bloodTestFocusedField: MedicalTestFormField?
     
     private var textFieldBinding: Binding<String> {
         Binding(
@@ -402,9 +407,12 @@ struct BloodTestFormView: View {
             HStack {
                 Text("IgEレベル(UA/mL)") // BloodTest Level
                 Spacer()
-                TextField("0.0", text: $bloodTest.bloodTestLevel)
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.trailing)
+                CustomTextField(text: $bloodTest.bloodTestLevel,
+                                placeholder: "0.0",
+                                keyboardType: .phonePad)
+                .keyboardType(.decimalPad)
+                .submitLabel(.done)
+                .focused($bloodTestFocusedField, equals: .bloodTestLevel)
             }
             VStack(alignment: .leading) {
                 Picker("IgEクラス", selection: $bloodTest.bloodTestGrade) { // BloodTest Test Grade
@@ -423,6 +431,7 @@ struct BloodTestFormView: View {
 
 struct SkinTestFormView: View {
     @Binding var skinTest: SkinTest
+    @FocusState private var skinTestFocusedField: MedicalTestFormField?
     
     var body: some View {
         VStack {
@@ -438,9 +447,12 @@ struct SkinTestFormView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    TextField("0.0", text: $skinTest.SkinTestResultValue)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
+                    CustomTextField(text: $skinTest.SkinTestResultValue,
+                                    placeholder: "0.0",
+                                    keyboardType: .phonePad)
+                    .keyboardType(.decimalPad)
+                    .submitLabel(.done)
+                    .focused($skinTestFocusedField, equals: .SkinTestResultValue)
                 }
             }
             HStack {
@@ -456,6 +468,7 @@ struct SkinTestFormView: View {
 //MARK: - Form View: OFC
 struct OralFoodChallengeFormView: View {
     @Binding var oralFoodChallenge: OralFoodChallenge
+    @FocusState private var oralFoodChallengeFocusedField: MedicalTestFormField?
     
     var body: some View {
         VStack {
@@ -469,9 +482,12 @@ struct OralFoodChallengeFormView: View {
             HStack {
                 Text("食べた量(mm)") // OralFoodChallenge Quantity
                 Spacer()
-                TextField("0.0", text: $oralFoodChallenge.oralFoodChallengeQuantity)
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.trailing)
+                CustomTextField(text: $oralFoodChallenge.oralFoodChallengeQuantity,
+                                placeholder: "0.0",
+                                keyboardType: .phonePad)
+                .keyboardType(.decimalPad)
+                .submitLabel(.done)
+                .focused($oralFoodChallengeFocusedField, equals: .oralFoodChallengeQuantity)
             }
             HStack {
                 Text("症状有無") // OralFoodChallenge Result

@@ -22,6 +22,7 @@ struct CustomTextField: UIViewRepresentable {
         textField.delegate = context.coordinator
         textField.placeholder = placeholder
         textField.keyboardType = keyboardType
+        textField.textAlignment = .right // Set text alignment to trailing
         return textField
     }
 
@@ -40,6 +41,12 @@ struct CustomTextField: UIViewRepresentable {
         func textFieldDidChangeSelection(_ textField: UITextField) {
             parent.text = textField.text ?? ""
         }
+        
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            if let text = textField.text, let floatValue = Float(text), floor(floatValue) == floatValue {
+                textField.text = String(format: "%.1f", floatValue)
+                parent.text = textField.text ?? ""
+            }
+        }
     }
 }
-
