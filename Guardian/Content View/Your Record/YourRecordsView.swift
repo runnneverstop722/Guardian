@@ -65,20 +65,27 @@ struct YourRecordsView: View {
                                             Text(item.caption2.joined(separator: ", "))
                                                 .font(.subheadline)
                                             HStack {
-                                                Text(item.caption3)
-                                                Text("/")
-                                                Text(item.caption4)
+                                                if !item.caption3.isEmpty {
+                                                    Text(item.caption3)
+                                                }
+                                                if !item.caption4.isEmpty {
+                                                    Text("/")
+                                                    Text(item.caption4)
+                                                }
                                             }
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
-                                            Text(item.caption5)
-                                                .font(.subheadline)
-                                                .foregroundColor(.secondary)
+                                            if !item.caption5.isEmpty {
+                                                Text(item.caption5)
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.secondary)
+                                            }
                                         }
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                     })
                             }
+
                             Button(action: {
                                 isAddingNewDiagnosis = true
                             }) {

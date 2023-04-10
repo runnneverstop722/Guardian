@@ -30,7 +30,7 @@ import CloudKit
     
     @Published var symptomCategories = ["皮膚", "呼吸器", "循環器", "消化器", "その他"]
     @Published var typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
-    @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間以降"]
+    @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "60分~"]
     @Published var treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
     
     let record: CKRecord

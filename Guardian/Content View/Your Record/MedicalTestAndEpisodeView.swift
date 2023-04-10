@@ -195,7 +195,7 @@ struct MedicalTestAndEpisodeView: View {
                             )
                             .opacity(0)
                         )
-
+                        
                         
                     }
                 
@@ -207,7 +207,7 @@ struct MedicalTestAndEpisodeView: View {
                         ForEach(episodeModel.episodeInfo, id: \.self) { item in
                             NavigationLink(
                                 destination: EpisodeView(episode: item.record),
-                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3)
+                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4)
                                 })
                         }
                         Button(action: {
@@ -237,7 +237,7 @@ struct MedicalTestAndEpisodeView: View {
                                 episodeModel.episodeInfo.insert(data, at: 0)
                             } else {
                                 episodeModel.fetchItemsFromCloud(complete: {})
-
+                                
                             }
                         }
                         
@@ -248,14 +248,14 @@ struct MedicalTestAndEpisodeView: View {
             .refreshable {
                 episodeModel.episodeInfo = []
                 episodeModel.fetchItemsFromCloud(complete: {})
-
+                
             }
             .toolbar {
                 Button() {
                     showAlert.toggle()
                 } label: {
                     Image(systemName: "trash")
-//                        .font(.caption)
+                    //                        .font(.caption)
                 }
                 .tint(.red)
             }
@@ -296,6 +296,7 @@ extension MedicalTestAndEpisodeView {
         let caption1: String
         let caption2: String
         let caption3: String
+        let caption4: String
         
         var body: some View {
             VStack {
@@ -303,15 +304,34 @@ extension MedicalTestAndEpisodeView {
                     Text(headline)
                         .foregroundColor(.accentColor)
                     Spacer()
-                    Text(caption1)
-                    Text(caption2)
+                    if !caption1.isEmpty {
+                        Text(caption1)
+                    }
+                    if !caption2.isEmpty {
+                        Text(caption2)
+                    }
                 }
-                HStack {
-                    Text(caption3)
-                    Spacer()
+                if !caption3.isEmpty {
+                    HStack {
+                        Text("・接触タイプ: ")
+                        Text(caption3)
+                        Spacer()
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                 }
-                .lineSpacing(10)
-            }
+                if !caption4.isEmpty {
+                    HStack {
+                        Text("・症状: ")
+                        Text(caption4)
+                        Spacer()
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                }
+            }.lineSpacing(10)
         }
     }
 }
