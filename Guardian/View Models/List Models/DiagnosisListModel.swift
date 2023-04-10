@@ -30,7 +30,6 @@ struct DiagnosisListModel: Identifiable, Hashable {
                 return nil
             }
         
-        
         headline = String(format: "%@", diagnosis)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd"
@@ -42,6 +41,5 @@ struct DiagnosisListModel: Identifiable, Hashable {
         caption4 = allergist
         caption5 = allergistComment
         self.record = record
-        //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }
 }

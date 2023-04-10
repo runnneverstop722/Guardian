@@ -140,7 +140,7 @@ struct MedicalTestView: View {
 //                    Image(systemName: "square.and.arrow.up.on.square")
 //                        .font(.caption)
 //                        .fontWeight(.bold)
-                    Text("完了") // Save
+                    Image(systemName: "checkmark.circle.fill") // Save
                 }
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("データが保存されました。"), // Succeccfully Saved
@@ -254,6 +254,7 @@ struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     @Binding var deleteIDs: [CKRecord.ID]
     var body: some View {
+
         VStack {
             List {
                 Text("昇順：「検査日」") // Order: Test Date Descending
@@ -274,11 +275,17 @@ struct BloodTestSection: View {
                 bloodTests.append(BloodTest())
             }) {
                 HStack {
-                    Image(systemName: "square.and.pencil")
+                    Spacer()
+                    Image(systemName: "plus.circle.fill")
                     Text("新しい記録") // Add New
+                    Spacer()
                 }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.blue)
             }
             .padding(.bottom)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 }
@@ -310,11 +317,17 @@ struct SkinTestSection: View {
                 skinTests.append(SkinTest())
             }) {
                 HStack {
-                    Image(systemName: "square.and.pencil")
+                    Spacer()
+                    Image(systemName: "plus.circle.fill")
                     Text("新しい記録") // Add New
+                    Spacer()
                 }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.blue)
             }
             .padding(.bottom)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 }
@@ -346,11 +359,17 @@ struct OralFoodChallengeSection: View {
                 oralFoodChallenges.append(OralFoodChallenge())
             }) {
                 HStack {
-                    Image(systemName: "square.and.pencil")
+                    Spacer()
+                    Image(systemName: "plus.circle.fill")
                     Text("新しい記録") // Add New
+                    Spacer()
                 }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.blue)
             }
             .padding(.bottom)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 }

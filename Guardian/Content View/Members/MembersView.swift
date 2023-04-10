@@ -62,7 +62,7 @@ struct MembersView: View {
                 }) {
                     HStack {
                         Image(systemName: "person.crop.circle.badge.plus")
-                        Text("メンバーを追加")
+//                        Text("メンバーを追加")
                         Spacer()
                     }
                     .foregroundColor(.blue)

@@ -144,49 +144,66 @@ struct MedicalTestAndEpisodeView: View {
         LoadingView(isShowing: $isLoading) {
             List {
                 Section(header: Text("医療検査の記録") // Medical Test
-                    .font(.headline)) {
+                    .font(.title2)
+                    .foregroundColor(.black)
+                    .fontWeight(.semibold)
+                    .padding(.top)) {
                         VStack(alignment: .leading) {
                             HStack {
                                 Text("血液検査") // Blood Test
                                 Spacer()
-                                Text("\(mediacalTest.bloodTest.count) records")
+                                Text("\(mediacalTest.bloodTest.count) 件")
                             }
                             Divider()
                             HStack {
                                 Text("皮膚プリックテスト") // Skin Test
                                 Spacer()
-                                Text("\(mediacalTest.skinTest.count) records")
+                                Text("\(mediacalTest.skinTest.count) 件")
                             }
                             Divider()
                             HStack {
                                 Text("食物経口負荷試験") // Oral Food Challenge
                                 Spacer()
-                                Text("\(mediacalTest.oralFoodChallenge.count) records")
+                                Text("\(mediacalTest.oralFoodChallenge.count) 件")
                             }
                         }
                         
-                        NavigationLink(
-                            destination: MedicalTestView().environmentObject(mediacalTest),
-                            isActive: $showMedicalTestView
-                        ) {
-                            Button(action: {
-                                showMedicalTestView = true
-                            }) {
-                                HStack {
-                                    Image(systemName: "square.and.pencil")
-                                    Text("新規作成") // Add New
-                                    Text("＆")
-                                    Image(systemName: "doc.text.magnifyingglass")
-                                    Text("記録内容の確認") // Confirm Details
-                                    Spacer()
-                                }
-                                .foregroundColor(.blue)
+                        Button(action: {
+                            showMedicalTestView = true
+                        }) {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "plus.circle.fill")
+                                Text("新規作成") // Add New
+                                Text("＆")
+                                Image(systemName: "book.fill")
+                                Text("記録内容の確認") // Confirm Details
+                                Spacer()
                             }
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .background(
+                            NavigationLink(
+                                destination: MedicalTestView().environmentObject(mediacalTest),
+                                isActive: $showMedicalTestView,
+                                label: {}
+                            )
+                            .opacity(0)
+                        )
+
+                        
                     }
                 
                 Section(header: Text("発症記録") // Episode
-                    .font(.headline)) {
+                    .font(.title2)
+                    .foregroundColor(.black)
+                    .fontWeight(.semibold)
+                    .padding(.top)) {
                         ForEach(episodeModel.episodeInfo, id: \.self) { item in
                             NavigationLink(
                                 destination: EpisodeView(episode: item.record),
@@ -197,12 +214,17 @@ struct MedicalTestAndEpisodeView: View {
                             showEpisodeView = true
                         }) {
                             HStack {
-                                Image(systemName: "square.and.pencil")
+                                Spacer()
+                                Image(systemName: "plus.circle.fill")
                                 Text("新規作成") // Add New
                                 Spacer()
                             }
-                            .foregroundColor(.blue)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
                         }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .background(
                             NavigationLink(
                                 destination: EpisodeView(record: allergen),

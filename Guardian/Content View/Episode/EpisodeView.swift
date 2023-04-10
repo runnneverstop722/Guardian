@@ -219,7 +219,7 @@ struct EpisodeView: View {
                     Button(role: .none) {
                         showingAlert = true
                     } label: {
-                        Text("完了") // Save
+                        Image(systemName: "checkmark.circle.fill") // Save
                     }
                     .alert(isPresented: $showingAlert) {
                         Alert(title: Text("データが保存されました。"), // The data has successfully saved

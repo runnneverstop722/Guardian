@@ -159,7 +159,7 @@ struct ProfileView: View {
                         profileModel.addButtonPressed()
                         showingAlert = true
                     } label: {
-                        Text("完了") // Save
+                        Image(systemName: "checkmark.circle.fill") // Save
                     }
                     .alert(isPresented: $showingAlert) {
                         Alert(title: Text("データが保存されました。"), // Data has been successfully saved
