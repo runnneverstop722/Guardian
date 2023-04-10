@@ -177,7 +177,7 @@ struct ProfileView: View {
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
             }, label: {
-                Text("キャンセル") // Cancel
+                Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
             })
         }
     private func deleteAllergen(at offsets: IndexSet) {

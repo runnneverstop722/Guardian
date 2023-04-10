@@ -261,7 +261,7 @@ struct MedicalTestAndEpisodeView: View {
             }
             .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text("医療検査・発症記録を\n削除します。\nよろしいですか？"), // Delete all items from the medical data and the episode. Are you sure?
+                    title: Text("医療検査・発症記録を\n削除しますか？"), // Delete all items from the medical data and the episode. Are you sure?
                     message: Text(""),
                     primaryButton: .destructive(Text("削除")) { // Delete
                         // Delete all data action

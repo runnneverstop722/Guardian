@@ -25,7 +25,8 @@ struct MembersView: View {
             ForEach(profileModel.profileInfo, id: \.self) { item in
                 NavigationLink(value: item) {
                     MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
-                }.swipeActions(edge: .leading) {
+                }
+                .swipeActions(edge: .leading) {
                     Button(role: .none) {
                         editItem = item
                     } label: {

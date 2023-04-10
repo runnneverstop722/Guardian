@@ -176,7 +176,7 @@ struct DiagnosisView: View {
                 }
                 .alert(isPresented: $showingRemoveDiagnosisAlert) {
                     Alert(title: Text(""),
-                          message: Text("診断記録を削除します。\nよろしいですか？"), // Delete this diagnosis, are you sure?
+                          message: Text("診断記録を削除しますか？"), // Delete this diagnosis, are you sure?
                           primaryButton: .destructive(Text("削除")) {
                         diagnosisModel.deleteRecord(record: diagnosisModel.record)
                         dismiss.callAsFunction()

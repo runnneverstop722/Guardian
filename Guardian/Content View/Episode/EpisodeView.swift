@@ -202,7 +202,7 @@ struct EpisodeView: View {
                             .foregroundColor(.red)
                         }
                         .alert(isPresented: $showRemoveAlert) {
-                            Alert(title: Text("この発症記録を削除します。\nよろしいですか？"),
+                            Alert(title: Text("この発症記録を削除しますか？"),
                                   message: Text(""), // Delete this episode, are you sure?
                                   primaryButton: .destructive(Text("削除")) { // Delete
                                 episodeModel.deleteRecord(record: episodeModel.record)
