@@ -144,7 +144,7 @@ struct MedicalTestAndEpisodeView: View {
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             List {
-                Section(header: Text("医療検査の記録") // Medical Test
+                Section(header: Text("医療検査記録") // Medical Test
                     .font(.title2)
                     .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
