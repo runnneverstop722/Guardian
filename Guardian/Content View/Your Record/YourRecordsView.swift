@@ -17,6 +17,7 @@ struct YourRecordsView: View {
     @State private var isAddingNewDiagnosis = false
     @State private var showingRemoveAllergensAlert = false
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
     var selectedMemberName: String = "Unknown Member"
     @State private var didLoad = false
@@ -45,7 +46,7 @@ struct YourRecordsView: View {
                 Section(
                     header: Text("診断記録") // Diagnosis
                         .font(.title2)
-                        .foregroundColor(.black)
+                        .foregroundColor(colorScheme == .light ? .black : .white)
                         .fontWeight(.semibold)
                         .padding(.top),
                     footer: Text("※医療機関で食物アレルギーと診断された時の記録です。")
@@ -129,7 +130,7 @@ struct YourRecordsView: View {
                 Section(
                     header: Text("アレルゲン") // Allergens
                         .font(.title2)
-                        .foregroundColor(.black)
+                        .foregroundColor(colorScheme == .light ? .black : .white)
                         .fontWeight(.semibold)
                         .padding(.top),
                     footer: Text("※プロフィールで設定したアレルゲンが表示されます。") // The listed allergens are set from the profile

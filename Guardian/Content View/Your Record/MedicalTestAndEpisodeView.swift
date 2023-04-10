@@ -19,7 +19,6 @@ import CloudKit
 }
 
 struct MedicalTestAndEpisodeView: View {
-    @Environment(\.presentationMode) var presentationMode
     @StateObject var episodeModel:EpisodeModel
     @StateObject private var mediacalTest: MedicalTest
     @State private var episodeDate: Date = Date()
@@ -33,6 +32,8 @@ struct MedicalTestAndEpisodeView: View {
     @State private var isUpdate = false
     @State private var showingRemoveDiagnosisAlert = false
     @State private var viewDidLoad = false
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     var allergenName: String = "Unknown Allergen"
     
     let allergen: CKRecord
@@ -145,7 +146,7 @@ struct MedicalTestAndEpisodeView: View {
             List {
                 Section(header: Text("医療検査の記録") // Medical Test
                     .font(.title2)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         VStack(alignment: .leading) {
@@ -201,7 +202,7 @@ struct MedicalTestAndEpisodeView: View {
                 
                 Section(header: Text("発症記録") // Episode
                     .font(.title2)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         ForEach(episodeModel.episodeInfo, id: \.self) { item in

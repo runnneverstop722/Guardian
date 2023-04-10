@@ -18,6 +18,7 @@ import CloudKit
     @Published var firstKnownExposure: Bool = false
     @Published var wentToHospital: Bool = false
     @Published var typeOfExposure: [String] = []
+    @Published var intakeAmount: String = ""
     @Published var symptoms: [String] = []
     @Published var skinSymptoms: [String] = []
     @Published var leadTimeToSymptoms: String = "5分以内"
@@ -51,6 +52,7 @@ import CloudKit
             return
         }
         let typeOfExposure = episode["typeOfExposure"] as? [String]
+        let intakeAmount = episode["intakeAmount"] as? String
         let symptoms = episode["symptoms"] as? [String]
         let skinSymptoms = episode["skinSymptoms"] as? [String]
         let treatments = episode["treatments"] as? [String]
@@ -62,6 +64,7 @@ import CloudKit
         self.firstKnownExposure = firstKnownExposure
         self.wentToHospital = wentToHospital
         self.typeOfExposure = typeOfExposure ?? [""]
+        self.intakeAmount = intakeAmount ?? ""
         self.symptoms = symptoms ?? [""]
         self.skinSymptoms = skinSymptoms ?? [""]
         self.leadTimeToSymptoms = leadTimeToSymptoms
@@ -172,6 +175,7 @@ import CloudKit
                 firstKnownExposure: firstKnownExposure,
                 wentToHospital: wentToHospital,
                 typeOfExposure: typeOfExposure,
+                intakeAmount: intakeAmount,
                 symptoms: symptoms,
                 leadTimeToSymptoms: leadTimeToSymptoms,
                 treatments: treatments,
@@ -194,6 +198,7 @@ import CloudKit
         myRecord["firstKnownExposure"] = firstKnownExposure
         myRecord["wentToHospital"] = wentToHospital
         myRecord["typeOfExposure"] = typeOfExposure
+        myRecord["intakeAmount"] = intakeAmount
         myRecord["symptoms"] = symptoms
         myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
         myRecord["treatments"] = treatments
@@ -206,6 +211,7 @@ import CloudKit
         firstKnownExposure: Bool,
         wentToHospital: Bool,
         typeOfExposure: [String],
+        intakeAmount: String,
         symptoms: [String],
         leadTimeToSymptoms: String,
         treatments: [String],
@@ -224,6 +230,7 @@ import CloudKit
             myRecord["firstKnownExposure"] = firstKnownExposure
             myRecord["wentToHospital"] = wentToHospital
             myRecord["typeOfExposure"] = typeOfExposure
+            myRecord["intakeAmount"] = intakeAmount
             myRecord["symptoms"] = symptoms
             myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
             myRecord["treatments"] = treatments

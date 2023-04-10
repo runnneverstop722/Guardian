@@ -21,15 +21,19 @@ struct AddAllergenView: View {
             .navigationBarTitle("アレルゲン選択(複数可)")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("キャンセル") {
+                    Button() {
                         presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("確認") {
+                    Button() {
                         selectedAllergens = []
                         selectedAllergens.append(contentsOf: selectedItems)
                         presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "checkmark.circle.fill") // Cancel
                     }
                 }
             }

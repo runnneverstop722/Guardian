@@ -3,7 +3,7 @@
 import SwiftUI
 import CloudKit
 
-enum FormField {
+enum DiagnosisFormField {
     case diagnosedHospital, diagnosedAllergist, diagnosedAllergistComment
 }
 
@@ -21,7 +21,7 @@ struct DiagnosisView: View {
     
     @State private var isShowingActionSheet = false
     @State private var isUpdate = false
-    @FocusState private var focusedField: FormField?
+    @FocusState private var diagnosisFocusedField: DiagnosisFormField?
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) private var dismiss
     
@@ -58,22 +58,22 @@ struct DiagnosisView: View {
                         .environment(\.locale, Locale(identifier: "ja_JP"))
                 TextField("病院名", text: $diagnosisModel.diagnosedHospital) // Hospital Name
                         .submitLabel(.next)
-                        .focused($focusedField, equals: .diagnosedHospital)
+                        .focused($diagnosisFocusedField, equals: .diagnosedHospital)
                 TextField("担当医", text: $diagnosisModel.diagnosedAllergist) // Allergist Name
                         .submitLabel(.next)
-                        .focused($focusedField, equals: .diagnosedAllergist)
+                        .focused($diagnosisFocusedField, equals: .diagnosedAllergist)
                 TextField("担当医コメント", text: $diagnosisModel.diagnosedAllergistComment) // Allergist Comment
                         .submitLabel(.done)
-                        .focused($focusedField, equals: .diagnosedAllergistComment)
+                        .focused($diagnosisFocusedField, equals: .diagnosedAllergistComment)
             }
                 .onSubmit {
-                    switch focusedField {
+                    switch diagnosisFocusedField {
                     case .diagnosedHospital:
-                        focusedField = .diagnosedAllergist
+                        diagnosisFocusedField = .diagnosedAllergist
                     case .diagnosedAllergist:
-                        focusedField = .diagnosedAllergistComment
+                        diagnosisFocusedField = .diagnosedAllergistComment
                     default:
-                        focusedField = nil
+                        diagnosisFocusedField = nil
                     }
                 }
             
@@ -89,7 +89,7 @@ struct DiagnosisView: View {
                 }) {
                     HStack {
                         Image(systemName: "allergens")
-                        Text("アレルゲンを追加") // Add Allergens
+                        Text("アレルゲンを選択") // Add Allergens
                     }
                 }
                 .sheet(isPresented: $showingAddAllergen) {
@@ -175,8 +175,8 @@ struct DiagnosisView: View {
                     .foregroundColor(.red)
                 }
                 .alert(isPresented: $showingRemoveDiagnosisAlert) {
-                    Alert(title: Text(""),
-                          message: Text("診断記録を削除しますか？"), // Delete this diagnosis, are you sure?
+                    Alert(title: Text("診断記録を削除しますか？"),
+                          message: Text(""), // Delete this diagnosis, are you sure?
                           primaryButton: .destructive(Text("削除")) {
                         diagnosisModel.deleteRecord(record: diagnosisModel.record)
                         dismiss.callAsFunction()

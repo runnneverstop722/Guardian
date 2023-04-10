@@ -127,7 +127,7 @@ struct ProfileView: View {
                     }) {
                         HStack {
                             Image(systemName: "allergens")
-                            Text("アレルゲンを追加") // Add Allergens
+                            Text("アレルゲンを選択") // Add Allergens
                         }
                     }
                     .sheet(isPresented: $showingAddAllergen) {
