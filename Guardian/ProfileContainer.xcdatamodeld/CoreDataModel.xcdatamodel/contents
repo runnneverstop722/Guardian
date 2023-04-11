@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E252" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AllergenEntity" representedClassName="AllergenEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergen" attributeType="String"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -11,7 +11,8 @@
         <relationship name="profiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProfileInfoEntity" inverseName="allergens" inverseEntity="ProfileInfoEntity"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
-                <constraint value="recordID"/>
+                <constraint value="allergen"/>
+                <constraint value="profileID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

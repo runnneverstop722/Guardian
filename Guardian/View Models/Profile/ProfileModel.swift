@@ -153,8 +153,10 @@ import CoreData
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = AllergensModel(record: returnedRecord) {
-                    self.allergens.append(object.allergen)
-                    self.allergensObject.append(object)
+                    if !self.allergens.contains(object.allergen) {
+                        self.allergens.append(object.allergen)
+                        self.allergensObject.append(object)
+                    }
                     PersistenceController.shared.addAllergen(allergen: object.record, profileID: recordID.recordName)
                 }
             }

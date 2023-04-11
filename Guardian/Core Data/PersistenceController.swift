@@ -59,7 +59,7 @@ class PersistenceController {
     }
     
     func deleteAllergen(recordID: String) {
-        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "AllergenEntity")
+        let fetchRequest = AllergenEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
 
         do {
