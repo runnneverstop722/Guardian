@@ -284,6 +284,7 @@ struct BloodTestSection: View {
                     Text("新しい記録") // Add New
                     Spacer()
                 }
+                .font(.headline)
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.blue)
@@ -326,6 +327,7 @@ struct SkinTestSection: View {
                     Text("新しい記録") // Add New
                     Spacer()
                 }
+                .font(.headline)
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.blue)
@@ -368,6 +370,7 @@ struct OralFoodChallengeSection: View {
                     Text("新しい記録") // Add New
                     Spacer()
                 }
+                .font(.headline)
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.blue)

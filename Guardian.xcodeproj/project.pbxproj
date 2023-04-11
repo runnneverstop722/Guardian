@@ -221,7 +221,6 @@
 				05B0714029C5E755008A2010 /* DateFormatter.swift */,
 				05B0714229C6BD28008A2010 /* ImagePicker.swift */,
 				051A27D329CE8C9500A890D0 /* AddAllergenView.swift */,
-				05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */,
 				05552CFB29E238E000F9AC0A /* CustomKeyboard */,
 			);
 			path = Extensions;
@@ -276,6 +275,7 @@
 				057F96EE29E13A9500E92220 /* Core Data */,
 				05422C8D29DBCE2D004BB4A5 /* Info.plist */,
 				05B0713129C173C5008A2010 /* Guardian.entitlements */,
+				05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */,
 				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
 				05B0712429C01AF1008A2010 /* Extensions */,
 				05B0711D29C019FC008A2010 /* View Models */,

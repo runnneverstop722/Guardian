@@ -23,6 +23,7 @@ struct CustomTextField: UIViewRepresentable {
         textField.placeholder = placeholder
         textField.keyboardType = keyboardType
         textField.textAlignment = .right // Set text alignment to trailing
+        textField.textColor = UIColor(.accentColor)
         return textField
     }
     

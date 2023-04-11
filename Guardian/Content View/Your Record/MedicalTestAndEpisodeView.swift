@@ -152,20 +152,32 @@ struct MedicalTestAndEpisodeView: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 Text("血液検査") // Blood Test
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                    .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.bloodTest.count) 件")
+                                Text("\(mediacalTest.bloodTest.count)")
+                                Text("件")
                             }
                             Divider()
                             HStack {
                                 Text("皮膚プリックテスト") // Skin Test
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                    .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.skinTest.count) 件")
+                                Text("\(mediacalTest.skinTest.count)")
+                                Text("件")
                             }
                             Divider()
                             HStack {
                                 Text("食物経口負荷試験") // Oral Food Challenge
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                    .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.oralFoodChallenge.count) 件")
+                                Text("\(mediacalTest.oralFoodChallenge.count)")
+                                Text("件")
                             }
                         }
                         
@@ -181,6 +193,7 @@ struct MedicalTestAndEpisodeView: View {
                                 Text("記録内容の確認") // Confirm Details
                                 Spacer()
                             }
+                            .font(.headline)
                             .foregroundColor(.white)
                             .padding()
                             .background(Color.blue)
@@ -220,6 +233,7 @@ struct MedicalTestAndEpisodeView: View {
                                 Text("新規作成") // Add New
                                 Spacer()
                             }
+                            .font(.headline)
                             .foregroundColor(.white)
                             .padding()
                             .background(Color.blue)

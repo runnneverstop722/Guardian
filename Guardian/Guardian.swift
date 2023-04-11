@@ -20,9 +20,12 @@ struct NoticeView: View {
             Text("アップデート予定")
                 .font(.largeTitle)
                 .bold()
-            Text("(外食時)食物アレルギーお知らせ")
-                .multilineTextAlignment(.center)
-                .padding()
+            VStack {
+                Text("(外食時)食物アレルギーお知らせ")
+                Text("記録済データの出力＆共有")
+            }
+            .multilineTextAlignment(.center)
+            .padding()
             Spacer()
             Text("Coming in May'23")
                 .multilineTextAlignment(.center)

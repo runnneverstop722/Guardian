@@ -67,6 +67,7 @@ struct YourRecordsView: View {
                                     Spacer()
                                     Image(systemName: "plus.circle.fill")
                                     Text("新規作成") // Add New
+                                        .font(.headline)
                                     Spacer()
                                 }
                                 .foregroundColor(.white)
@@ -173,32 +174,38 @@ extension YourRecordsView {
                     .font(.subheadline)
                     .foregroundColor(.primary)
                 HStack {
-                    if !caption3.isEmpty {
-                        Text("・病院: ")
+//                    if !caption3.isEmpty {
+                        Text("病院: ")
                             .font(.subheadline)
                             .foregroundColor(.primary)
                             .fontWeight(.semibold)
                         Text(caption3)
                             .font(.subheadline)
                             .foregroundColor(.primary)
-                    }
-                    if !caption4.isEmpty {
+//                    }
+//                    if !caption4.isEmpty {
                         Text("|")
                             .foregroundColor(.secondary)
-                        Text("・担当医: ")
+                        Text("担当医: ")
                             .font(.subheadline)
                             .foregroundColor(.primary)
                             .fontWeight(.semibold)
                         Text(caption4)
                             .font(.subheadline)
                             .foregroundColor(.primary)
+//                    }
+                }
+//                if !caption5.isEmpty {
+                    HStack {
+                        Text("担当医コメント: ")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
+                        Text(caption5)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                }
-                if !caption5.isEmpty {
-                    Text(caption5)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)       
-                }
+//                }
             }
             .lineLimit(1)
             .truncationMode(.tail)
