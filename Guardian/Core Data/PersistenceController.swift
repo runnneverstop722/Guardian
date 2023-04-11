@@ -78,6 +78,21 @@ class PersistenceController {
         entity.update(with: record)
         saveContext()
     }
+    
+    func deleteDiagnosis(recordID: String) {
+        let fetchRequest = DiagnosisEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+
+        do {
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Could not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
 }
 
 extension ProfileInfoEntity {

@@ -17,7 +17,7 @@ struct YourRecordsView: View {
     @State private var isAddingNewDiagnosis = false
     @State private var showingRemoveAllergensAlert = false
     @Environment(\.presentationMode) var presentationMode
-    @Environment(\.colorScheme) var colorScheme
+    
     
     var selectedMemberName: String = "Unknown Member"
     @State private var didLoad = false
@@ -32,7 +32,6 @@ struct YourRecordsView: View {
         }
     }
     
-    
     init(profile: CKRecord) {
         self.profile = profile
         self._diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
@@ -40,117 +39,134 @@ struct YourRecordsView: View {
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: profile))
     }
     
+    struct LeftAlignedHeaderView: View {
+        let title: String
+        @Environment(\.colorScheme) var colorScheme
+        
+        var body: some View {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            .padding(.top)
+            .padding(.leading)
+        }
+    }
+    
     var body: some View {
         LoadingView(isShowing: $isLoading) {
-            List {
-                Section(
-                    header: Text("診断記録") // Diagnosis
-                        .font(.title2)
-                        .foregroundColor(colorScheme == .light ? .black : .white)
-                        .fontWeight(.semibold)
-                        .padding(.top),
-                    footer: Text("※医療機関で食物アレルギーと診断された時の記録です。")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)) { // This is for the first diagnosis result of the selected allergen.
-                            ForEach(diagnosisModel.diagnosisInfo, id: \.self) { item in
-                                NavigationLink(
-                                    destination: DiagnosisView(record: item.record),
-                                    label: {
-                                        DiagnosisListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
-                                    })
-                            }
-                            
-                            Button(action: {
-                                isAddingNewDiagnosis = true
-                            }) {
-                                HStack {
-                                    Spacer()
-                                    Image(systemName: "plus.circle.fill")
-                                    Text("新規作成") // Add New
-                                        .font(.headline)
-                                    Spacer()
+            ScrollView(.vertical) {
+                LazyVStack(spacing: 16.0) {
+                    
+                    Section(
+                        header: LeftAlignedHeaderView(title: "診断記録"), // Diagnosis
+                        footer: Text("※医療機関で食物アレルギーと診断された時の記録です。")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)) { // This is for the first diagnosis result of the selected allergen.
+                                
+                                ForEach(diagnosisModel.diagnosisInfo, id: \.self) { item in
+                                    NavigationLink(
+                                        destination: DiagnosisView(record: item.record),
+                                        label: {
+                                            DiagnosisListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
+                                        })
                                 }
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                            }
-                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                            
-                            .background(
-                                NavigationLink(
-                                    destination: DiagnosisView(profile: profile),
-                                    isActive: $isAddingNewDiagnosis,
-                                    label: {}
-                                )
-                            ).onReceive(existingDiagnosisData) { data in
-                                if let data = data.object as? DiagnosisListModel {
-                                    if let row = diagnosisModel.diagnosisInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
-                                        diagnosisModel.diagnosisInfo[row] = data
-                                    } else {
-                                        diagnosisModel.diagnosisInfo.insert(data, at: 0)
+                                Button(action: {
+                                    isAddingNewDiagnosis = true
+                                }) {
+                                    HStack {
+                                        Spacer()
+                                        Image(systemName: "plus.circle.fill")
+                                        Text("新規作成") // Add New
+                                            .font(.headline)
+                                        Spacer()
                                     }
-                                } else {
-                                    diagnosisModel.fetchItemsFromCloud()
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(10)
                                 }
-                            }
-                            .onAppear() {
-                                if !didLoad {
-                                    didLoad = true
-                                    diagnosisModel.fetchItemsFromLocalCache()
-                                    diagnosisModel.fetchItemsFromCloud {
-                                        episodeModel.fetchItemsFromCloud {
-                                            isLoading = false
+                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                
+                                .background(
+                                    NavigationLink(
+                                        destination: DiagnosisView(profile: profile),
+                                        isActive: $isAddingNewDiagnosis,
+                                        label: {}
+                                    )
+                                ).onReceive(existingDiagnosisData) { data in
+                                    if let data = data.object as? DiagnosisListModel {
+                                        let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID
+                                        }
+                                        if let index = index {
+                                            diagnosisModel.diagnosisInfo[index] = data
+                                        } else {
+                                            diagnosisModel.diagnosisInfo.insert(data, at: 0)
+                                        }
+                                    } else if let recordID = data.object as? CKRecord.ID {
+                                        diagnosisModel.diagnosisInfo.removeAll {
+                                            $0.record.recordID == recordID
+                                        }
+                                    }
+                                }
+                                .onAppear() {
+                                    if !didLoad {
+                                        didLoad = true
+                                        diagnosisModel.fetchItemsFromCloud {
+                                            episodeModel.fetchItemsFromCloud {
+                                                isLoading = false
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                Section(
-                    header: Text("アレルゲン") // Allergens
-                        .font(.title2)
-                        .foregroundColor(colorScheme == .light ? .black : .white)
-                        .fontWeight(.semibold)
-                        .padding(.top),
-                    footer: Text("※プロフィールで設定したアレルゲンが表示されます。") // The listed allergens are set from the profile
-                        .font(.footnote)
-                        .foregroundColor(.secondary)) {
-                            ForEach(episodeModel.allergens, id: \.self) { item in
-                                NavigationLink(
-                                    destination: MedicalTestAndEpisodeView(allergen: item.record),
-                                    label: {
-                                        AllergensListRow(headline: item.headline, medicalTests: item.caption1, episodes: item.caption2)
-                                    })
+                            .padding(.horizontal)
+                    Section(
+                        header: LeftAlignedHeaderView(title: "アレルゲン"), // Allergens
+                        footer: Text("※プロフィールで設定したアレルゲンが表示されます。") // The listed allergens are set from the profile
+                            .font(.footnote)
+                            .foregroundColor(.secondary)) {
+                                YourRecordsViewGrid(items: episodeModel.allergens.map {
+                                    GridItemData(headline: $0.headline,
+                                                 caption1: $0.caption1,
+                                                 caption2: $0.caption2,
+                                                 imageName: "leaf",
+                                                 record: $0.record)
+                                })
                             }
+                }
+                .refreshable {
+                    isLoading = true
+                    diagnosisModel.fetchItemsFromCloud {
+                        episodeModel.fetchItemsFromCloud {
+                            isLoading = false
                         }
-            }
-            .refreshable {
-                isLoading = true
-                diagnosisModel.fetchItemsFromCloud {
-                    episodeModel.fetchItemsFromCloud {
-                        isLoading = false
                     }
                 }
-            }
-//            .listStyle(PlainListStyle())
-//            .listStyle(GroupedListStyle())
-//            .listStyle(InsetGroupedListStyle())
-            .navigationTitle(selectedMemberName)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isShowingProfileView = true
-                    }) {
-                        Image(uiImage: profileImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
+//                            .listStyle(PlainListStyle())
+                //            .listStyle(GroupedListStyle())
+                //            .listStyle(InsetGroupedListStyle())
+                .navigationTitle(selectedMemberName)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            isShowingProfileView = true
+                        }) {
+                            Image(uiImage: profileImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                        }
                     }
                 }
-            }
-            .sheet(isPresented: $isShowingProfileView) {
-                ProfileView(profile: profile)
+                .sheet(isPresented: $isShowingProfileView) {
+                    ProfileView(profile: profile)
+                }
             }
         }
     }
@@ -165,7 +181,7 @@ extension YourRecordsView {
         let caption5: String
         
         var body: some View {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 7) {
                 HStack {
                     Text(headline)
                         .font(.headline)
@@ -210,6 +226,7 @@ extension YourRecordsView {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
+                Divider()
 //                }
             }
             .lineLimit(1)
@@ -260,6 +277,93 @@ extension YourRecordsView {
         }
     }
 }
+
+struct YourRecordsViewGrid: View {
+    var items: [GridItemData]
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 16) {
+            ForEach(items) { item in
+                NavigationLink(
+                    destination: MedicalTestAndEpisodeView(allergen: item.record),
+                    label: {
+                        YourRecordsViewGridCell(
+                            headline: item.headline,
+                            caption1: item.caption1 + " | ",
+                            caption2: item.caption2,
+                            symbolImage: Image(systemName: "leaf")
+                        )
+                    })
+                    .buttonStyle(PlainButtonStyle())
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct YourRecordsViewGridCell: View {
+    let headline: String
+    let caption1: String
+    let caption2: String
+    let symbolImage: Image
+
+    var body: some View {
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
+            VStack(alignment: .center, spacing: 8.0) {
+                symbolImage
+                    .resizable()
+                    .frame(width: 24.0, height: 24.0)
+                    .padding(16.0)
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+                Text(headline)
+                    .font(.headline)
+                HStack {
+                    Image(systemName: "cross.case")
+                        .foregroundColor(.secondary)
+                    //                Text("医療検査:") // Medical Tests
+                    //                    .font(.subheadline)
+                    //                    .foregroundColor(.primary)
+                    //                    .fontWeight(.semibold)
+                    Text(caption1)
+                        .font(.caption)
+                    Image(systemName: "note.text")
+                        .foregroundColor(.secondary)
+                    //                Text("発症:") // Episodes
+                    //                    .font(.subheadline)
+                    //                    .foregroundColor(.primary)
+                    //                    .fontWeight(.semibold)
+                    Text(caption2)
+                        .font(.caption)
+                }
+            }
+            .multilineTextAlignment(.center)
+            .padding(16.0)
+            Color(.secondarySystemFill)
+                .cornerRadius(10.0)
+        }
+    }
+}
+
+struct GridItemData: Identifiable {
+    var id = UUID()
+    let headline: String
+    let caption1: String
+    let caption2: String
+    let imageName: String
+    let record: CKRecord
+
+    init(headline: String, caption1: String, caption2: String, imageName: String, record: CKRecord) {
+        self.headline = headline
+        self.caption1 = caption1
+        self.caption2 = caption2
+        self.imageName = imageName
+        self.record = record
+    }
+}
+
 struct ActivityIndicator: UIViewRepresentable {
     
     @Binding var isAnimating: Bool
@@ -302,4 +406,3 @@ struct LoadingView<Content>: View where Content: View {
         }
     }
 }
-

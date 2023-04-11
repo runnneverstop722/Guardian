@@ -341,7 +341,8 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             DispatchQueue.main.async {
                 completion(error == nil)
                 if error == nil {
-                    NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: recordID)
+                    PersistenceController.shared.deleteDiagnosis(recordID: recordID?.recordName ?? "")
                 }
             }
         }
