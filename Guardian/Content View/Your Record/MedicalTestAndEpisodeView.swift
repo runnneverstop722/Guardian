@@ -304,39 +304,60 @@ extension MedicalTestAndEpisodeView {
             VStack {
                 HStack(spacing: 16.0) {
                     Text(headline)
+                        .font(.headline)
                         .foregroundColor(.accentColor)
                     Spacer()
                     if !caption1.isEmpty {
-                        Text(caption1)
+                        Badge(text: caption1)
                     }
                     if !caption2.isEmpty {
-                        Text(caption2)
+                        Badge(text: caption2)
                     }
                     if !caption5.isEmpty {
-                        Text(caption5)
+                        Badge(text: caption5)
                     }
                 }
                 if !caption3.isEmpty {
                     HStack {
                         Text("・接触タイプ: ")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
                         Text(caption3)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
                         Spacer()
                     }
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
                 }
                 if !caption4.isEmpty {
                     HStack {
                         Text("・症状: ")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
                         Text(caption4)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
                         Spacer()
                     }
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
                 }
             }.lineSpacing(10)
+        }
+    }
+    struct Badge: View {
+        let text: String
+        
+        var body: some View {
+            Text(text)
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color(hex: 0x576CBC))
+                .cornerRadius(10)
         }
     }
 }

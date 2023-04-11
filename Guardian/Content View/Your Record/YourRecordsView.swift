@@ -155,7 +155,7 @@ struct YourRecordsView: View {
             }
 //            .listStyle(PlainListStyle())
 //            .listStyle(GroupedListStyle())
-            .listStyle(InsetGroupedListStyle())
+//            .listStyle(InsetGroupedListStyle())
             .navigationTitle(selectedMemberName)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
