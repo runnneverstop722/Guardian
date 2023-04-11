@@ -192,7 +192,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             }
             record["data"] = urls
         }
-
+        record["diagnosis"] = diagnosis
         record["diagnosisDate"] = diagnosisDate
         record["diagnosedHospital"] = diagnosedHospital
         record["diagnosedAllergist"] = diagnosedAllergist
