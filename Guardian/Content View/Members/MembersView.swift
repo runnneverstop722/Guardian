@@ -11,6 +11,7 @@ struct MembersView: View {
     @State private var showDeleteAlert = false
     @State private var editItem: MemberListModel?
     @State private var deleteItem: MemberListModel?
+    @State private var accountStatusAlertShown = false
     @Environment(\.presentationMode) var presentationMode
     
     let onUpdateProfile = NotificationCenter.default.publisher(for: Notification.Name("updateProfile"))
@@ -89,7 +90,11 @@ struct MembersView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    profileModel.isAddMemberPresented = true
+                    if profileModel.accountStatus != .available {
+                        accountStatusAlertShown = true
+                    } else {
+                        profileModel.isAddMemberPresented = true
+                    }
                 }) {
                     HStack {
                         Image(systemName: "person.crop.circle.badge.plus")
@@ -119,6 +124,17 @@ struct MembersView: View {
                 } else {
                     profileModel.profileInfo.append(data)
                 }
+            }
+        }
+        .alert("iCloud Account Disabled", isPresented: $accountStatusAlertShown, actions: {
+            Button("Cancel", role: .cancel, action: {})
+        }, message: {
+            Text("Please Login!")
+        })
+        .task {
+            try? await profileModel.getiCLoundStatus()
+            if profileModel.accountStatus != .available {
+                accountStatusAlertShown = true
             }
         }
     }

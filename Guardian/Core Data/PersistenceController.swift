@@ -13,6 +13,9 @@ class PersistenceController {
 
     let container: NSPersistentContainer
 
+    var context: NSManagedObjectContext {
+        return container.viewContext
+    }
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "ProfileContainer")
         if inMemory {
@@ -46,6 +49,27 @@ class PersistenceController {
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
+        }
+    }
+    
+    func addAllergen(allergen: CKRecord, profileID: String) {
+        let entity = AllergenEntity(context: container.viewContext)
+        entity.update(with: allergen, profileID: profileID)
+        saveContext()
+    }
+    
+    func deleteAllergen(recordID: String) {
+        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "AllergenEntity")
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+
+        do {
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Could not delete from local cache. \(error), \(error.userInfo)")
         }
     }
 }
@@ -83,5 +107,16 @@ extension ProfileInfoEntity {
         } else {
             self.profileImageData = nil
         }
+    }
+}
+
+extension AllergenEntity {
+    func update(with record: CKRecord, profileID: String) {
+        self.recordID = record.recordID.recordName
+        self.allergen = record["allergen"] as? String
+        self.profileID = profileID
+        self.totalNumberOfEpisodes = record["totalNumberOfEpisodesgender"] as? Int16 ?? 0
+        self.totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int16 ?? 0
+        self.creationDate = record.creationDate
     }
 }

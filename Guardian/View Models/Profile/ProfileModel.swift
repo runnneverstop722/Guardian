@@ -33,11 +33,19 @@ import CoreData
     @Published var isEditMemberPresented = false
     var record: CKRecord?
     var isUpdated: Bool = false
-    
+    @Published private(set) var accountStatus: CKAccountStatus = .couldNotDetermine {
+        didSet {
+            if oldValue != accountStatus && accountStatus == CKAccountStatus.available {
+                fetchItemsFromLocalCache()
+                fetchItemsFromCloud()
+            }
+        }
+    }
     init() {
         fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
+
     init(profile: CKRecord) {
         record = profile
         guard let firstName = profile["firstName"] as? String,
@@ -69,9 +77,29 @@ import CoreData
         self.allergist = allergist ?? ""
         self.allergistContactInfo = allergistContactInfo ?? ""
         isUpdated = true
+        fetchAllergenFromLocalCache(recordID: record!.recordID.recordName)
         fetchAllergens(recordID: record!.recordID)
     }
-    
+    func getiCLoundStatus() async throws  {
+        accountStatus = try await CKContainer.default().accountStatus()
+    }
+    func fetchAllergenFromLocalCache(recordID: String) {
+        let fetchRequest = AllergenEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "profileID == %@", recordID)
+        do {
+            let records = try context.fetch(fetchRequest)
+            for record in records {
+                if let object = AllergensModel(entity: record) {
+                    self.allergens.append(object.allergen)
+                    self.allergensObject.append(object)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+    }
+
     func fetchItemsFromLocalCache() {
             let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
@@ -120,13 +148,14 @@ import CoreData
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
         
-        self.allergens = []
-        self.allergensObject = []
+//        self.allergens = []
+//        self.allergensObject = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = AllergensModel(record: returnedRecord) {
                     self.allergens.append(object.allergen)
                     self.allergensObject.append(object)
+                    PersistenceController.shared.addAllergen(allergen: object.record, profileID: recordID.recordName)
                 }
             }
         }
@@ -287,6 +316,7 @@ import CoreData
         
         needToRemove.forEach {
             deleteAllergens(recordID: $0.record.recordID)
+            PersistenceController.shared.deleteAllergen(recordID: $0.record.recordID.recordName)
         }
         let objects = allergensObject.map { $0.allergen
         }
@@ -304,6 +334,7 @@ import CoreData
             myRecord["profile"] = reference as CKRecordValue
             print("profileID: ", recordID.recordName)
             saveAllergen(record: myRecord)
+            PersistenceController.shared.addAllergen(allergen: myRecord, profileID: recordID.recordName)
         }
     }
     
@@ -405,8 +436,6 @@ import CoreData
             }
         }
     }
-
 }
-//extension DispatchQueue : Sendable { }
 
 
