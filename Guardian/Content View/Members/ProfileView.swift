@@ -18,7 +18,7 @@ enum FormField2 {
 }
 
 struct ProfileView: View {
-
+    
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
@@ -47,93 +47,92 @@ struct ProfileView: View {
             Form(content: {
                 Section(header: Text("ユーザー") // User
                     .font(.headline)) {
-                    VStack {
-                        Section {
-                            HStack {
-                                Spacer()
-                                EditableCircularProfileImage(viewModel: profileModel)
-                                Spacer()
-                            }
-                        }
-                        .listRowBackground(Color.clear)
-#if !os(macOS)
-                        .padding([.top], 10)
-#endif
-                        
-                        Section {
-                            TextField("姓", // Last Name
-                                      text: $profileModel.lastName,
-                                      prompt: Text("姓")) // Last Name
-                            .submitLabel(.next)
-                            .focused($focusedField1, equals: .lastName)
-                            Divider()
-                            TextField("名", // First Name
-                                      text: $profileModel.firstName,
-                                      prompt: Text("名")) // First Name
-                            .submitLabel(.done)
-                            .focused($focusedField1, equals: .firstName)
-                            
-                            Divider()
-                            Spacer()
-                            Picker("Gender", selection: $profileModel.gender) {
-                                ForEach(ProfileModel.Gender.allCases) { gender in
-                                    Text(gender.rawValue.capitalized).tag(gender)
+                        VStack {
+                            Section {
+                                HStack {
+                                    Spacer()
+                                    EditableCircularProfileImage(viewModel: profileModel)
+                                    Spacer()
                                 }
                             }
-                            .pickerStyle(SegmentedPickerStyle())
-                            Spacer()
-                            DatePicker("生年月日", // Date of Birth
-                                       selection: $profileModel.birthDate,
-                                       displayedComponents: [.date])
-                            .foregroundColor(Color(uiColor: .placeholderText))
-                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            .listRowBackground(Color.clear)
+#if !os(macOS)
+                            .padding([.top], 10)
+#endif
+                            
+                            Section {
+                                TextField("姓", // Last Name
+                                          text: $profileModel.lastName,
+                                          prompt: Text("姓")) // Last Name
+                                .submitLabel(.next)
+                                .focused($focusedField1, equals: .lastName)
+                                Divider()
+                                TextField("名", // First Name
+                                          text: $profileModel.firstName,
+                                          prompt: Text("名")) // First Name
+                                .submitLabel(.done)
+                                .focused($focusedField1, equals: .firstName)
+                                
+                                Divider()
+                                Spacer()
+                                Picker("Gender", selection: $profileModel.gender) {
+                                    ForEach(ProfileModel.Gender.allCases) { gender in
+                                        Text(gender.rawValue.capitalized).tag(gender)
+                                    }
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                                Spacer()
+                                DatePicker("生年月日", // Date of Birth
+                                           selection: $profileModel.birthDate,
+                                           displayedComponents: [.date])
+                                .foregroundColor(Color(uiColor: .placeholderText))
+                                .environment(\.locale, Locale(identifier: "ja_JP"))
+                            }
+                            .fontWeight(.bold)
                         }
-                        .fontWeight(.bold)
                     }
-                }
                 
                 Section(header: Text("通院先") // Clinical Information
                     .font(.headline)) {
-                    TextField("Hospital",
-                              text: $profileModel.hospitalName,
-                              prompt: Text("病院名")) // Hospital Name
-                    .submitLabel(.next)
-                    .focused($focusedField2, equals: .hospitalName)
+                        TextField("Hospital",
+                                  text: $profileModel.hospitalName,
+                                  prompt: Text("病院名")) // Hospital Name
+                        .submitLabel(.next)
+                        .focused($focusedField2, equals: .hospitalName)
                         
-                    TextField("Allergist",
-                              text: $profileModel.allergist,
-                              prompt: Text("担当医")) // Allergist Name
-                    .submitLabel(.next)
-                    .focused($focusedField2, equals: .allergist)
+                        TextField("Allergist",
+                                  text: $profileModel.allergist,
+                                  prompt: Text("担当医")) // Allergist Name
+                        .submitLabel(.next)
+                        .focused($focusedField2, equals: .allergist)
                         
-                    CustomTextField(text: $profileModel.allergistContactInfo,
-                                    placeholder: "担当医連絡先",
-                                    keyboardType: .phonePad) // Allergist's Contact Information
-                    .keyboardType(.phonePad)
-                    .submitLabel(.done)
-                    .focused($focusedField2, equals: .allergistContactInfo)
-                }
-                .fontWeight(.bold)
+                        TextField("allergistContactInfo",
+                                  text: $profileModel.allergistContactInfo,
+                                  prompt: Text("担当医連絡先")) // Allergist's Contact Information
+                        .submitLabel(.done)
+                        .focused($focusedField2, equals: .allergistContactInfo)
+                    }
+                    .fontWeight(.bold)
                 
                 // Added this selector in ProfileView
                 Section(header: Text("管理するアレルゲン") // Allergens that will be managed
                     .font(.headline)) {
-                    ForEach(profileModel.allergens, id: \.self) { allergen in
-                        Text(allergen)
-                    }
-                    .onDelete(perform: deleteAllergen)
-                    Button(action: {
-                        showingAddAllergen.toggle()
-                    }) {
-                        HStack {
-                            Image(systemName: "allergens")
-                            Text("アレルゲンを選択") // Add Allergens
+                        ForEach(profileModel.allergens, id: \.self) { allergen in
+                            Text(allergen)
+                        }
+                        .onDelete(perform: deleteAllergen)
+                        Button(action: {
+                            showingAddAllergen.toggle()
+                        }) {
+                            HStack {
+                                Image(systemName: "allergens")
+                                Text("アレルゲンを選択") // Add Allergens
+                            }
+                        }
+                        .sheet(isPresented: $showingAddAllergen) {
+                            AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
                         }
                     }
-                    .sheet(isPresented: $showingAddAllergen) {
-                        AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
-                    }
-                }
             })
             .onSubmit {
                 switch focusedField1 {
@@ -174,12 +173,12 @@ struct ProfileView: View {
         }
     }
     private var cancelButton: some View {
-            Button(action: {
-                presentationMode.wrappedValue.dismiss()
-            }, label: {
-                Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
-            })
-        }
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }, label: {
+            Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
+        })
+    }
     private func deleteAllergen(at offsets: IndexSet) {
         profileModel.allergens.remove(atOffsets: offsets)
     }
