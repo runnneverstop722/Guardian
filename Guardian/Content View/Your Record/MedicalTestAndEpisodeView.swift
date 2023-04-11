@@ -261,7 +261,7 @@ struct MedicalTestAndEpisodeView: View {
             .navigationTitle(allergenName)
             .listStyle(InsetGroupedListStyle())
             .refreshable {
-                episodeModel.episodeInfo = []
+//                episodeModel.episodeInfo = []
                 episodeModel.fetchItemsFromCloud(complete: {})
                 
             }

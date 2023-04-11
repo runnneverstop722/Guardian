@@ -42,4 +42,27 @@ struct DiagnosisListModel: Identifiable, Hashable {
         caption5 = allergistComment
         self.record = record
     }
+    
+    init?(entity: DiagnosisEntity) {
+        let myRecord = CKRecord(recordType: "DiagnosisInfo", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        if let diagnosisPhoto = entity.diagnosisPhoto {
+            let urls = diagnosisPhoto.map {
+                let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let filePath = doc.appendingPathComponent($0)
+                let asset = CKAsset(fileURL: filePath)
+                return asset
+            }
+            myRecord["data"] = urls
+        }
+        myRecord["diagnosis"] = entity.diagnosis
+        myRecord["diagnosisDate"] = entity.diagnosisDate
+        myRecord["diagnosedHospital"] = entity.diagnosedHospital
+        myRecord["diagnosedAllergist"] = entity.diagnosedAllergist
+        myRecord["diagnosedAllergistComment"] = entity.diagnosedAllergistComment
+        myRecord["allergens"] = entity.allergens
+        let profileID = CKRecord.ID.init(recordName: entity.profileID!)
+        let reference = CKRecord.Reference(recordID: profileID, action: .deleteSelf)
+        myRecord["profile"] = reference as CKRecordValue
+        self.init(record: myRecord)
+    }
 }

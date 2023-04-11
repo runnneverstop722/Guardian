@@ -72,6 +72,12 @@ class PersistenceController {
             print("Could not delete from local cache. \(error), \(error.userInfo)")
         }
     }
+    
+    func addDiagnosis(record: CKRecord) {
+        let entity = DiagnosisEntity(context: container.viewContext)
+        entity.update(with: record)
+        saveContext()
+    }
 }
 
 extension ProfileInfoEntity {
@@ -118,5 +124,43 @@ extension AllergenEntity {
         self.totalNumberOfEpisodes = record["totalNumberOfEpisodesgender"] as? Int16 ?? 0
         self.totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int16 ?? 0
         self.creationDate = record.creationDate
+    }
+}
+
+extension DiagnosisEntity {
+    func update(with record: CKRecord) {
+        self.recordID = record.recordID.recordName
+        self.profileID = (record["profile"] as? CKRecord.Reference)?.recordID.recordName
+        self.allergens = record["allergens"] as? [String]
+        self.diagnosis = record["diagnosis"] as? String
+        self.diagnosisDate = record["diagnosisDate"] as? Date
+        self.diagnosedHospital = record["diagnosedHospital"] as? String
+        self.diagnosedAllergist = record["diagnosedAllergist"] as? String
+        self.diagnosedAllergistComment = record["diagnosedAllergistComment"] as? String
+        self.creationDate = record.creationDate
+        var imagePaths = [String]()
+        if let images = record["data"] as? [CKAsset] {
+            for image in images {
+                if let fileURL = image.fileURL,
+                   FileManager.default.fileExists(atPath: fileURL.path) {
+                    do {
+                        let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        let name = String(format: "%@.jpg", fileURL.lastPathComponent)
+                        let path = doc.appendingPathComponent(name)
+                        //                    if FileManager.default.fileExists(atPath: path.path) {
+                        //                        self.profileImageData = name
+                        //                    } else {
+                        //                    }
+                        try? FileManager.default.removeItem(at: path)
+                        try FileManager.default.copyItem(at: fileURL, to: path)
+                        imagePaths.append(name)
+                        print("save URL: ", path.path)
+                    } catch {
+                        
+                    }
+                }
+            }
+        }
+        self.diagnosisPhoto = imagePaths
     }
 }

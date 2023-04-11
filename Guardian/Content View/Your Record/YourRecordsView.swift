@@ -85,7 +85,11 @@ struct YourRecordsView: View {
                                 )
                             ).onReceive(existingDiagnosisData) { data in
                                 if let data = data.object as? DiagnosisListModel {
-                                    diagnosisModel.diagnosisInfo.insert(data, at: 0)
+                                    if let row = diagnosisModel.diagnosisInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
+                                        diagnosisModel.diagnosisInfo[row] = data
+                                    } else {
+                                        diagnosisModel.diagnosisInfo.insert(data, at: 0)
+                                    }
                                 } else {
                                     diagnosisModel.fetchItemsFromCloud()
                                 }
@@ -93,6 +97,7 @@ struct YourRecordsView: View {
                             .onAppear() {
                                 if !didLoad {
                                     didLoad = true
+                                    diagnosisModel.fetchItemsFromLocalCache()
                                     diagnosisModel.fetchItemsFromCloud {
                                         episodeModel.fetchItemsFromCloud {
                                             isLoading = false

@@ -30,4 +30,15 @@ struct AllergensListModel: Identifiable, Hashable {
         self.record = record
         //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }
+    
+    init?(entity: AllergenEntity) {
+        let myRecord = CKRecord(recordType: "Allergens", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        myRecord["allergen"] = entity.allergen
+        myRecord["totalNumberOfEpisodes"] = entity.totalNumberOfEpisodes
+        myRecord["totalNumberOfMedicalTests"] = entity.totalNumberOfMedicalTests
+        let recordID = CKRecord.ID.init(recordName: entity.profileID!)
+        let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
+        myRecord["profile"] = reference as CKRecordValue
+        self.init(record: myRecord)
+    }
 }

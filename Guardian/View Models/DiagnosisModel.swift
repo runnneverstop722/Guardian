@@ -25,6 +25,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
 
 @MainActor class DiagnosisModel: ObservableObject {
     
+    private let context = PersistenceController.shared.container.viewContext
     @Published var diagnosis: String = ""
     @Published var diagnosisDate = Date()
     @Published var diagnosedHospital: String = ""
@@ -178,18 +179,26 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         
     func updateDiagnosis() {
         let myRecord = record
+        CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
+            guard let record = record else { return }
+            DispatchQueue.main.sync {
+                self.updateDiagnosis(record: record)
+            }
+        }
+    }
+    func updateDiagnosis(record: CKRecord) {
         if let diagnosisPhoto = getImageURL(for: diagnosisImages) {
             let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
             }
-            myRecord["data"] = urls
+            record["data"] = urls
         }
 
-        myRecord["diagnosisDate"] = diagnosisDate
-        myRecord["diagnosedHospital"] = diagnosedHospital
-        myRecord["diagnosedAllergist"] = diagnosedAllergist
-        myRecord["diagnosedAllergistComment"] = diagnosedAllergistComment
-        myRecord["allergens"] = allergens
-        saveItem(record: myRecord)
+        record["diagnosisDate"] = diagnosisDate
+        record["diagnosedHospital"] = diagnosedHospital
+        record["diagnosedAllergist"] = diagnosedAllergist
+        record["diagnosedAllergistComment"] = diagnosedAllergistComment
+        record["allergens"] = allergens
+        saveItem(record: record)
     }
     
     
@@ -203,8 +212,6 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         allergens: [String],
         diagnosisPhoto: [URL]?
     ) {
-//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "DiagnosisInfo")
             if let diagnosisPhoto = diagnosisPhoto {
                 let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
@@ -246,12 +253,28 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             print("Error: \(String(describing: returnedError))")
             if let record = returnedRecord {
                 DispatchQueue.main.async {
-                   NotificationCenter.default.post(name: NSNotification.Name.init("removeDiagnosis"), object: DiagnosisListModel(record: record))
+                   NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: DiagnosisListModel(record: record))
+                    PersistenceController.shared.addDiagnosis(record: record)
                 }
             }
         }
     }
     
+    func fetchItemsFromLocalCache() {
+        let fetchRequest = DiagnosisEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "profileID == %@", record.recordID.recordName)
+        do {
+            let records = try context.fetch(fetchRequest)
+            for record in records {
+                if let object = DiagnosisListModel(entity: record) {
+                    self.diagnosisInfo.append(object)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+    }
     //MARK: - Fetching from CK Private DataBase Custom Zone
     
     func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
@@ -264,11 +287,14 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
         
-        self.diagnosisInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let member = DiagnosisListModel(record: returnedRecord) {
-                    self.diagnosisInfo.append(member)
+                    let existedObject = self.diagnosisInfo.first(where: { $0.record.recordID == returnedRecord.recordID
+                    })
+                    if existedObject == nil {
+                        self.diagnosisInfo.append(member)
+                    }
                 }
             }
         }
@@ -315,7 +341,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             DispatchQueue.main.async {
                 completion(error == nil)
                 if error == nil {
-                    NotificationCenter.default.post(name: NSNotification.Name.init("removeDiagnosis"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: nil)
                 }
             }
         }

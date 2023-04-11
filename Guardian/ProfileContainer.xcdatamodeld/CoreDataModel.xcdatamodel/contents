@@ -16,6 +16,24 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="DiagnosisEntity" representedClassName="DiagnosisEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="allergens" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="diagnosedAllergist" optional="YES" attributeType="String"/>
+        <attribute name="diagnosedAllergistComment" optional="YES" attributeType="String"/>
+        <attribute name="diagnosedHospital" optional="YES" attributeType="String"/>
+        <attribute name="diagnosis" optional="YES" attributeType="String"/>
+        <attribute name="diagnosisDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="diagnosisPhoto" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="profileID" optional="YES" attributeType="String"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="recordID"/>
+                <constraint value="profileID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="ProfileInfoEntity" representedClassName="ProfileInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergist" optional="YES" attributeType="String"/>
         <attribute name="allergistContactInfo" optional="YES" attributeType="String"/>

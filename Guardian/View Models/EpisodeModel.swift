@@ -13,6 +13,7 @@ import CloudKit
 @MainActor class EpisodeModel: ObservableObject {
     
     // MARK: - Episode Properties
+    private let context = PersistenceController.shared.container.viewContext
     
     @Published var episodeDate: Date = Date()
     @Published var firstKnownExposure: Bool = false
@@ -40,6 +41,7 @@ import CloudKit
     
     init(record: CKRecord) {
         self.record = record
+        fetchAllergenFromLocalCache()
         fetchAllergens()
     }
     
@@ -303,9 +305,6 @@ import CloudKit
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
         
-        DispatchQueue.main.async {
-            self.episodeInfo = []
-        }
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let episodeItem = EpisodeListModel(record: returnedRecord) {
@@ -338,9 +337,14 @@ import CloudKit
 
         self.allergens = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if let object = AllergensListModel(record: returnedRecord) {
-                    self.allergens.append(object)
+                    let existedObject = self.allergens.first(where: { $0.record.recordID == returnedRecord.recordID
+                    })
+                    if existedObject == nil {
+                        self.allergens.append(object)
+                        PersistenceController.shared.addAllergen(allergen: returnedRecord, profileID: record.recordID.recordName)
+                    }
                 }
             }
         }
@@ -348,6 +352,21 @@ import CloudKit
             print("RETURNED Allergens queryResultBlock")
         }
         addOperation(operation: queryOperation)
+    }
+    func fetchAllergenFromLocalCache() {
+        let fetchRequest = AllergenEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "profileID == %@", record.recordID.recordName)
+        do {
+            let records = try context.fetch(fetchRequest)
+            for record in records {
+                if let object = AllergensListModel(entity: record) {
+                    self.allergens.append(object)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
     }
     
     func fetchStoredImages() {
