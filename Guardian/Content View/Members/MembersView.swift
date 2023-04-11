@@ -8,6 +8,7 @@ struct MembersView: View {
     @StateObject var profileModel: ProfileModel
     @State private var isMainUserSettingPresented = false
     @State private var isUpdate = false
+    @State private var showDeleteAlert = false
     @State private var editItem: MemberListModel?
     @State private var deleteItem: MemberListModel?
     @Environment(\.presentationMode) var presentationMode
@@ -36,20 +37,49 @@ struct MembersView: View {
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         deleteItem = item
+                        showDeleteAlert = true
                     } label: {
                         Label("Delete", systemImage: "trash.fill")
                     }
                 }
             }
             .onMove(perform: move(fromOffsets:toOffset:))
-            .alert(item: $deleteItem, content: { item in
-                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
-                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
-                    }
-                }, secondaryButton: .cancel(Text("キャンセル")))
-                
-            })
+            .onDelete { indexSet in
+                indexSet.forEach { index in
+                    deleteItem = profileModel.profileInfo[index]
+                    showDeleteAlert = true
+                }
+            }
         }
+        
+//            .alert(item: $deleteItem, content: { item in
+//                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
+//                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
+//                    }
+//                }, secondaryButton: .cancel(Text("キャンセル")))
+//
+//            })
+//        }
+            .alert(item: $deleteItem) { item in
+                Alert(
+                    title: Text("このメンバーを削除しますか？"),
+                    message: Text(""),
+                    primaryButton: .destructive(Text("削除")) {
+                        profileModel.deleteItemsFromCloud(record: item.record) { _ in
+                            // Delete was successful, hide the alert and remove the item from the list
+                            deleteItem = nil
+                            if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
+                                withAnimation {
+                                    profileModel.profileInfo.remove(at: index)
+                                }
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel(Text("キャンセル")) {
+                        showDeleteAlert = false
+                    }
+                )
+            }
         .refreshable {
 //            profileModel.profileInfo = []
             profileModel.fetchItemsFromCloud()
