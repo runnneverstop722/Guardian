@@ -17,6 +17,7 @@ struct EpisodeListModel: Identifiable, Hashable {
     let caption2: String
     let caption3: String
     let caption4: String
+    let caption5: String
     let record: CKRecord
     
     init?(record: CKRecord) {
@@ -24,7 +25,8 @@ struct EpisodeListModel: Identifiable, Hashable {
               let firstKnownExposure = record["firstKnownExposure"] as? Bool,
               let wentToHospital = record["wentToHospital"] as? Bool,
               let typeOfExposure = record["typeOfExposure"] as? [String],
-              let symptoms = record["symptoms"] as? [String] else {
+              let symptoms = record["symptoms"] as? [String],
+              let didExercise = record["didExercise"] as? Bool else {
             return nil
         }
         let dateFormatter = DateFormatter()
@@ -36,6 +38,7 @@ struct EpisodeListModel: Identifiable, Hashable {
         caption2 = wentToHospital ? "外来済" : ""
         caption3 = typeOfExposure.joined(separator: ", ")
         caption4 = symptoms.joined(separator: ", ")
+        caption5 = didExercise ? "運動後" : ""
         self.record = record
         //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }

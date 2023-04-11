@@ -22,6 +22,7 @@ import CloudKit
     @Published var symptoms: [String] = []
     @Published var skinSymptoms: [String] = []
     @Published var leadTimeToSymptoms: String = "5分以内"
+    @Published var didExercise: Bool = false
     @Published var treatments: [String] = []
     @Published var otherTreatment: String = ""
     @Published var data: [Data] = []
@@ -47,7 +48,8 @@ import CloudKit
         guard let episodeDate = episode["episodeDate"] as? Date,
               let firstKnownExposure = episode["firstKnownExposure"] as? Bool,
               let wentToHospital = episode["wentToHospital"] as? Bool,
-              let leadTimeToSymptoms = episode["leadTimeToSymptoms"] as? String
+              let leadTimeToSymptoms = episode["leadTimeToSymptoms"] as? String,
+              let didExercise = episode["didExercise"] as? Bool
         else {
             return
         }
@@ -68,6 +70,7 @@ import CloudKit
         self.symptoms = symptoms ?? [""]
         self.skinSymptoms = skinSymptoms ?? [""]
         self.leadTimeToSymptoms = leadTimeToSymptoms
+        self.didExercise = didExercise
         self.treatments = treatments ?? [""]
         self.otherTreatment = otherTreatment ?? ""
         isUpdated = true
@@ -178,6 +181,7 @@ import CloudKit
                 intakeAmount: intakeAmount,
                 symptoms: symptoms,
                 leadTimeToSymptoms: leadTimeToSymptoms,
+                didExercise: didExercise,
                 treatments: treatments,
                 otherTreatment: otherTreatment,
                 episodePhoto: getImageURL(for: episodeImages)
@@ -201,6 +205,7 @@ import CloudKit
         myRecord["intakeAmount"] = intakeAmount
         myRecord["symptoms"] = symptoms
         myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
+        myRecord["didExercise"] = didExercise
         myRecord["treatments"] = treatments
         myRecord["otherTreatment"] = otherTreatment
         updateRecord(record: myRecord)
@@ -214,6 +219,7 @@ import CloudKit
         intakeAmount: String,
         symptoms: [String],
         leadTimeToSymptoms: String,
+        didExercise: Bool,
         treatments: [String],
         otherTreatment: String,
         episodePhoto: [URL]?
@@ -233,6 +239,7 @@ import CloudKit
             myRecord["intakeAmount"] = intakeAmount
             myRecord["symptoms"] = symptoms
             myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
+            myRecord["didExercise"] = didExercise
             myRecord["treatments"] = treatments
             myRecord["otherTreatment"] = otherTreatment
             let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)

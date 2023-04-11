@@ -208,7 +208,7 @@ struct MedicalTestAndEpisodeView: View {
                         ForEach(episodeModel.episodeInfo, id: \.self) { item in
                             NavigationLink(
                                 destination: EpisodeView(episode: item.record),
-                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4)
+                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
                                 })
                         }
                         Button(action: {
@@ -298,6 +298,7 @@ extension MedicalTestAndEpisodeView {
         let caption2: String
         let caption3: String
         let caption4: String
+        let caption5: String
         
         var body: some View {
             VStack {
@@ -310,6 +311,9 @@ extension MedicalTestAndEpisodeView {
                     }
                     if !caption2.isEmpty {
                         Text(caption2)
+                    }
+                    if !caption5.isEmpty {
+                        Text(caption5)
                     }
                 }
                 if !caption3.isEmpty {

@@ -55,8 +55,8 @@ struct EpisodeView: View {
         Form {
             DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: .date)
                 .environment(\.locale, Locale(identifier: "ja_JP"))
-            Toggle("初症状ですか？", isOn: $episodeModel.firstKnownExposure)
-            Toggle("病院で受診しましたか？", isOn: $episodeModel.wentToHospital)
+            Toggle("初症状だった", isOn: $episodeModel.firstKnownExposure)
+            Toggle("病院で受診した", isOn: $episodeModel.wentToHospital)
             
             
             Section(header: Text("接触タイプ（複数選択可）")
@@ -109,7 +109,9 @@ struct EpisodeView: View {
                             Text($0)
                         }
                     }
+                    Toggle("運動後だった", isOn: $episodeModel.didExercise)
                 }
+            
             
             Section(header: Text("取った対応（複数選択可）")
                 .font(.headline)) {
