@@ -153,7 +153,8 @@ struct YourRecordsView: View {
                     }
                 }
             }
-            
+//            .listStyle(PlainListStyle())
+//            .listStyle(GroupedListStyle())
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(selectedMemberName)
             .toolbar {

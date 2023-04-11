@@ -9,10 +9,14 @@
 import SwiftUI
 
 struct Awareness: View {
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
+        GeometryReader { geometry in
             ZStack {
                 LinearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom)
-//                    .ignoresSafeArea()
+//                    .edgesIgnoringSafeArea(.all)
+                
                 VStack(spacing: 20) {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
@@ -46,12 +50,12 @@ struct Awareness: View {
                     Spacer()
                 }
                 .padding(.horizontal)
+                
+                if appState.isAwarenessTabDisabled {
+                    NoticeView()
+                        .frame(width: geometry.size.width, height: geometry.size.height - geometry.safeAreaInsets.top)
+                }
             }
-        }	
-}
-
-struct Awareness_Previews: PreviewProvider {
-    static var previews: some View {
-        Awareness()
+        }
     }
 }
