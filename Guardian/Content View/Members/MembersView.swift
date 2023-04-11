@@ -51,7 +51,7 @@ struct MembersView: View {
             })
         }
         .refreshable {
-            profileModel.profileInfo = []
+//            profileModel.profileInfo = []
             profileModel.fetchItemsFromCloud()
         }
         .listStyle(.plain)
@@ -84,7 +84,11 @@ struct MembersView: View {
                 profileModel.profileInfo.removeAll { $0.record.recordID == data
                 }
             } else if let data = data.object as? MemberListModel {
-                profileModel.profileInfo.append(data)
+                if let row = profileModel.profileInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
+                    profileModel.profileInfo[row] = data
+                } else {
+                    profileModel.profileInfo.append(data)
+                }
             }
         }
     }

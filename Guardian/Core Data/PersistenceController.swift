@@ -18,6 +18,11 @@ class PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        let description = NSPersistentStoreDescription()
+        description.shouldInferMappingModelAutomatically = true
+        description.shouldMigrateStoreAutomatically = true
+        description.url = NSPersistentContainer.defaultDirectoryURL() .appendingPathComponent("ProfileContainer.sqlite")
+        container.persistentStoreDescriptions = [description]
         container.viewContext.mergePolicy = NSMergePolicy.overwrite
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -57,10 +62,25 @@ extension ProfileInfoEntity {
         self.allergist = record["allergist"] as? String
         self.allergistContactInfo = record["allergistContactInfo"] as? String
         self.creationDate = record.creationDate
-        if let profileImage = record["profileImage"] as? CKAsset {
-            self.profileImageData = profileImage.fileURL?.absoluteString
-            print("save URL: ", profileImage.fileURL?.absoluteString)
-        } else {            
+        if let profileImage = record["profileImage"] as? CKAsset, let fileURL = profileImage.fileURL {
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                do {
+                    let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    let name = String(format: "%@.jpg", self.recordID!)
+                    let path = doc.appendingPathComponent(name)
+//                    if FileManager.default.fileExists(atPath: path.path) {
+//                        self.profileImageData = name
+//                    } else {
+//                    }
+                    try? FileManager.default.removeItem(at: path)
+                    try FileManager.default.copyItem(at: fileURL, to: path)
+                    self.profileImageData = name
+                    print("save URL: ", path.path)
+                } catch {
+                    
+                }
+            }
+        } else {
             self.profileImageData = nil
         }
     }

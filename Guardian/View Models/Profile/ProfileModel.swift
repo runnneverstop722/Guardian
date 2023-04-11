@@ -35,7 +35,7 @@ import CoreData
     var isUpdated: Bool = false
     
     init() {
-//        fetchItemsFromLocalCache()
+        fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
     init(profile: CKRecord) {
@@ -95,9 +95,9 @@ import CoreData
             }
         }
 
-        func deleteFromLocalCache(_ profileInfo: MemberListModel) {
+        func deleteFromLocalCache(_ recordID: String) {
             let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
-            fetchRequest.predicate = NSPredicate(format: "recordID == %@", profileInfo.record.recordID.recordName)
+            fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
 
             do {
                 let fetchedItems = try context.fetch(fetchRequest)
@@ -209,7 +209,7 @@ import CoreData
     
     func getImageURL(for data: Data?) -> URL? {
         let documentsDirectoryPath:NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
-        let tempImageName = "tempImage.jpg"
+        let tempImageName = String(format: "%@.jpg", UUID().uuidString)
         var imageURL: URL?
         
         if let data = data {
@@ -319,12 +319,11 @@ import CoreData
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
             if let record = returnedRecord {
+                let object = MemberListModel(record: record)
                 DispatchQueue.main.async {
-                    if !self.isUpdated {
-                        NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: MemberListModel(record: record))
-                    }
-                    PersistenceController.shared.addProfile(profile: record)
+                    NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: object)
                 }
+                PersistenceController.shared.addProfile(profile: record)
             }
             completion(returnedRecord?.recordID)
         }
@@ -366,24 +365,32 @@ import CoreData
     
     func updateItem() {
         guard let myRecord = record else { return }
+        CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
+            guard let record = record else { return }
+            DispatchQueue.main.sync {
+                self.updateRecord(record: record)
+            }
+        }
+    }
+    
+    private func updateRecord(record: CKRecord) {
         if let profileImage = getImageURL(for: data) {
             let url = CKAsset(fileURL: profileImage)
-            myRecord["profileImage"] = url
+            record["profileImage"] = url
         }
-        myRecord["firstName"] = firstName
-        myRecord["lastName"] = lastName
-        myRecord["gender"] = gender.rawValue
-        myRecord["birthDate"] = birthDate
-        myRecord["hospitalName"] = hospitalName
-        myRecord["allergist"] = allergist
-        myRecord["allergistContactInfo"] = allergistContactInfo
+        record["firstName"] = firstName
+        record["lastName"] = lastName
+        record["gender"] = gender.rawValue
+        record["birthDate"] = birthDate
+        record["hospitalName"] = hospitalName
+        record["allergist"] = allergist
+        record["allergistContactInfo"] = allergistContactInfo
         //            myRecord["allergens"] = allergens
-        saveItem(record: myRecord) { [weak self, allergens] recordID in
+        saveItem(record: record) { [weak self, allergens] recordID in
             guard let recordID = recordID else { return }
             self?.updateSaveAllergens(recordID: recordID, allergens: allergens)
         }
     }
-    
     
     //MARK: - DELETE CK @CK Private DataBase Custom Zone
     
@@ -393,9 +400,13 @@ import CoreData
                 completion(error == nil)
                 if error == nil {
                     NotificationCenter.default.post(name: NSNotification.Name.init("updateProfile"), object: recordID)
+                    self.deleteFromLocalCache(recordID!.recordName)
                 }
             }
         }
     }
 
 }
+//extension DispatchQueue : Sendable { }
+
+

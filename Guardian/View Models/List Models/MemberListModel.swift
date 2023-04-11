@@ -47,8 +47,10 @@ struct MemberListModel: Identifiable, Hashable {
     
     init?(entity: ProfileInfoEntity) {
         let myRecord = CKRecord(recordType: "ProfileInfo", recordID: CKRecord.ID.init(recordName: entity.recordID!))
-        if let profileImage = entity.profileImageData, let url = URL(string: profileImage) {
-            let url = CKAsset(fileURL: url)
+        if let profileImage = entity.profileImageData {
+            let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let filePath = doc.appendingPathComponent(profileImage)
+            let url = CKAsset(fileURL: filePath)
             myRecord["profileImage"] = url
         }
         myRecord["firstName"] = entity.firstName
