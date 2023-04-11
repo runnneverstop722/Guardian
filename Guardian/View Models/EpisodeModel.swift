@@ -291,7 +291,7 @@ import CloudKit
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
         let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh

@@ -276,7 +276,7 @@ struct BloodTestSection: View {
                 })
             }
             Button(action: {
-                bloodTests.append(BloodTest())
+                bloodTests.insert(BloodTest(), at: 0) // Add new record at the top
             }) {
                 HStack {
                     Spacer()
@@ -318,7 +318,7 @@ struct SkinTestSection: View {
             }
             
             Button(action: {
-                skinTests.append(SkinTest())
+                skinTests.insert(SkinTest(), at: 0) // Add new record at the top
             }) {
                 HStack {
                     Spacer()
@@ -360,7 +360,7 @@ struct OralFoodChallengeSection: View {
             }
             
             Button(action: {
-                oralFoodChallenges.append(OralFoodChallenge())
+                oralFoodChallenges.insert(OralFoodChallenge(), at: 0) // Add new record at the top                
             }) {
                 HStack {
                     Spacer()
