@@ -178,8 +178,11 @@ struct DiagnosisView: View {
                     Alert(title: Text("診断記録を削除しますか？"),
                           message: Text(""), // Delete this diagnosis, are you sure?
                           primaryButton: .destructive(Text("削除")) {
-                        diagnosisModel.deleteRecord(record: diagnosisModel.record)
-                        dismiss.callAsFunction()
+                        diagnosisModel.deleteItemsFromCloud { isSuccess in
+                            if isSuccess {
+                                dismiss.callAsFunction()
+                            }
+                        }
                         
 //                        diagnosisModel.deleteItemsFromCloud { isSuccess in
 //                            if isSuccess {
