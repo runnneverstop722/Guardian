@@ -54,7 +54,7 @@ struct MedicalTestAndEpisodeView: View {
         
         //MARK: - Blood
         let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
-        bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
         dispatchWork.enter()
         bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -68,7 +68,7 @@ struct MedicalTestAndEpisodeView: View {
             print("RETURNED 'Blood Test' queryResultBlock")
             DispatchQueue.main.async {
                 self.mediacalTest.bloodTest = self.mediacalTest.bloodTest.sorted(by: { item1, item2 in
-                    return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedAscending
+                    return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedDescending
                 })
                 dispatchWork.leave()
             }
@@ -78,7 +78,7 @@ struct MedicalTestAndEpisodeView: View {
         //MARK: - Skin
         
         let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
-        skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
         dispatchWork.enter()
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -92,7 +92,7 @@ struct MedicalTestAndEpisodeView: View {
             print("RETURNED 'Skin Test' queryResultBlock")
             DispatchQueue.main.async {
                 self.mediacalTest.skinTest = self.mediacalTest.skinTest.sorted(by: { item1, item2 in
-                    return item1.skinTestDate.compare(item2.skinTestDate) == .orderedAscending
+                    return item1.skinTestDate.compare(item2.skinTestDate) == .orderedDescending
                 })
                 dispatchWork.leave()
             }
@@ -102,7 +102,7 @@ struct MedicalTestAndEpisodeView: View {
         //MARK: - OFC
         dispatchWork.enter()
         let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
-        OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
         
@@ -117,7 +117,7 @@ struct MedicalTestAndEpisodeView: View {
             print("RETURNED 'Oral Food Challenge' queryResultBlock")
             DispatchQueue.main.async {
                 self.mediacalTest.oralFoodChallenge = self.mediacalTest.oralFoodChallenge.sorted(by: { item1, item2 in
-                    return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedAscending
+                    return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedDescending
                 })
                 dispatchWork.leave()
             }
