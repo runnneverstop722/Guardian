@@ -56,37 +56,10 @@ struct YourRecordsView: View {
                                 NavigationLink(
                                     destination: DiagnosisView(record: item.record),
                                     label: {
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Text(item.headline)
-                                                Spacer()
-                                                Text(item.caption1)
-                                            }
-                                            .foregroundColor(.blue)
-                                            Text(item.caption2.joined(separator: ", "))
-                                                .font(.subheadline)
-                                            HStack {
-                                                if !item.caption3.isEmpty {
-                                                    Text(item.caption3)
-                                                }
-                                                if !item.caption4.isEmpty {
-                                                    Text("/")
-                                                    Text(item.caption4)
-                                                }
-                                            }
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                            if !item.caption5.isEmpty {
-                                                Text(item.caption5)
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.secondary)
-                                            }
-                                        }
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
+                                        DiagnosisListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
                                     })
                             }
-
+                            
                             Button(action: {
                                 isAddingNewDiagnosis = true
                             }) {
@@ -140,7 +113,7 @@ struct YourRecordsView: View {
                                 NavigationLink(
                                     destination: MedicalTestAndEpisodeView(allergen: item.record),
                                     label: {
-                                        AllergensListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2)
+                                        AllergensListRow(headline: item.headline, medicalTests: item.caption1, episodes: item.caption2)
                                     })
                             }
                         }
@@ -176,37 +149,105 @@ struct YourRecordsView: View {
         }
     }
 }
-
 extension YourRecordsView {
-    struct AllergensListRow: View {
+    struct DiagnosisListRow: View {
         let headline: String
         let caption1: String
-        let caption2: String
+        let caption2: [String]
+        let caption3: String
+        let caption4: String
+        let caption5: String
         
         var body: some View {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(headline)
-                }
-                .font(.body)
-                .foregroundColor(.accentColor)
-                HStack(spacing: 16.0) {
-                    Image(systemName: "cross.case")
-                    Text("医療検査:") // Medical Tests
+                        .font(.headline)
+                        .foregroundColor(.accentColor)
+                    Spacer()
                     Text(caption1)
-                    Text(" | ")
-                    Image(systemName: "note.text")
-                    Text("発症:") // Episodes
-                    Text(caption2)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
                 }
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+                Text(caption2.joined(separator: ", "))
+                    .font(.subheadline)
+                    .foregroundColor(.primary)
+                HStack {
+                    if !caption3.isEmpty {
+                        Text("・病院: ")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
+                        Text(caption3)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
+                    if !caption4.isEmpty {
+                        Text("|")
+                            .foregroundColor(.secondary)
+                        Text("・担当医: ")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                            .fontWeight(.semibold)
+                        Text(caption4)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
+                }
+                if !caption5.isEmpty {
+                    Text(caption5)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)       
+                }
             }
+            .lineLimit(1)
+            .truncationMode(.tail)
             .lineSpacing(10)
         }
     }
 }
 
+extension YourRecordsView {
+    struct AllergensListRow: View {
+        let headline: String
+        let medicalTests: String
+        let episodes: String
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(headline)
+                    .font(.headline)
+                    .foregroundColor(.accentColor)
+
+                HStack(spacing: 16.0) {
+                    Image(systemName: "cross.case")
+                        .foregroundColor(.secondary)
+                    Text("医療検査:") // Medical Tests
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .fontWeight(.semibold)
+                    Text(medicalTests)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                    
+                    Text(" | ")
+                        .foregroundColor(.secondary)
+                    
+                    Image(systemName: "note.text")
+                        .foregroundColor(.secondary)
+                    Text("発症:") // Episodes
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .fontWeight(.semibold)
+                    Text(episodes)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                }
+            }
+            .lineSpacing(10)
+        }
+    }
+}
 struct ActivityIndicator: UIViewRepresentable {
     
     @Binding var isAnimating: Bool
