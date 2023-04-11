@@ -38,9 +38,9 @@ struct EpisodeView: View {
     //        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: allergen))
     //    }
     //
-    init(episode: CKRecord) {
-        self.allergen = episode
-        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: episode))
+    init(allergen: CKRecord, episode: CKRecord) {
+        self.allergen = allergen
+        _episodeModel = StateObject(wrappedValue: EpisodeModel(allergen: allergen, episode: episode))
         _isUpdate = State(wrappedValue: true)
     }
     

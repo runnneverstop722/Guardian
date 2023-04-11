@@ -37,15 +37,18 @@ import CloudKit
     @Published var treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
     
     let record: CKRecord
+    let allergen: CKRecord
     var isUpdated: Bool = false
     
     init(record: CKRecord) {
+        self.allergen = record
         self.record = record
         fetchAllergenFromLocalCache()
         fetchAllergens()
     }
     
-    init(episode: CKRecord) {
+    init(allergen: CKRecord, episode: CKRecord) {
+        self.allergen = allergen
         record = episode
         guard let episodeDate = episode["episodeDate"] as? Date,
               let firstKnownExposure = episode["firstKnownExposure"] as? Bool,
@@ -244,14 +247,15 @@ import CloudKit
             myRecord["didExercise"] = didExercise
             myRecord["treatments"] = treatments
             myRecord["otherTreatment"] = otherTreatment
-            let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             saveItem(record: myRecord)
             // Counting `totalNumberOfEpisodes`
-            let totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int ?? 0
-            let totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int ?? 0
-            record["totalNumberOfEpisodes"]  = totalNumberOfEpisodes + 1
-            updateRecord(record: record)
+            let totalNumberOfEpisodes = allergen["totalNumberOfEpisodes"] as? Int ?? 0
+            allergen["totalNumberOfEpisodes"]  = totalNumberOfEpisodes + 1
+            updateRecord(record: allergen)
+            NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
+            PersistenceController.shared.addAllergen(allergen: allergen)
         }
     
     func updateRecord(record: CKRecord) {
@@ -262,13 +266,19 @@ import CloudKit
     
     func deleteRecord(record: CKRecord) {
         if record.recordType == "EpisodeInfo" {
-            let allergen = record
-            allergen["totalNumberOfEpisodes"] = episodeInfo.count - 1
+            allergen["totalNumberOfEpisodes"] = max(episodeInfo.count - 1, 0)
             CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
             }
+            PersistenceController.shared.addAllergen(allergen: allergen)
+            NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
+            PersistenceController.shared.deleteEpisode(recordID: record.recordID.recordName)
         }
-        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { _, _ in
-            
+        CKContainer.default().privateCloudDatabase.delete(withRecordID: record.recordID) { recordID, error in
+            if error == nil {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name.init("existingEpisodeData"), object: recordID)
+                }
+            }
         }
     }
     
@@ -289,6 +299,12 @@ import CloudKit
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let record = returnedRecord {
+                DispatchQueue.main.async {
+                   NotificationCenter.default.post(name: NSNotification.Name.init("existingEpisodeData"), object: EpisodeListModel(record: record))
+                    PersistenceController.shared.addEpisode(record: record)
+                }
+            }
         }
     }
     
@@ -335,7 +351,7 @@ import CloudKit
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.queuePriority = .veryHigh
 
-        self.allergens = []
+//        self.allergens = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async { [self] in
                 if let object = AllergensListModel(record: returnedRecord) {
@@ -343,7 +359,7 @@ import CloudKit
                     })
                     if existedObject == nil {
                         self.allergens.append(object)
-                        PersistenceController.shared.addAllergen(allergen: returnedRecord, profileID: record.recordID.recordName)
+                        PersistenceController.shared.addAllergen(allergen: returnedRecord)
                     }
                 }
             }
@@ -352,6 +368,21 @@ import CloudKit
             print("RETURNED Allergens queryResultBlock")
         }
         addOperation(operation: queryOperation)
+    }
+    func fetchItemsFromLocalCache() {
+        let fetchRequest = EpisodeEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "allergenID == %@", record.recordID.recordName)
+        do {
+            let records = try context.fetch(fetchRequest)
+            for record in records {
+                if let object = EpisodeListModel(entity: record) {
+                    self.episodeInfo.append(object)
+                }
+            }
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
     }
     func fetchAllergenFromLocalCache() {
         let fetchRequest = AllergenEntity.fetchRequest()

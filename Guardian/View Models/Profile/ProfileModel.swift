@@ -157,7 +157,7 @@ import CoreData
                         self.allergens.append(object.allergen)
                         self.allergensObject.append(object)
                     }
-                    PersistenceController.shared.addAllergen(allergen: object.record, profileID: recordID.recordName)
+                    PersistenceController.shared.addAllergen(allergen: object.record)
                 }
             }
         }
@@ -334,9 +334,8 @@ import CoreData
             
             let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
             myRecord["profile"] = reference as CKRecordValue
-            print("profileID: ", recordID.recordName)
             saveAllergen(record: myRecord)
-            PersistenceController.shared.addAllergen(allergen: myRecord, profileID: recordID.recordName)
+            PersistenceController.shared.addAllergen(allergen: myRecord)
         }
     }
     

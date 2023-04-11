@@ -42,4 +42,31 @@ struct EpisodeListModel: Identifiable, Hashable {
         self.record = record
         //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }
+    
+    init?(entity: EpisodeEntity) {
+        let myRecord = CKRecord(recordType: "EpisodeInfo", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        if let diagnosisPhoto = entity.episodePhoto {
+            let urls = diagnosisPhoto.map {
+                let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let filePath = doc.appendingPathComponent($0)
+                let asset = CKAsset(fileURL: filePath)
+                return asset
+            }
+            myRecord["data"] = urls
+        }
+        myRecord["episodeDate"] = entity.episodeDate
+        myRecord["firstKnownExposure"] = entity.firstKnownExposure
+        myRecord["wentToHospital"] = entity.wentToHospital
+        myRecord["typeOfExposure"] = entity.typeOfExposure
+        myRecord["intakeAmount"] = entity.intakeAmount
+        myRecord["symptoms"] = entity.symptoms
+        myRecord["leadTimeToSymptoms"] = entity.leadTimeToSymptoms
+        myRecord["didExercise"] = entity.didExercise
+        myRecord["treatments"] = entity.treatments
+        myRecord["otherTreatment"] = entity.otherTreatment
+        let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
+        let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
+        myRecord["allergen"] = reference as CKRecordValue
+        self.init(record: myRecord)
+    }
 }

@@ -34,6 +34,22 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="EpisodeEntity" representedClassName="EpisodeEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="allergenID" optional="YES" attributeType="String"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="didExercise" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="episodeDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="episodePhoto" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="firstKnownExposure" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="intakeAmount" optional="YES" attributeType="String"/>
+        <attribute name="leadTimeToSymptoms" optional="YES" attributeType="String"/>
+        <attribute name="otherTreatment" optional="YES" attributeType="String"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
+        <attribute name="symptoms" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="treatments" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="typeOfExposure" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="wentToHospital" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    </entity>
     <entity name="ProfileInfoEntity" representedClassName="ProfileInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergist" optional="YES" attributeType="String"/>
         <attribute name="allergistContactInfo" optional="YES" attributeType="String"/>

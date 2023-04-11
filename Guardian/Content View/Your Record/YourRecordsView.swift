@@ -23,6 +23,7 @@ struct YourRecordsView: View {
     @State private var didLoad = false
     let profile: CKRecord
     let existingDiagnosisData = NotificationCenter.default.publisher(for: Notification.Name("existingDiagnosisData"))
+    let existingAllergenData = NotificationCenter.default.publisher(for: Notification.Name("existingAllergenData"))
     
     var profileImage: UIImage {
         if let asset = profile["profileImage"] as? CKAsset, let fileURL = asset.fileURL, let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
@@ -112,6 +113,21 @@ struct YourRecordsView: View {
                                         }
                                     }
                                 }
+                                .onReceive(existingAllergenData) { data in
+                                    if let data = data.object as? AllergensListModel {
+                                        let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID
+                                        }
+                                        if let index = index {
+                                            episodeModel.allergens[index] = data
+                                        } else {
+                                            episodeModel.allergens.insert(data, at: 0)
+                                        }
+                                    } else if let recordID = data.object as? CKRecord.ID {
+                                        diagnosisModel.diagnosisInfo.removeAll {
+                                            $0.record.recordID == recordID
+                                        }
+                                    }
+                                }
                                 .onAppear() {
                                     if !didLoad {
                                         didLoad = true
@@ -138,14 +154,14 @@ struct YourRecordsView: View {
                                 })
                             }
                 }
-                .refreshable {
-                    isLoading = true
-                    diagnosisModel.fetchItemsFromCloud {
-                        episodeModel.fetchItemsFromCloud {
-                            isLoading = false
-                        }
-                    }
-                }
+//                .refreshable {
+//                    isLoading = true
+//                    diagnosisModel.fetchItemsFromCloud {
+//                        episodeModel.fetchItemsFromCloud {
+//                            isLoading = false
+//                        }
+//                    }
+//                }
 //                            .listStyle(PlainListStyle())
                 //            .listStyle(GroupedListStyle())
                 //            .listStyle(InsetGroupedListStyle())

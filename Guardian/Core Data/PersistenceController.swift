@@ -52,9 +52,9 @@ class PersistenceController {
         }
     }
     
-    func addAllergen(allergen: CKRecord, profileID: String) {
+    func addAllergen(allergen: CKRecord) {
         let entity = AllergenEntity(context: container.viewContext)
-        entity.update(with: allergen, profileID: profileID)
+        entity.update(with: allergen)
         saveContext()
     }
     
@@ -81,6 +81,27 @@ class PersistenceController {
     
     func deleteDiagnosis(recordID: String) {
         let fetchRequest = DiagnosisEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+
+        do {
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Could not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func addEpisode(record: CKRecord) {
+        let entity = EpisodeEntity(context: container.viewContext)
+        entity.update(with: record)
+        saveContext()
+    }
+    
+    func deleteEpisode(recordID: String) {
+        let fetchRequest = EpisodeEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
 
         do {
@@ -132,11 +153,11 @@ extension ProfileInfoEntity {
 }
 
 extension AllergenEntity {
-    func update(with record: CKRecord, profileID: String) {
+    func update(with record: CKRecord) {
         self.recordID = record.recordID.recordName
         self.allergen = record["allergen"] as? String
-        self.profileID = profileID
-        self.totalNumberOfEpisodes = record["totalNumberOfEpisodesgender"] as? Int16 ?? 0
+        self.profileID = (record["profile"] as? CKRecord.Reference)?.recordID.recordName
+        self.totalNumberOfEpisodes = record["totalNumberOfEpisodes"] as? Int16 ?? 0
         self.totalNumberOfMedicalTests = record["totalNumberOfMedicalTests"] as? Int16 ?? 0
         self.creationDate = record.creationDate
     }
@@ -177,5 +198,43 @@ extension DiagnosisEntity {
             }
         }
         self.diagnosisPhoto = imagePaths
+    }
+}
+extension EpisodeEntity {
+    func update(with record: CKRecord) {
+        self.recordID = record.recordID.recordName
+        self.allergenID = (record["allergen"] as? CKRecord.Reference)?.recordID.recordName
+        self.creationDate = record.creationDate
+        episodeDate = record["episodeDate"] as? Date
+        firstKnownExposure = record["firstKnownExposure"] as? Bool ?? false
+        wentToHospital = record["wentToHospital"] as? Bool ?? false
+        typeOfExposure = record["typeOfExposure"] as? [String]
+        symptoms = record["symptoms"] as? [String]
+        leadTimeToSymptoms = record["leadTimeToSymptoms"] as? String
+        didExercise = record["didExercise"] as? Bool ?? false
+        var imagePaths = [String]()
+        if let images = record["data"] as? [CKAsset] {
+            for image in images {
+                if let fileURL = image.fileURL,
+                   FileManager.default.fileExists(atPath: fileURL.path) {
+                    do {
+                        let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        let name = String(format: "%@.jpg", fileURL.lastPathComponent)
+                        let path = doc.appendingPathComponent(name)
+                        //                    if FileManager.default.fileExists(atPath: path.path) {
+                        //                        self.profileImageData = name
+                        //                    } else {
+                        //                    }
+                        try? FileManager.default.removeItem(at: path)
+                        try FileManager.default.copyItem(at: fileURL, to: path)
+                        imagePaths.append(name)
+                        print("save URL: ", path.path)
+                    } catch {
+                        
+                    }
+                }
+            }
+        }
+        self.episodePhoto = imagePaths
     }
 }

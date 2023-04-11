@@ -125,12 +125,13 @@ struct MedicalTestAndEpisodeView: View {
         
         addOperation(operation: OFCQueryOperation)
         
-        dispatchWork.enter()
-        episodeModel.fetchItemsFromCloud {
-            DispatchQueue.main.async {
-                dispatchWork.leave()
-            }
-        }
+//        dispatchWork.enter()
+//        episodeModel.fetchItemsFromCloud {
+//            DispatchQueue.main.async {
+//                dispatchWork.leave()
+//            }
+//        }
+        episodeModel.fetchItemsFromLocalCache()
         
         dispatchWork.notify(queue: DispatchQueue.main) {
             isLoading = false
@@ -220,13 +221,14 @@ struct MedicalTestAndEpisodeView: View {
                     .padding(.top)) {
                         ForEach(episodeModel.episodeInfo, id: \.self) { item in
                             NavigationLink(
-                                destination: EpisodeView(episode: item.record),
+                                destination: EpisodeView(allergen: episodeModel.allergen, episode: item.record),
                                 label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
                                 })
                         }
-                        Button(action: {
-                            showEpisodeView = true
-                        }) {
+                        ZStack {
+                           NavigationLink(destination: EpisodeView(record: allergen)) {
+                               EmptyView()
+                           }
                             HStack {
                                 Spacer()
                                 Image(systemName: "plus.circle.fill")
@@ -240,19 +242,19 @@ struct MedicalTestAndEpisodeView: View {
                             .cornerRadius(10)
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .background(
-                            NavigationLink(
-                                destination: EpisodeView(record: allergen),
-                                isActive: $isAddingNewEpisode,
-                                label: {}
-                            )
-                        )
                         .onReceive(existingEpisodeData) { data in
                             if let data = data.object as? EpisodeListModel {
-                                episodeModel.episodeInfo.insert(data, at: 0)
-                            } else {
-                                episodeModel.fetchItemsFromCloud(complete: {})
-                                
+                                let index = episodeModel.episodeInfo.firstIndex { $0.record.recordID == data.record.recordID
+                                }
+                                if let index = index {
+                                    episodeModel.episodeInfo[index] = data
+                                } else {
+                                    episodeModel.episodeInfo.insert(data, at: 0)
+                                }
+                            } else if let recordID = data.object as? CKRecord.ID {
+                                episodeModel.episodeInfo.removeAll {
+                                    $0.record.recordID == recordID
+                                }
                             }
                         }
                         
