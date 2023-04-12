@@ -193,13 +193,14 @@ struct DiagnosisView: View {
                 }
             }
         }
+        .keyboardDismissGesture()
         .navigationBarTitle("診断記録") // Diagnosis
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button() {
                     showingSaveConfirmationAlert.toggle()
                 } label: {
-                    Image(systemName: "checkmark.circle.fill") // Save
+                    Image(systemName: "checkmark") // Save
                 }
                 .alert(isPresented: $showingSaveConfirmationAlert) {
                     Alert(title: Text("データが保存されました。"), // The data has successfully saved

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AllergenEntity" representedClassName="AllergenEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergen" attributeType="String"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -15,6 +15,15 @@
                 <constraint value="profileID"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
+    </entity>
+    <entity name="BloodTestEntity" representedClassName="BloodTestEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="allergenID" optional="YES" attributeType="String"/>
+        <attribute name="allergens" optional="YES" attributeType="Transformable"/>
+        <attribute name="bloodTestDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="bloodTestGrade" optional="YES" attributeType="String"/>
+        <attribute name="bloodTestLevel" optional="YES" attributeType="String"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
     </entity>
     <entity name="DiagnosisEntity" representedClassName="DiagnosisEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergens" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>

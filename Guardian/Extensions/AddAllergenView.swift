@@ -24,7 +24,7 @@ struct AddAllergenView: View {
                     Button() {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
-                        Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
+                        Image(systemName: "arrow.uturn.backward") // Cancel
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -33,7 +33,7 @@ struct AddAllergenView: View {
                         selectedAllergens.append(contentsOf: selectedItems)
                         presentationMode.wrappedValue.dismiss()
                     } label: {
-                        Image(systemName: "checkmark.circle.fill") // Cancel
+                        Image(systemName: "checkmark") // Save
                     }
                 }
             }

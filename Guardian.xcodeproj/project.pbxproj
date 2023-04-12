@@ -29,6 +29,7 @@
 		05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CFE29E2AF9100F9AC0A /* PersistenceController.swift */; };
 		057F96DA29E0F43800E92220 /* ProfileContainer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */; };
 		0590DD3129E53EC6005A49EF /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0590DD3029E53EC6005A49EF /* Color.swift */; };
+		0590DD3929E6ED9C005A49EF /* KeyboardDismissViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0590DD3829E6ED9C005A49EF /* KeyboardDismissViewModifier.swift */; };
 		05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */; };
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
@@ -69,6 +70,7 @@
 		05552CFE29E2AF9100F9AC0A /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		057F96D929E0F43800E92220 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		0590DD3029E53EC6005A49EF /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		0590DD3829E6ED9C005A49EF /* KeyboardDismissViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDismissViewModifier.swift; sourceTree = "<group>"; };
 		05B0712D29C13DA7008A2010 /* ProfileImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageModel.swift; sourceTree = "<group>"; };
 		05B0712F29C13DD1008A2010 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */,
+				0590DD3829E6ED9C005A49EF /* KeyboardDismissViewModifier.swift */,
 				0590DD3029E53EC6005A49EF /* Color.swift */,
 				05B0714029C5E755008A2010 /* DateFormatter.swift */,
 				05B0714229C6BD28008A2010 /* ImagePicker.swift */,
@@ -369,6 +372,7 @@
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
 				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
+				0590DD3929E6ED9C005A49EF /* KeyboardDismissViewModifier.swift in Sources */,
 				051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */,
 				051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */,
 				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,

@@ -226,13 +226,14 @@ struct EpisodeView: View {
                 }
             }
         }
+        .keyboardDismissGesture()
         .navigationBarTitle("発症記録") // Episode
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .none) {
                     showingAlert = true
                 } label: {
-                    Image(systemName: "checkmark.circle.fill") // Save
+                    Image(systemName: "checkmark") // Save
                 }
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("データが保存されました。"), // The data has successfully saved

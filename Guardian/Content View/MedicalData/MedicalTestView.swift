@@ -144,7 +144,7 @@ struct MedicalTestView: View {
 //                    Image(systemName: "square.and.arrow.up.on.square")
 //                        .font(.caption)
 //                        .fontWeight(.bold)
-                    Image(systemName: "checkmark.circle.fill") // Save
+                    Image(systemName: "checkmark") // Save
                 }
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("データが保存されました。"), // Succeccfully Saved

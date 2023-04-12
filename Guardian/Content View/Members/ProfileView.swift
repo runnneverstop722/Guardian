@@ -42,6 +42,7 @@ struct ProfileView: View {
         _profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
     }
     
+    //MARK: - Body
     var body: some View {
         NavigationView {
             Form(content: {
@@ -134,6 +135,7 @@ struct ProfileView: View {
                         }
                     }
             })
+            .keyboardDismissGesture()
             .onSubmit {
                 switch focusedField1 {
                 case .lastName:
@@ -158,7 +160,7 @@ struct ProfileView: View {
                         profileModel.addButtonPressed()
                         showingAlert = true
                     } label: {
-                        Image(systemName: "checkmark.circle.fill") // Save
+                        Image(systemName: "checkmark") // Save
                     }
                     .alert(isPresented: $showingAlert) {
                         Alert(title: Text("データが保存されました。"), // Data has been successfully saved
@@ -176,7 +178,7 @@ struct ProfileView: View {
         Button(action: {
             presentationMode.wrappedValue.dismiss()
         }, label: {
-            Image(systemName: "arrow.uturn.backward.circle.fill") // Cancel
+            Image(systemName: "arrow.uturn.backward") // Cancel
         })
     }
     private func deleteAllergen(at offsets: IndexSet) {
