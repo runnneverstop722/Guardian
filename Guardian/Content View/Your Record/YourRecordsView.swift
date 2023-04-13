@@ -18,6 +18,36 @@ struct YourRecordsView: View {
     @State private var showingRemoveAllergensAlert = false
     @Environment(\.presentationMode) var presentationMode
     
+    private let allergenImages: [String:String] = [
+        "えび": "shrimp",
+        "かに": "crab",
+        "小麦": "wheat",
+        "そば": "buckwheat",
+        "卵": "egg",
+        "乳": "milk",
+        "落花生(ピーナッツ)": "peanut",
+        "アーモンド": "almond",
+        "あわび": "abalone",
+        "いか": "squid",
+        "いくら": "salmonroe",
+        "オレンジ": "orange",
+        "カシューナッツ": "cashewnut",
+        "キウイフルーツ": "kiwi",
+        "牛肉": "beef",
+        "くるみ": "walnut",
+        "ごま": "sesame",
+        "さけ": "salmon",
+        "さば": "makerel",
+        "大豆": "soybean",
+        "鶏肉": "chicken",
+        "バナナ": "banana",
+        "豚肉": "pork",
+        "まつたけ": "matsutake",
+        "もも": "peach",
+        "やまいも": "yam",
+        "りんご": "apple",
+        "ゼラチン": "gelatine"
+    ]
     
     var selectedMemberName: String = "Unknown Member"
     @State private var didLoad = false
@@ -140,19 +170,21 @@ struct YourRecordsView: View {
                                 }
                             }
                             .padding(.horizontal)
+                    Spacer()
                     Section(
                         header: LeftAlignedHeaderView(title: "アレルゲン"), // Allergens
                         footer: Text("※プロフィールで設定したアレルゲンが表示されます。") // The listed allergens are set from the profile
                             .font(.footnote)
-                            .foregroundColor(.secondary)) {
-                                YourRecordsViewGrid(items: episodeModel.allergens.map {
-                                    GridItemData(headline: $0.headline,
-                                                 caption1: $0.caption1,
-                                                 caption2: $0.caption2,
-                                                 imageName: "leaf",
-                                                 record: $0.record)
-                                })
-                            }
+                            .foregroundColor(.secondary)
+                    ) {
+                        YourRecordsViewGrid(items: episodeModel.allergens.map {
+                            GridItemData(headline: $0.headline,
+                                         caption1: $0.caption1,
+                                         caption2: $0.caption2,
+                                         imageName: allergenImages[$0.headline] ?? "defaultImage",
+                                         record: $0.record)
+                        })
+                    }
                 }
 //                .refreshable {
 //                    isLoading = true
@@ -166,7 +198,7 @@ struct YourRecordsView: View {
                 //            .listStyle(GroupedListStyle())
                 //            .listStyle(InsetGroupedListStyle())
                 .navigationTitle(selectedMemberName)
-                .navigationBarTitleDisplayMode(.inline)
+//                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -297,7 +329,7 @@ extension YourRecordsView {
 struct YourRecordsViewGrid: View {
     var items: [GridItemData]
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
-
+    
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
             ForEach(items) { item in
@@ -308,10 +340,10 @@ struct YourRecordsViewGrid: View {
                             headline: item.headline,
                             caption1: item.caption1 + " | ",
                             caption2: item.caption2,
-                            symbolImage: Image(systemName: "leaf")
+                            symbolImage: Image(item.imageName)
                         )
                     })
-                    .buttonStyle(PlainButtonStyle())
+                .buttonStyle(PlainButtonStyle())
             }
         }
         .padding(.horizontal)
@@ -326,42 +358,38 @@ struct YourRecordsViewGridCell: View {
 
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
+            Color.accentColor
+                .cornerRadius(10.0)
+            
             VStack(alignment: .center, spacing: 8.0) {
                 symbolImage
                     .resizable()
-                    .frame(width: 24.0, height: 24.0)
-                    .padding(16.0)
-                    .background(Color.accentColor)
+                    .scaledToFill()
+                    .frame(width: 40.0, height: 40.0)
                     .foregroundColor(.white)
                     .clipShape(Circle())
                 Text(headline)
                     .font(.headline)
+                    .foregroundColor(.white)
                 HStack {
                     Image(systemName: "cross.case")
-                        .foregroundColor(.secondary)
-                    //                Text("医療検査:") // Medical Tests
-                    //                    .font(.subheadline)
-                    //                    .foregroundColor(.primary)
-                    //                    .fontWeight(.semibold)
+                        .foregroundColor(.white)
                     Text(caption1)
                         .font(.caption)
+                        .foregroundColor(.white)
                     Image(systemName: "note.text")
-                        .foregroundColor(.secondary)
-                    //                Text("発症:") // Episodes
-                    //                    .font(.subheadline)
-                    //                    .foregroundColor(.primary)
-                    //                    .fontWeight(.semibold)
+                        .foregroundColor(.white)
                     Text(caption2)
                         .font(.caption)
+                        .foregroundColor(.white)
                 }
             }
             .multilineTextAlignment(.center)
             .padding(16.0)
-            Color(.secondarySystemFill)
-                .cornerRadius(10.0)
         }
     }
 }
+
 
 struct GridItemData: Identifiable {
     var id = UUID()
