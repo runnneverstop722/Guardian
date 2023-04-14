@@ -40,6 +40,23 @@ import CloudKit
     let allergen: CKRecord
     var isUpdated: Bool = false
     
+    func selectExposureType(_ type: String) {
+            if type == "不明" {
+                typeOfExposure = ["不明"]
+            } else {
+                if let index = typeOfExposure.firstIndex(of: "不明") {
+                    typeOfExposure.remove(at: index)
+                }
+                if !typeOfExposure.contains(type) {
+                    typeOfExposure.append(type)
+                } else {
+                    if let index = typeOfExposure.firstIndex(of: type) {
+                        typeOfExposure.remove(at: index)
+                    }
+                }
+            }
+        }
+    
     init(record: CKRecord) {
         self.allergen = record
         self.record = record

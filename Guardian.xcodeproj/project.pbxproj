@@ -100,48 +100,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		051A27C029CE892400A890D0 /* Episode */ = {
+		051A27C029CE892400A890D0 /* View_1-3-2 */ = {
 			isa = PBXGroup;
 			children = (
 				051A27C129CE893C00A890D0 /* EpisodeView.swift */,
 				051A27C329CE895600A890D0 /* SelectSymptoms.swift */,
 				051A27C529CE896800A890D0 /* SelectLocations.swift */,
 			);
-			path = Episode;
+			path = "View_1-3-2";
 			sourceTree = "<group>";
 		};
-		051A27C929CE897E00A890D0 /* Diagnosis */ = {
+		051A27C929CE897E00A890D0 /* View_1-3 */ = {
 			isa = PBXGroup;
 			children = (
-				051A27CC29CE89A100A890D0 /* DiagnosisView.swift */,
+				051A27DA29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift */,
+				051A27D629D005E500A890D0 /* View_1-3-1 */,
+				051A27C029CE892400A890D0 /* View_1-3-2 */,
 			);
-			path = Diagnosis;
+			path = "View_1-3";
 			sourceTree = "<group>";
 		};
-		051A27D529CE8E9400A890D0 /* Members */ = {
+		051A27D529CE8E9400A890D0 /* View_1-1 */ = {
 			isa = PBXGroup;
 			children = (
 				ebdc53c4e742e385a2d9c5c06bd19c54 /* ProfileView.swift */,
 				286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */,
 			);
-			path = Members;
+			path = "View_1-1";
 			sourceTree = "<group>";
 		};
-		051A27D629D005E500A890D0 /* MedicalData */ = {
+		051A27D629D005E500A890D0 /* View_1-3-1 */ = {
 			isa = PBXGroup;
 			children = (
 				051A27BE29CE891300A890D0 /* MedicalTestView.swift */,
 			);
-			path = MedicalData;
+			path = "View_1-3-1";
 			sourceTree = "<group>";
 		};
-		051A27DC29D08E0000A890D0 /* Your Record */ = {
+		051A27DC29D08E0000A890D0 /* View_1-2 */ = {
 			isa = PBXGroup;
 			children = (
 				d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */,
-				051A27DA29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift */,
+				051A27CC29CE89A100A890D0 /* DiagnosisView.swift */,
 			);
-			path = "Your Record";
+			path = "View_1-2";
 			sourceTree = "<group>";
 		};
 		051A27E129D4293200A890D0 /* Allergens */ = {
@@ -193,26 +195,24 @@
 			path = "View Models";
 			sourceTree = "<group>";
 		};
-		05B0711F29C01A11008A2010 /* Content View */ = {
+		05B0711F29C01A11008A2010 /* ViewFiles */ = {
 			isa = PBXGroup;
 			children = (
-				051A27D529CE8E9400A890D0 /* Members */,
-				051A27DC29D08E0000A890D0 /* Your Record */,
-				051A27C929CE897E00A890D0 /* Diagnosis */,
-				051A27D629D005E500A890D0 /* MedicalData */,
-				051A27C029CE892400A890D0 /* Episode */,
-				05B0712329C01A81008A2010 /* Awareness */,
+				051A27D529CE8E9400A890D0 /* View_1-1 */,
+				051A27DC29D08E0000A890D0 /* View_1-2 */,
+				051A27C929CE897E00A890D0 /* View_1-3 */,
+				05B0712329C01A81008A2010 /* View_2 */,
 				05B0712529C01B27008A2010 /* Share */,
 			);
-			path = "Content View";
+			path = ViewFiles;
 			sourceTree = "<group>";
 		};
-		05B0712329C01A81008A2010 /* Awareness */ = {
+		05B0712329C01A81008A2010 /* View_2 */ = {
 			isa = PBXGroup;
 			children = (
 				ba5b8ef6a08eac2d1f30e768b5339ae4 /* Awareness.swift */,
 			);
-			path = Awareness;
+			path = View_2;
 			sourceTree = "<group>";
 		};
 		05B0712429C01AF1008A2010 /* Extensions */ = {
@@ -282,7 +282,7 @@
 				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
 				05B0712429C01AF1008A2010 /* Extensions */,
 				05B0711D29C019FC008A2010 /* View Models */,
-				05B0711F29C01A11008A2010 /* Content View */,
+				05B0711F29C01A11008A2010 /* ViewFiles */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
 				95D39704291C4B3A0053F8C8 /* Preview Content */,
 				057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */,

@@ -19,12 +19,12 @@ import CloudKit
 }
 
 struct MedicalTestAndEpisodeView: View {
-    @StateObject var episodeModel:EpisodeModel
+    @StateObject var episodeModel: EpisodeModel
     @StateObject private var mediacalTest: MedicalTest
     @State private var episodeDate: Date = Date()
     @State private var firstKnownExposure: Bool = false
     @State private var isLoading = true
-    
+
     @State private var showAlert = false
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false
@@ -34,24 +34,26 @@ struct MedicalTestAndEpisodeView: View {
     @State private var viewDidLoad = false
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
+
     var allergenName: String = "Unknown Allergen"
-    
     let allergen: CKRecord
     let existingEpisodeData = NotificationCenter.default.publisher(for: Notification.Name("existingEpisodeData"))
-    
-    init(allergen: CKRecord) {
+
+    let symbolImage: Image
+
+    init(allergen: CKRecord, symbolImage: Image) {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
         _mediacalTest = StateObject(wrappedValue: MedicalTest(allergen: allergen))
+        self.symbolImage = symbolImage
     }
-    
-    
+
     private func fetchData() {
         let dispatchWork = DispatchGroup()
         let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
-        
+
         //MARK: - Blood
         let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
         bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -124,7 +126,6 @@ struct MedicalTestAndEpisodeView: View {
         }
         
         addOperation(operation: OFCQueryOperation)
-        
 //        dispatchWork.enter()
 //        episodeModel.fetchItemsFromCloud {
 //            DispatchQueue.main.async {
@@ -262,8 +263,8 @@ struct MedicalTestAndEpisodeView: View {
             }
             .navigationTitle(allergenName)
             .listStyle(InsetGroupedListStyle())
+            
             .refreshable {
-//                episodeModel.episodeInfo = []
                 episodeModel.fetchItemsFromCloud(complete: {})
                 
             }

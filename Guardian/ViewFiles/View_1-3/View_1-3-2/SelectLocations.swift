@@ -11,7 +11,7 @@ struct SelectLocations: View {
     let symptom: String
     @Binding var selectedSymptoms: [String]
 
-    let locations = ["耳", "唇(くちびる)", "舌", "喉(のど)", "腕（うで）", "手", "胴体", "足（足首より上）", "足（足首より下）"]
+    let locations = ["耳", "唇(くちびる)", "舌", "首", "腕（うで）", "手", "胴体", "足（足首より上）", "足（足首より下）"]
     
     var body: some View {
         List {
