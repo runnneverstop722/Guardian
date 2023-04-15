@@ -25,7 +25,7 @@ struct EpisodeListModel: Identifiable, Hashable {
               let firstKnownExposure = record["firstKnownExposure"] as? Bool,
               let wentToHospital = record["wentToHospital"] as? Bool,
               let typeOfExposure = record["typeOfExposure"] as? [String],
-//              let symptoms = record["symptoms"] as? [String],
+              let symptoms = record["symptoms"] as? [String],
               let severity = record["severity"] as? String,
               let didExercise = record["didExercise"] as? Bool else {
             return nil
@@ -38,7 +38,7 @@ struct EpisodeListModel: Identifiable, Hashable {
         caption1 = firstKnownExposure  ? "初症状" : ""
         caption2 = wentToHospital ? "外来済" : ""
         caption3 = typeOfExposure.joined(separator: ", ")
-        caption4 = severity
+        caption4 = symptoms.joined(separator: ", ")
         caption5 = didExercise ? "運動後" : ""
         self.record = record
     }

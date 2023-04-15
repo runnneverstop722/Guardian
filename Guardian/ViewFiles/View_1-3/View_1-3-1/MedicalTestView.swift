@@ -257,6 +257,7 @@ struct MedicalTestView: View {
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     @Binding var deleteIDs: [CKRecord.ID]
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
 
         VStack {
@@ -285,9 +286,9 @@ struct BloodTestSection: View {
                     Spacer()
                 }
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
-                .background(Color.blue)
+                .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
             }
             .padding(.bottom)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -299,7 +300,7 @@ struct BloodTestSection: View {
 struct SkinTestSection: View {
     @Binding var skinTests: [SkinTest]
     @Binding var deleteIDs: [CKRecord.ID]
-    
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack {
             List {
@@ -328,9 +329,9 @@ struct SkinTestSection: View {
                     Spacer()
                 }
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
-                .background(Color.blue)
+                .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
             }
             .padding(.bottom)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -342,7 +343,7 @@ struct SkinTestSection: View {
 struct OralFoodChallengeSection: View {
     @Binding var oralFoodChallenges: [OralFoodChallenge]
     @Binding var deleteIDs: [CKRecord.ID]
-    
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack {
             List {
@@ -371,9 +372,9 @@ struct OralFoodChallengeSection: View {
                     Spacer()
                 }
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
-                .background(Color.blue)
+                .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
             }
             .padding(.bottom)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))

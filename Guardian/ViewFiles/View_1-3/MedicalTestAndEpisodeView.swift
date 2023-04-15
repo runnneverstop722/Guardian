@@ -28,9 +28,9 @@ struct MedicalTestAndEpisodeView: View {
     @State private var showAlert = false
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false
-    @State private var isAddingNewEpisode = false
-    @State private var isUpdate = false
-    @State private var showingRemoveDiagnosisAlert = false
+//    @State private var isAddingNewEpisode = false
+//    @State private var isUpdate = false
+//    @State private var showingRemoveDiagnosisAlert = false
     @State private var viewDidLoad = false
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
@@ -196,9 +196,9 @@ struct MedicalTestAndEpisodeView: View {
                                 Spacer()
                             }
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                             .padding()
-                            .background(Color.blue)
+                            .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
                             .cornerRadius(10)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -237,9 +237,9 @@ struct MedicalTestAndEpisodeView: View {
                                 Spacer()
                             }
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                             .padding()
-                            .background(Color.blue)
+                            .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
                             .cornerRadius(10)
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -263,7 +263,6 @@ struct MedicalTestAndEpisodeView: View {
             }
             .navigationTitle(allergenName)
             .listStyle(InsetGroupedListStyle())
-            
             .refreshable {
                 episodeModel.fetchItemsFromCloud(complete: {})
                 

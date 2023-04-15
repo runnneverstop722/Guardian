@@ -17,6 +17,7 @@ struct YourRecordsView: View {
     @State private var isAddingNewDiagnosis = false
     @State private var showingRemoveAllergensAlert = false
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
     private let allergenImages: [String:String] = [
         "えび": "shrimp",
@@ -94,9 +95,9 @@ struct YourRecordsView: View {
                                 .font(.headline)
                             Spacer()
                         }
-                        .foregroundColor(.white)
+                        .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                         .padding()
-                        .background(Color.blue)
+                        .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
                         .cornerRadius(10)
                     }
                     .padding(.bottom, 16)
@@ -296,6 +297,7 @@ struct Carousel: View {
 
 struct Card: View {
     let item: DiagnosisListModel?
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         if let item = item {
@@ -347,14 +349,22 @@ struct Card: View {
                     .font(.subheadline)
                 }
                 .padding(16.0)
-                .background(LinearGradient(gradient: Gradient(colors: [Color(red: 0.95, green: 0.95, blue: 0.95), Color(red: 0.85, green: 0.85, blue: 0.85)]), startPoint: .top, endPoint: .bottom))
+                .background(
+                    Group {
+                        if colorScheme == .dark {
+                            Color(.secondarySystemGroupedBackground)
+                        } else {
+                            LinearGradient(gradient: Gradient(colors: [Color(red: 0.95, green: 0.95, blue: 0.95), Color(red: 0.85, green: 0.85, blue: 0.85)]), startPoint: .top, endPoint: .bottom)
+                        }
+                    }
+                )
                 .cornerRadius(10.0)
             }
             .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(Color(red: 0.95, green: 0.95, blue: 0.95))
+                    .fill(colorScheme == .dark ? Color(.secondarySystemGroupedBackground) : Color(red: 0.95, green: 0.95, blue: 0.95)) // Updated line
                     .frame(height: 165.0)
                 Text("診断記録がありません")
                     .font(.headline)
@@ -396,12 +406,19 @@ struct YourRecordsViewGridCell: View {
     let caption2: String
     let record: CKRecord
     let symbolImage: Image
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-            LinearGradient(gradient: Gradient(colors: [Color(red: 0.95, green: 0.95, blue: 0.95), Color(red: 0.85, green: 0.85, blue: 0.85)]), startPoint: .top, endPoint: .bottom)
-                .cornerRadius(10.0)
-                .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
+            Group {
+                if colorScheme == .dark {
+                    Color(.secondarySystemGroupedBackground)
+                } else {
+                    LinearGradient(gradient: Gradient(colors: [Color(red: 0.95, green: 0.95, blue: 0.95), Color(red: 0.85, green: 0.85, blue: 0.85)]), startPoint: .top, endPoint: .bottom)
+                }
+            }
+            .cornerRadius(10.0)
+            .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
             
             VStack(alignment: .center, spacing: 8.0) {
                 symbolImage
@@ -409,7 +426,7 @@ struct YourRecordsViewGridCell: View {
                     .scaledToFit()
                     .frame(width: 60.0, height: 60.0)
                     .background(Color.accentColor)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black) // Updated line
                     .clipShape(Circle())
                     .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 2)
                 
