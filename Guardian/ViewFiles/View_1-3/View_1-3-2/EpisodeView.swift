@@ -16,9 +16,9 @@ enum EpisodeFormField {
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
     @State private var isPickerPresented: Bool = false
-    @State private var showingSelectSymptoms = false
-    @State private var showingSelectLocations = false
-    @State private var selectedCategory = []
+//    @State private var showingSelectSymptoms = false
+//    @State private var showingSelectLocations = false
+//    @State private var selectedCategory = []
     @State private var selectedImages: [Image] = []
     @State private var showingAlert = false
     @State private var isUpdate = false
@@ -43,13 +43,10 @@ struct EpisodeView: View {
         _episodeModel = StateObject(wrappedValue: EpisodeModel(allergen: allergen, episode: episode))
         _isUpdate = State(wrappedValue: true)
     }
-    
     init(record: CKRecord) {
         self.allergen = record
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: record))
     }
-    
-    
     
     var body: some View {
         Form {
@@ -101,6 +98,11 @@ struct EpisodeView: View {
                         }
                     }
                 }
+            
+            Section(header: Text("重症度")
+                        .font(.headline)) {
+                Text(episodeModel.judgeSeverity())
+            }
             
             Section(header: Text("アレルゲンと接触から発症まで")
                 .font(.headline)) {

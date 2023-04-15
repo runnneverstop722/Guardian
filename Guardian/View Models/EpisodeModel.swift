@@ -31,7 +31,7 @@ import CloudKit
     @Published var episodeInfo: [EpisodeListModel] = []
     @Published var allergens: [AllergensListModel] = []
     
-    @Published var symptomCategories = ["皮膚", "呼吸器", "循環器", "消化器", "その他"]
+    @Published var symptomCategories = ["皮膚", "粘膜", "消化器", "呼吸器", "循環器", "神経"]
     @Published var typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
     @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "60分~"]
     @Published var treatmentsOptions = ["抗ヒスタミン薬", "ステロイド注入", "経口ステロイド", "ステロイド外用薬", "エピペン注入", "その他"]
@@ -56,6 +56,17 @@ import CloudKit
                 }
             }
         }
+    func judgeSeverity() -> String {
+        if symptoms.contains(where: { $0.contains("🔴") }) {
+            return "🔴「重症」のアレルギー症状が含まれています。"
+        } else if symptoms.contains(where: { $0.contains("🟠") }) {
+            return "🟠「中等症」のアレルギー症状が含まれています。"
+        } else if symptoms.contains(where: { $0.contains("🟡") }) {
+            return "🟡「軽症」のアレルギー症状が含まれています。"
+        } else {
+            return "選択された症状を基に可能性のある重症度が表示されます。"
+        }
+    }
     
     init(record: CKRecord) {
         self.allergen = record
