@@ -54,6 +54,7 @@
         <attribute name="leadTimeToSymptoms" optional="YES" attributeType="String"/>
         <attribute name="otherTreatment" optional="YES" attributeType="String"/>
         <attribute name="recordID" optional="YES" attributeType="String"/>
+        <attribute name="severity" optional="YES" attributeType="String"/>
         <attribute name="symptoms" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="treatments" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="typeOfExposure" optional="YES" attributeType="Transformable" customClassName="[String]"/>

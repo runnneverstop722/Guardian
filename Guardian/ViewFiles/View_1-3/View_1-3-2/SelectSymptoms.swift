@@ -6,12 +6,6 @@
 //
 import SwiftUI
 
-enum AllergySeverity: String {
-    case red = "グレード1 (重症)"
-    case orange = "グレード2 (中等症)"
-    case yellow = "グレード3 (軽症)"
-}
-
 struct SelectSymptoms: View {
     let symptoms: [String]
     let category: String

@@ -40,7 +40,7 @@ struct CircularProfileImage: View {
             .background {
                 Circle().fill(
                     LinearGradient(
-                        colors: [.blue, .yellow],
+                        colors: [.yellow, .orange],
                         startPoint: .top,
                         endPoint: .bottom
                     )

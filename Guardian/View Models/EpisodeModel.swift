@@ -21,6 +21,7 @@ import CloudKit
     @Published var typeOfExposure: [String] = []
     @Published var intakeAmount: String = ""
     @Published var symptoms: [String] = []
+    @Published var severity: String = ""
     @Published var skinSymptoms: [String] = []
     @Published var leadTimeToSymptoms: String = "5分以内"
     @Published var didExercise: Bool = false
@@ -56,15 +57,27 @@ import CloudKit
                 }
             }
         }
-    func judgeSeverity() -> String {
+    func judgeSeverity() {
         if symptoms.contains(where: { $0.contains("🔴") }) {
-            return "🔴「重症」のアレルギー症状が含まれています。"
+            severity = "重症"
         } else if symptoms.contains(where: { $0.contains("🟠") }) {
-            return "🟠「中等症」のアレルギー症状が含まれています。"
+            severity = "中等症"
         } else if symptoms.contains(where: { $0.contains("🟡") }) {
-            return "🟡「軽症」のアレルギー症状が含まれています。"
+            severity = "軽症"
         } else {
-            return "選択された症状を基に可能性のある重症度が表示されます。"
+            severity = ""
+        }
+    }
+    func displaySeverity() -> String {
+        switch severity {
+        case "重症":
+            return "🔴重症のアレルギー症状あり"
+        case "中等症":
+            return "🟠中等症のアレルギー症状あり"
+        case "軽症":
+            return "🟡軽症のアレルギー症状あり"
+        default:
+            return ""
         }
     }
     
@@ -89,6 +102,7 @@ import CloudKit
         let typeOfExposure = episode["typeOfExposure"] as? [String]
         let intakeAmount = episode["intakeAmount"] as? String
         let symptoms = episode["symptoms"] as? [String]
+        let severity = episode["severity"] as? String
         let skinSymptoms = episode["skinSymptoms"] as? [String]
         let treatments = episode["treatments"] as? [String]
         let otherTreatment = episode["otherTreatment"] as? String
@@ -101,6 +115,7 @@ import CloudKit
         self.typeOfExposure = typeOfExposure ?? [""]
         self.intakeAmount = intakeAmount ?? ""
         self.symptoms = symptoms ?? [""]
+        self.severity = severity ?? ""
         self.skinSymptoms = skinSymptoms ?? [""]
         self.leadTimeToSymptoms = leadTimeToSymptoms
         self.didExercise = didExercise
@@ -213,6 +228,7 @@ import CloudKit
                 typeOfExposure: typeOfExposure,
                 intakeAmount: intakeAmount,
                 symptoms: symptoms,
+                severity: severity,
                 leadTimeToSymptoms: leadTimeToSymptoms,
                 didExercise: didExercise,
                 treatments: treatments,
@@ -237,6 +253,7 @@ import CloudKit
         myRecord["typeOfExposure"] = typeOfExposure
         myRecord["intakeAmount"] = intakeAmount
         myRecord["symptoms"] = symptoms
+        myRecord["severity"] = severity
         myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
         myRecord["didExercise"] = didExercise
         myRecord["treatments"] = treatments
@@ -251,6 +268,7 @@ import CloudKit
         typeOfExposure: [String],
         intakeAmount: String,
         symptoms: [String],
+        severity: String,
         leadTimeToSymptoms: String,
         didExercise: Bool,
         treatments: [String],
@@ -271,6 +289,7 @@ import CloudKit
             myRecord["typeOfExposure"] = typeOfExposure
             myRecord["intakeAmount"] = intakeAmount
             myRecord["symptoms"] = symptoms
+            myRecord["severity"] = severity
             myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
             myRecord["didExercise"] = didExercise
             myRecord["treatments"] = treatments

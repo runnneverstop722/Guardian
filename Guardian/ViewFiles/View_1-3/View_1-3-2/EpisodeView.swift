@@ -12,13 +12,9 @@ import CoreTransferable
 enum EpisodeFormField {
     case intakeAmount, otherTreatment
 }
-
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
     @State private var isPickerPresented: Bool = false
-//    @State private var showingSelectSymptoms = false
-//    @State private var showingSelectLocations = false
-//    @State private var selectedCategory = []
     @State private var selectedImages: [Image] = []
     @State private var showingAlert = false
     @State private var isUpdate = false
@@ -27,17 +23,6 @@ struct EpisodeView: View {
     @Environment(\.dismiss) private var dismiss
     
     let allergen: CKRecord
-    
-    //    init(allergen: CKRecord) {
-    //        self.allergen = allergen
-    //        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
-    //    }
-    //    init(allergen: CKRecord) {
-    //        self.allergen = allergen
-    //        _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
-    //        _episodeModel = StateObject(wrappedValue: EpisodeModel(episode: allergen))
-    //    }
-    //
     init(allergen: CKRecord, episode: CKRecord) {
         self.allergen = allergen
         _episodeModel = StateObject(wrappedValue: EpisodeModel(allergen: allergen, episode: episode))
@@ -92,16 +77,26 @@ struct EpisodeView: View {
                             HStack {
                                 Text(category)
                                 Spacer()
-                                Text("\(episodeModel.symptoms.filter { $0.hasPrefix(category) }.count)")
+                                Text("\(episodeModel.symptoms.filter { $0.hasPrefix(category) }.count) 件")
                                     .foregroundColor(.gray)
                             }
                         }
                     }
+                    .onReceive(episodeModel.$symptoms, perform: { _ in
+                        episodeModel.judgeSeverity()
+                    })
                 }
             
-            Section(header: Text("重症度")
-                        .font(.headline)) {
-                Text(episodeModel.judgeSeverity())
+            Section(header: Text("重症度評価(自動表示)")
+                .font(.headline),
+                footer: Text("※参考:\n ・学校における⾷物アレルギー対応ガイドライン\n  (⼤阪府医師会 学校医部会, ⼤阪府教育庁 教育振興室保健体育課)\n ・⽇本アレルギー学会アナフィラキシーガイドライン\n  (食物アレルギー研究会)\n・アレルギー症状の重症度評価と対応マニュアル\n  (国立病院機構相模原病院 小児科)")) {
+                HStack {
+                    Spacer()
+                    Text(episodeModel.displaySeverity())
+                        .font(.title3)
+                        .foregroundColor(episodeModel.displaySeverity().isEmpty ? .primary : .secondary)
+                    Spacer()
+                }
             }
             
             Section(header: Text("アレルゲンと接触から発症まで")

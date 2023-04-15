@@ -210,6 +210,7 @@ extension EpisodeEntity {
         wentToHospital = record["wentToHospital"] as? Bool ?? false
         typeOfExposure = record["typeOfExposure"] as? [String]
         symptoms = record["symptoms"] as? [String]
+        self.severity = record["severity"] as? String
         leadTimeToSymptoms = record["leadTimeToSymptoms"] as? String
         didExercise = record["didExercise"] as? Bool ?? false
         var imagePaths = [String]()

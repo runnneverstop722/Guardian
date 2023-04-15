@@ -81,10 +81,6 @@ struct MembersView: View {
                     }
                 )
             }
-        .refreshable {
-//            profileModel.profileInfo = []
-            profileModel.fetchItemsFromCloud()
-        }
         .listStyle(.plain)
         .navigationTitle("管理メンバー")
         .toolbar {
@@ -98,8 +94,7 @@ struct MembersView: View {
                 }) {
                     HStack {
                         Image(systemName: "person.crop.circle.badge.plus")
-//                        Text("メンバーを追加")
-                        Spacer()
+                            .font(.title2)
                     }
                     .foregroundColor(.blue)
                 }
