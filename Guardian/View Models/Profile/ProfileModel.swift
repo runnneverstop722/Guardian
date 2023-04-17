@@ -1,4 +1,4 @@
-//ProfileModel.swift
+//  ProfileModel.swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -16,7 +16,7 @@ import CoreData
         var id: String { self.rawValue }
     }
     private let context = PersistenceController.shared.container.viewContext
-
+    
     @Published var data: Data? //image
     @Published var firstName: String = ""
     @Published var lastName: String = ""
@@ -45,7 +45,7 @@ import CoreData
         fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
-
+    
     init(profile: CKRecord) {
         record = profile
         guard let firstName = profile["firstName"] as? String,
@@ -56,7 +56,6 @@ import CoreData
         else {
             return
         }
-        //        let allergens = profile["allergens"] as? [String] ?? []
         let hospitalName = profile["hospitalName"] as? String
         let allergist = profile["allergist"] as? String
         let allergistContactInfo = profile["allergistContactInfo"] as? String
@@ -99,44 +98,44 @@ import CoreData
             print("Could not fetch from local cache. \(error), \(error.userInfo)")
         }
     }
-
+    
     func fetchItemsFromLocalCache() {
-            let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-
-            do {
-                let localProfileInfo = try context.fetch(fetchRequest)
-                self.profileInfo = localProfileInfo.compactMap { MemberListModel(entity: $0) }
-            } catch let error as NSError {
-                print("Could not fetch from local cache. \(error), \(error.userInfo)")
-            }
+        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        do {
+            let localProfileInfo = try context.fetch(fetchRequest)
+            self.profileInfo = localProfileInfo.compactMap { MemberListModel(entity: $0) }
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
         }
-
-        func saveToLocalCache(_ profileInfo: MemberListModel) {
-            let entity = ProfileInfoEntity(context: context)
-            entity.update(with: profileInfo.record)
-
-            do {
+    }
+    
+    func saveToLocalCache(_ profileInfo: MemberListModel) {
+        let entity = ProfileInfoEntity(context: context)
+        entity.update(with: profileInfo.record)
+        
+        do {
+            try context.save()
+        } catch let error as NSError {
+            print("Could not save to local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func deleteFromLocalCache(_ recordID: String) {
+        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+        
+        do {
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
                 try context.save()
-            } catch let error as NSError {
-                print("Could not save to local cache. \(error), \(error.userInfo)")
             }
+        } catch let error as NSError {
+            print("Could not delete from local cache. \(error), \(error.userInfo)")
         }
-
-        func deleteFromLocalCache(_ recordID: String) {
-            let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
-            fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
-
-            do {
-                let fetchedItems = try context.fetch(fetchRequest)
-                if let itemToDelete = fetchedItems.first {
-                    context.delete(itemToDelete)
-                    try context.save()
-                }
-            } catch let error as NSError {
-                print("Could not delete from local cache. \(error), \(error.userInfo)")
-            }
-        }
+    }
     
     private func fetchAllergens(recordID: CKRecord.ID) {
         let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
@@ -146,10 +145,7 @@ import CoreData
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-        queryOperation.queuePriority = .veryHigh
         
-//        self.allergens = []
-//        self.allergensObject = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = AllergensModel(record: returnedRecord) {
@@ -215,7 +211,6 @@ import CoreData
             }
         }
     }
-    // Private Methods
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: ProfileImage.self) { result in
             DispatchQueue.main.async {
@@ -284,8 +279,6 @@ import CoreData
     )
     {
         
-//        let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//        let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
         let myRecord = CKRecord(recordType: "ProfileInfo")
         if let profileImage = profileImage {
             let url = CKAsset(fileURL: profileImage)
@@ -324,8 +317,6 @@ import CoreData
         }
         let needToAdd = allergens.filter { !objects.contains($0) }
         for allergen in needToAdd {
-//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "Allergens")
             
             myRecord["allergen"] = allergen
@@ -370,9 +361,7 @@ import CoreData
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-        queryOperation.queuePriority = .veryHigh
         
-//        self.profileInfo = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let member = MemberListModel(record: returnedRecord) {
@@ -417,7 +406,6 @@ import CoreData
         record["hospitalName"] = hospitalName
         record["allergist"] = allergist
         record["allergistContactInfo"] = allergistContactInfo
-        //            myRecord["allergens"] = allergens
         saveItem(record: record) { [weak self, allergens] recordID in
             guard let recordID = recordID else { return }
             self?.updateSaveAllergens(recordID: recordID, allergens: allergens)

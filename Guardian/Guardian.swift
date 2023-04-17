@@ -8,45 +8,11 @@
 
 import SwiftUI
 import CloudKit
-
-class AppState: ObservableObject {
-    @Published var isAwarenessTabDisabled = true
-}
-
-struct NoticeView: View {
-    var body: some View {
-        VStack {
-            Spacer()
-            Text("アップデート予定")
-                .font(.largeTitle)
-                .bold()
-            VStack {
-                Text("(外食時)食物アレルギーお知らせ")
-                Text("記録済データの出力＆共有")
-            }
-            .multilineTextAlignment(.center)
-            .padding()
-            Spacer()
-            Text("Coming in May'23")
-                .multilineTextAlignment(.center)
-                .padding()
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.opacity(0.9))
-        .foregroundColor(.white)
-        .mask(LinearGradient(gradient: Gradient(stops: [
-            Gradient.Stop(color: Color.clear, location: 0),
-            Gradient.Stop(color: Color.white, location: 0.1),
-            Gradient.Stop(color: Color.white, location: 0.9),
-            Gradient.Stop(color: Color.clear, location: 1)
-        ]), startPoint: .top, endPoint: .bottom))
-    }
-}
+import CoreData
 
 @main
 struct Guardian: App {
-    @StateObject private var appState = AppState()
+    let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
@@ -55,13 +21,15 @@ struct Guardian: App {
                     MembersView()
                 }
                 .tabItem { Label("管理メンバー", systemImage: "person.text.rectangle.fill") }
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
 
-                Awareness()
-                    .environmentObject(appState)
+                AwarenessView()
                     .tabItem { Label("周知", systemImage: "exclamationmark.bubble") }
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
 
                 EmptyView()
                     .tabItem { Label("Fourth", systemImage: "wind") }
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
             }
         }
     }

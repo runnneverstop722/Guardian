@@ -124,7 +124,7 @@ import CloudKit
         isUpdated = true
     }
     
-    // MARK: - Profile Image
+    // MARK: - Episode Images
     enum ImageState {
         case empty
         case loading(Progress)
@@ -366,7 +366,6 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let queryOperation = CKQueryOperation(query: query)
-        queryOperation.queuePriority = .veryHigh
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
@@ -396,9 +395,7 @@ import CloudKit
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         
         let queryOperation = CKQueryOperation(query: query)
-        queryOperation.queuePriority = .veryHigh
 
-//        self.allergens = []
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async { [self] in
                 if let object = AllergensListModel(record: returnedRecord) {
@@ -465,5 +462,4 @@ import CloudKit
             print("No assets found.") // Add this line
         }
     }
-    
 }

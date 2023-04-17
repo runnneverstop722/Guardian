@@ -53,35 +53,35 @@ struct MembersView: View {
             }
         }
         
-//            .alert(item: $deleteItem, content: { item in
-//                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
-//                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
-//                    }
-//                }, secondaryButton: .cancel(Text("キャンセル")))
-//
-//            })
-//        }
-            .alert(item: $deleteItem) { item in
-                Alert(
-                    title: Text("このメンバーを削除しますか？"),
-                    message: Text(""),
-                    primaryButton: .destructive(Text("削除")) {
-                        profileModel.deleteItemsFromCloud(record: item.record) { _ in
-                            // Delete was successful, hide the alert and remove the item from the list
-                            deleteItem = nil
-                            if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
-                                withAnimation {
-                                    profileModel.profileInfo.remove(at: index)
-                                }
+        //            .alert(item: $deleteItem, content: { item in
+        //                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
+        //                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
+        //                    }
+        //                }, secondaryButton: .cancel(Text("キャンセル")))
+        //
+        //            })
+        //        }
+        .alert(item: $deleteItem) { item in
+            Alert(
+                title: Text("このメンバーを削除しますか？"),
+                message: Text(""),
+                primaryButton: .destructive(Text("削除")) {
+                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
+                        // Delete was successful, hide the alert and remove the item from the list
+                        deleteItem = nil
+                        if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
+                            withAnimation {
+                                profileModel.profileInfo.remove(at: index)
                             }
                         }
-                    },
-                    secondaryButton: .cancel(Text("キャンセル")) {
-                        showDeleteAlert = false
                     }
-                )
-            }
-        .listStyle(.plain)
+                },
+                secondaryButton: .cancel(Text("キャンセル")) {
+                    showDeleteAlert = false
+                }
+            )
+        }
+        .listStyle(.insetGrouped)
         .navigationTitle("管理メンバー")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
