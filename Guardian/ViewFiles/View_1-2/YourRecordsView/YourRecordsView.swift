@@ -58,7 +58,8 @@ struct YourRecordsView: View {
                     HStack {
                         Spacer()
                         ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-                            Color(.orange)
+//                            Color(.orange)
+                            Color("background")
                                 .cornerRadius(14)
                                 .frame(maxWidth: (screenWidth - 20))
                                 .frame(maxHeight: 250)
@@ -104,7 +105,7 @@ struct YourRecordsView: View {
                                     Button {
                                         isAddingNewDiagnosis = true
                                     } label: {
-                                        Image(systemName: "plus.circle")
+                                        Symbols.addNew
                                             .foregroundColor(.primary)
                                     }
                                     .background(
@@ -156,7 +157,7 @@ struct YourRecordsView: View {
                                     Button {
                                         isShowingDiagnosisTutorialAlert = true
                                     } label: {
-                                        Image(systemName: "questionmark.circle")
+                                        Symbols.question
                                             .padding()
                                             .foregroundColor(.primary)
                                     }
@@ -236,7 +237,7 @@ struct YourRecordsView: View {
                                     Button {
                                         isShowingAllergensTutorialAlert = true
                                     } label: {
-                                        Image(systemName: "questionmark.circle")
+                                        Symbols.question
                                             .padding()
                                             .foregroundColor(.primary)
                                     }
@@ -253,9 +254,10 @@ struct YourRecordsView: View {
                     }
                 }
                 .background(
-                    Color(.orange)
+                    Color("background")
+//                    Color(.orange)
                         .cornerRadius(14)
-                        .frame(maxWidth: (screenWidth - 20))    
+                        .frame(maxWidth: (screenWidth - 20))
                         .opacity(0.2)
                     
                 )
@@ -374,11 +376,12 @@ struct Card: View {
                     .padding(20.0)
                     .background(
                         Group {
-                            if colorScheme == .dark {
-                                Color(.secondarySystemGroupedBackground)
-                            } else {
-                                Color(red: 252/255, green: 227/255, blue: 138/255)
-                            }
+                            Color("detail-background")
+//                            if colorScheme == .dark {
+//                                Color(.secondarySystemGroupedBackground)
+//                            } else {
+//                                Color(red: 252/255, green: 227/255, blue: 138/255)
+//                            }
                         }
                     )
                     .cornerRadius(10.0)
@@ -399,11 +402,12 @@ struct Card: View {
                     .padding(20.0)
                     .background(
                         Group {
-                            if colorScheme == .dark {
-                                Color(.secondarySystemGroupedBackground)
-                            } else {
-                                Color(red: 252/255, green: 227/255, blue: 138/255)
-                            }
+                            Color("detail-background")
+//                            if colorScheme == .dark {
+//                                Color(.secondarySystemGroupedBackground)
+//                            } else {
+//                                Color(red: 252/255, green: 227/255, blue: 138/255)
+//                            }
                         }
                     )
                     .cornerRadius(10.0)
@@ -456,11 +460,13 @@ struct YourRecordsViewGridCell: View {
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             Group {
-                if colorScheme == .dark {
-                    Color(.secondarySystemGroupedBackground)
-                } else {
-                    Color(red: 252/255, green: 227/255, blue: 138/255)
-                }
+                Color("detail-background")
+//                if colorScheme == .dark {
+//                    Color(.secondarySystemGroupedBackground)
+//                    
+//                } else {
+//                    Color(red: 252/255, green: 227/255, blue: 138/255)
+//                }
             }
             .cornerRadius(10.0)
             .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
@@ -480,7 +486,7 @@ struct YourRecordsViewGridCell: View {
 //                    .foregroundColor(.white)
                 
                 HStack {
-                    Image(systemName: "cross.case")
+                    Symbols.medicalTest
                         .font(.subheadline)
 //                        .foregroundColor(.white)
                     Text(caption1)
@@ -489,7 +495,7 @@ struct YourRecordsViewGridCell: View {
                     Text(" | ")
                         .font(.subheadline)
 //                        .foregroundColor(.primary)
-                    Image(systemName: "note.text")
+                    Symbols.episode
                         .font(.subheadline)
 //                        .foregroundColor(.white)
                     Text(caption2)

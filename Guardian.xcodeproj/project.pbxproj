@@ -34,6 +34,8 @@
 		05B0713029C13DD1008A2010 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0712F29C13DD1008A2010 /* ProfileModel.swift */; };
 		05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714029C5E755008A2010 /* DateFormatter.swift */; };
 		05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714229C6BD28008A2010 /* ImagePicker.swift */; };
+		05F19E1C29ED8EA5004A4352 /* Symbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F19E1B29ED8EA5004A4352 /* Symbols.swift */; };
+		05F19E1E29ED9530004A4352 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F19E1D29ED9530004A4352 /* Theme.swift */; };
 		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
@@ -76,6 +78,8 @@
 		05B0713129C173C5008A2010 /* Guardian.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Guardian.entitlements; sourceTree = "<group>"; };
 		05B0714029C5E755008A2010 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		05B0714229C6BD28008A2010 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		05F19E1B29ED8EA5004A4352 /* Symbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbols.swift; sourceTree = "<group>"; };
+		05F19E1D29ED9530004A4352 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
 		7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListModel.swift; sourceTree = "<group>"; };
@@ -215,9 +219,11 @@
 			path = View_2;
 			sourceTree = "<group>";
 		};
-		05B0712429C01AF1008A2010 /* Extensions */ = {
+		05B0712429C01AF1008A2010 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				05F19E1B29ED8EA5004A4352 /* Symbols.swift */,
+				05F19E1D29ED9530004A4352 /* Theme.swift */,
 				69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */,
 				0590DD3829E6ED9C005A49EF /* KeyboardDismissViewModifier.swift */,
 				0590DD3029E53EC6005A49EF /* Color.swift */,
@@ -226,7 +232,7 @@
 				051A27D329CE8C9500A890D0 /* AddAllergenView.swift */,
 				05552CFB29E238E000F9AC0A /* CustomKeyboard */,
 			);
-			path = Extensions;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		05B0712529C01B27008A2010 /* Share */ = {
@@ -288,7 +294,7 @@
 				05B0713129C173C5008A2010 /* Guardian.entitlements */,
 				05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */,
 				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
-				05B0712429C01AF1008A2010 /* Extensions */,
+				05B0712429C01AF1008A2010 /* Resources */,
 				05B0711D29C019FC008A2010 /* View Models */,
 				05B0711F29C01A11008A2010 /* ViewFiles */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
@@ -378,6 +384,7 @@
 				05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
+				05F19E1E29ED9530004A4352 /* Theme.swift in Sources */,
 				051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */,
 				05B0714129C5E755008A2010 /* DateFormatter.swift in Sources */,
 				0590DD3929E6ED9C005A49EF /* KeyboardDismissViewModifier.swift in Sources */,
@@ -389,6 +396,7 @@
 				05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
 				b3b9dba880f13bad225aa45aefd116b9 /* YourRecordsView.swift in Sources */,
+				05F19E1C29ED8EA5004A4352 /* Symbols.swift in Sources */,
 				051A27C429CE895600A890D0 /* SelectSymptoms.swift in Sources */,
 				4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */,
 				05B0712E29C13DA7008A2010 /* ProfileImageModel.swift in Sources */,
@@ -530,7 +538,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Guardian/Preview Content\"";
 				DEVELOPMENT_TEAM = FZ7NL6565P;
 				ENABLE_PREVIEWS = YES;
@@ -563,7 +571,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Guardian/Guardian.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Guardian/Preview Content\"";
 				DEVELOPMENT_TEAM = FZ7NL6565P;
 				ENABLE_PREVIEWS = YES;

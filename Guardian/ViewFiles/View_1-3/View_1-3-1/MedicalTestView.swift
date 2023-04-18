@@ -144,7 +144,7 @@ struct MedicalTestView: View {
 //                    Image(systemName: "square.and.arrow.up.on.square")
 //                        .font(.caption)
 //                        .fontWeight(.bold)
-                    Image(systemName: "checkmark") // Save
+                    Symbols.done // Save
                 }
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("データが保存されました。"), // Succeccfully Saved
@@ -281,7 +281,7 @@ struct BloodTestSection: View {
             }) {
                 HStack {
                     Spacer()
-                    Image(systemName: "plus.circle.fill")
+                    Symbols.addNew
                     Text("新しい記録") // Add New
                     Spacer()
                 }
@@ -324,7 +324,7 @@ struct SkinTestSection: View {
             }) {
                 HStack {
                     Spacer()
-                    Image(systemName: "plus.circle.fill")
+                    Symbols.addNew
                     Text("新しい記録") // Add New
                     Spacer()
                 }
@@ -367,7 +367,7 @@ struct OralFoodChallengeSection: View {
             }) {
                 HStack {
                     Spacer()
-                    Image(systemName: "plus.circle.fill")
+                    Symbols.addNew
                     Text("新しい記録") // Add New
                     Spacer()
                 }

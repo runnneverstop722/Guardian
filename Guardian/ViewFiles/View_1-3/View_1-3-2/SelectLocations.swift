@@ -28,7 +28,7 @@ struct SelectLocations: View {
                         Text(location)
                         Spacer()
                         if selectedSymptoms.contains("\(category)\(symptom)\(location)") {
-                            Image(systemName: "checkmark")
+                            Symbols.done
                         }
                     }
                 }

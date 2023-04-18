@@ -188,7 +188,7 @@ struct MedicalTestAndEpisodeView: View {
                         }) {
                             HStack {
                                 Spacer()
-                                Image(systemName: "plus.circle.fill")
+                                Symbols.addNew
                                 Text("新規作成") // Add New
                                 Text("＆")
                                 Image(systemName: "book.fill")
@@ -232,7 +232,7 @@ struct MedicalTestAndEpisodeView: View {
                            }
                             HStack {
                                 Spacer()
-                                Image(systemName: "plus.circle.fill")
+                                Symbols.addNew
                                 Text("新規作成") // Add New
                                 Spacer()
                             }

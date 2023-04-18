@@ -118,7 +118,7 @@ struct DiagnosisView: View {
                     showingAddAllergen.toggle()
                 }) {
                     HStack {
-                        Image(systemName: "allergens")
+                        Symbols.allergens
                         Text("アレルゲンを選択") // Add Allergens
                     }
                 }
@@ -230,7 +230,7 @@ struct DiagnosisView: View {
                         activeAlert = .emptyValidation
                     }
                 }) {
-                    Image(systemName: "checkmark") // Save
+                    Symbols.done // Save
                 }
                 .alert(item: $activeAlert) { alertType in
                     switch alertType {

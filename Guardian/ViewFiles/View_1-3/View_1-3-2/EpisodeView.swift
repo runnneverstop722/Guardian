@@ -58,7 +58,7 @@ struct EpisodeView: View {
                                 Text(typeOfExposureOption)
                                 Spacer()
                                 if episodeModel.typeOfExposure.contains(typeOfExposureOption) {
-                                    Image(systemName: "checkmark")
+                                    Symbols.done
                                 }
                             }
                         }
@@ -125,7 +125,7 @@ struct EpisodeView: View {
                                 Text(treatment)
                                 Spacer()
                                 if episodeModel.treatments.contains(treatment) {
-                                    Image(systemName: "checkmark")
+                                    Symbols.done
                                 }
                             }
                         }
@@ -231,7 +231,7 @@ struct EpisodeView: View {
                 Button(role: .none) {
                     showingAlert = true
                 } label: {
-                    Image(systemName: "checkmark") // Save
+                    Symbols.done // Save
                 }
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("データが保存されました。"), // The data has successfully saved
@@ -252,5 +252,13 @@ struct EpisodeView: View {
             GridItem(.adaptive(minimum: minWidth, maximum: minWidth), spacing: spacing)
         ]
         return adaptiveColumns
+    }
+}
+
+struct EpisodeView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        let allergen = CKRecord(recordType: "allergen")
+        EpisodeView(record: allergen)
     }
 }

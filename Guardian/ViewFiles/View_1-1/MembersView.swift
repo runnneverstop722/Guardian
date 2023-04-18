@@ -32,7 +32,7 @@ struct MembersView: View {
                     Button(role: .none) {
                         editItem = item
                     } label: {
-                        Label("Edit", systemImage: "pencil")
+                        Label("Edit", systemImage: "slider.horizontal.3")
                     } .tint(.indigo)
                 }
                 .swipeActions(edge: .trailing) {
@@ -93,7 +93,7 @@ struct MembersView: View {
                     }
                 }) {
                     HStack {
-                        Image(systemName: "person.crop.circle.badge.plus")
+                        Symbols.newProfile
                             .font(.title2)
                     }
                     .foregroundColor(.blue)

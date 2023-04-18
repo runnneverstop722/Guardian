@@ -66,7 +66,7 @@ struct SelectSymptoms: View {
 //                    .foregroundColor(.gray)
 //            } else {
             if selectedSymptoms.contains("\(category)\(symptom)") {
-                Image(systemName: "checkmark")
+                Symbols.done
             }
 //            }
         }

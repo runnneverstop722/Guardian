@@ -126,7 +126,7 @@ struct ProfileView: View {
                             showingAddAllergen.toggle()
                         }) {
                             HStack {
-                                Image(systemName: "allergens")
+                                Symbols.allergens
                                 Text("アレルゲンを選択") // Add Allergens
                             }
                         }
@@ -160,7 +160,7 @@ struct ProfileView: View {
                         profileModel.addButtonPressed()
                         showingAlert = true
                     } label: {
-                        Image(systemName: "checkmark") // Save
+                        Symbols.done // Save
                     }
                     .alert(isPresented: $showingAlert) {
                         Alert(title: Text("データが保存されました。"), // Data has been successfully saved
