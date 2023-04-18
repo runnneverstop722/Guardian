@@ -24,9 +24,13 @@ struct ProfileView: View {
     @State private var showingRemoveAlert = false
     @State private var showingAlert = false
     @State private var isUpdate = false
+    @State private var validationAlert = false
     @FocusState private var focusedField1: FormField1?
     @FocusState private var focusedField2: FormField2?
     @Environment(\.presentationMode) var presentationMode
+    
+    @State private var isLastNameEmpty = true
+    @State private var isFirstNameEmpty = true
     
     var profile: CKRecord?
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
@@ -40,6 +44,12 @@ struct ProfileView: View {
         self.profile = profile
         _isUpdate = State(initialValue: true)
         _profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
+        _isLastNameEmpty = State(initialValue: profile["lastName"] == nil || (profile["lastName"] as? String)?.isEmpty == true)
+        _isFirstNameEmpty = State(initialValue: profile["firstName"] == nil || (profile["firstName"] as? String)?.isEmpty == true)
+    }
+    
+    private var formValidation: FormValidation {
+        FormValidation(isLastNameEmpty: isLastNameEmpty, isFirstNameEmpty: isFirstNameEmpty, isAllergensEmpty: profileModel.allergens.isEmpty)
     }
     
     //MARK: - Body
@@ -62,17 +72,17 @@ struct ProfileView: View {
 #endif
                             
                             Section {
-                                TextField("姓", // Last Name
-                                          text: $profileModel.lastName,
-                                          prompt: Text("姓")) // Last Name
-                                .submitLabel(.next)
-                                .focused($focusedField1, equals: .lastName)
+                                TextField("姓", text: $profileModel.lastName, prompt: Text("姓 *"))
+                                    .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
+                                    .onChange(of: profileModel.lastName) { _ in
+                                        isLastNameEmpty = profileModel.lastName.isEmpty
+                                    }
                                 Divider()
-                                TextField("名", // First Name
-                                          text: $profileModel.firstName,
-                                          prompt: Text("名")) // First Name
-                                .submitLabel(.done)
-                                .focused($focusedField1, equals: .firstName)
+                                TextField("名", text: $profileModel.firstName, prompt: Text("名 *"))
+                                    .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
+                                    .onChange(of: profileModel.firstName) { _ in
+                                        isFirstNameEmpty = profileModel.firstName.isEmpty
+                                    }
                                 
                                 Divider()
                                 Spacer()
@@ -116,24 +126,33 @@ struct ProfileView: View {
                     .fontWeight(.bold)
                 
                 // Added this selector in ProfileView
-                Section(header: Text("管理するアレルゲン") // Allergens that will be managed
-                    .font(.headline)) {
-                        ForEach(profileModel.allergens, id: \.self) { allergen in
-                            Text(allergen)
-                        }
-                        .onDelete(perform: deleteAllergen)
-                        Button(action: {
-                            showingAddAllergen.toggle()
-                        }) {
+                Section(header: HStack {
+                    Text("管理するアレルゲン") // Allergens that will be managed
+                        .font(.headline)
+                    Text("*")
+                        .foregroundColor(Color.red)
+                }) {
+                    ForEach(profileModel.allergens, id: \.self) { allergen in
+                        Text(allergen)
+                    }
+                    .onDelete(perform: deleteAllergen)
+                    
+                    Button(action: {
+                        showingAddAllergen.toggle()
+                    }) {
+                        ZStack {
+                            RowBackground(isEmpty: profileModel.allergens.isEmpty)
                             HStack {
                                 Symbols.allergens
                                 Text("アレルゲンを選択") // Add Allergens
                             }
                         }
-                        .sheet(isPresented: $showingAddAllergen) {
-                            AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
-                        }
                     }
+                    .sheet(isPresented: $showingAddAllergen) {
+                        AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
+                    }
+                    
+                }
             })
             .keyboardDismissGesture()
             .onSubmit {
@@ -157,17 +176,20 @@ struct ProfileView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button() {
-                        profileModel.addButtonPressed()
-                        showingAlert = true
+                        let validation = formValidation
+                        if validation.validateForm() {
+                            profileModel.addButtonPressed()
+                            showingAlert = true
+                        } else {
+                            validationAlert = true
+                        }
                     } label: {
                         Symbols.done // Save
                     }
-                    .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("データが保存されました。"), // Data has been successfully saved
-                              message: Text(""),
-                              dismissButton: .default(Text("閉じる"), action: { // Close
-                            presentationMode.wrappedValue.dismiss()
-                        }))
+                    .alert(isPresented: $validationAlert) {
+                        Alert(title: Text("入力の無い項目があります"),
+                              message: Text(formValidation.getEmptyFieldsMessage()),
+                              dismissButton: .default(Text("閉じる")))
                     }
                 }
             }
