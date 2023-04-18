@@ -36,6 +36,8 @@
 		05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B0714229C6BD28008A2010 /* ImagePicker.swift */; };
 		05F19E1C29ED8EA5004A4352 /* Symbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F19E1B29ED8EA5004A4352 /* Symbols.swift */; };
 		05F19E1E29ED9530004A4352 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F19E1D29ED9530004A4352 /* Theme.swift */; };
+		05F6AB1929EE5C3300AA59EB /* RequiredFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB1829EE5C3300AA59EB /* RequiredFieldStyle.swift */; };
+		05F6AB1C29EE641A00AA59EB /* FormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB1B29EE641A00AA59EB /* FormValidation.swift */; };
 		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
@@ -80,6 +82,8 @@
 		05B0714229C6BD28008A2010 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		05F19E1B29ED8EA5004A4352 /* Symbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbols.swift; sourceTree = "<group>"; };
 		05F19E1D29ED9530004A4352 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		05F6AB1829EE5C3300AA59EB /* RequiredFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredFieldStyle.swift; sourceTree = "<group>"; };
+		05F6AB1B29EE641A00AA59EB /* FormValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormValidation.swift; sourceTree = "<group>"; };
 		286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
 		7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListModel.swift; sourceTree = "<group>"; };
@@ -222,6 +226,7 @@
 		05B0712429C01AF1008A2010 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				05F6AB1A29EE640A00AA59EB /* Input Validation */,
 				05F19E1B29ED8EA5004A4352 /* Symbols.swift */,
 				05F19E1D29ED9530004A4352 /* Theme.swift */,
 				69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */,
@@ -260,6 +265,15 @@
 				d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */,
 			);
 			path = YourRecordsView;
+			sourceTree = "<group>";
+		};
+		05F6AB1A29EE640A00AA59EB /* Input Validation */ = {
+			isa = PBXGroup;
+			children = (
+				05F6AB1829EE5C3300AA59EB /* RequiredFieldStyle.swift */,
+				05F6AB1B29EE641A00AA59EB /* FormValidation.swift */,
+			);
+			path = "Input Validation";
 			sourceTree = "<group>";
 		};
 		95D396F2291C4B380053F8C8 = {
@@ -381,6 +395,7 @@
 				05552CF829E2385B00F9AC0A /* CustomUITextField.swift in Sources */,
 				fa062cddd79a3dd3f60488861fe99eee /* AwarenessView.swift in Sources */,
 				051A27C229CE893C00A890D0 /* EpisodeView.swift in Sources */,
+				05F6AB1C29EE641A00AA59EB /* FormValidation.swift in Sources */,
 				05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */,
 				e546bac4e75705aea8de14f811a143d8 /* ProfileView.swift in Sources */,
 				051A27D029CE8B6300A890D0 /* ExportDataModel.swift in Sources */,
@@ -392,6 +407,7 @@
 				051A27D229CE8BE900A890D0 /* ExportDataView.swift in Sources */,
 				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
+				05F6AB1929EE5C3300AA59EB /* RequiredFieldStyle.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,
