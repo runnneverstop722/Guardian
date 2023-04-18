@@ -20,21 +20,25 @@ class AllergensList: ObservableObject {
 
 struct AwarenessView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(entity: ProfileInfoEntity.entity(), sortDescriptors: []) private var profiles: FetchedResults<ProfileInfoEntity>
-    @State private var selectedProfileIndex: Int = 0
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \ProfileInfoEntity.creationDate, ascending: true)],
+        animation: .default)
+    private var profiles: FetchedResults<ProfileInfoEntity>
+    @State private var selectedProfile: ProfileInfoEntity?
     @ObservedObject var allergensList = AllergensList()
-    
-    private func loadSelectedProfile() -> ProfileInfoEntity? {
-        if !profiles.isEmpty {
-            return profiles[selectedProfileIndex]
-        }
-        return nil
-    }
-    
+    @State var didLoad = false
     private func allergensList(profile: ProfileInfoEntity?) -> String {
-        if let profile = profile {
-            let allergens = profile.allergens as? Set<AllergenEntity> ?? Set<AllergenEntity>()
-            return allergens.compactMap({ $0.allergen }).joined(separator: ", ")
+        if let recordID = profile?.recordID {
+            let fetchRequest = AllergenEntity.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "profileID == %@", recordID)
+            do {
+                let records = try viewContext.fetch(fetchRequest)
+                
+                return records.compactMap({ $0.allergen }).joined(separator: ", ")
+            } catch let error as NSError {
+                print("Could not fetch from local cache. \(error), \(error.userInfo)")
+            }
         }
         return ""
     }
@@ -51,22 +55,21 @@ struct AwarenessView: View {
         }
         return nil
     }
-
-
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 LinearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom)
                 VStack(spacing: 20) {
-                    Picker("Select Profile", selection: $selectedProfileIndex) {
-                        ForEach(0 ..< profiles.count) { index in
-                            Text(profiles[index].firstName ?? "").tag(index)
-                        }
-                    }.pickerStyle(MenuPickerStyle())
-                        .foregroundColor(.secondary)
-                    
-                    if let selectedProfile = loadSelectedProfile() {
+                    if !profiles.isEmpty {
+                        Picker("Select Profile", selection: $selectedProfile) {
+                            ForEach(profiles, id: \.self) { (item: ProfileInfoEntity) in
+                                Text(item.firstName ?? "").tag(item as ProfileInfoEntity?)
+                            }
+                        }.pickerStyle(MenuPickerStyle())
+                            .foregroundColor(.secondary)
+                    }
+                    if let selectedProfile = selectedProfile {
                         Image(uiImage: loadImageFromURL(urlString: selectedProfile.profileImageData ?? "") ?? UIImage())
                             .resizable()
                             .foregroundColor(.white)
@@ -109,6 +112,23 @@ struct AwarenessView: View {
                 }) {
                     Image(systemName: "plus")
                 })
+                .onAppear() {
+                    if !didLoad {
+                        didLoad = true
+                        selectedProfile = profiles.first
+                    }
+                }
+                .onChange(of: selectedProfile?.managedObjectContext) { newValue in
+                    if newValue == nil {
+                        selectedProfile = profiles.first
+                    }
+                }
+                .onChange(of: profiles.count) { newValue in
+                    if newValue > 0 && selectedProfile == nil {
+                        selectedProfile = profiles.first
+                    }
+                }
+                
             }
         }
     }

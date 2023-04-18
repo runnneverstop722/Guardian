@@ -305,7 +305,8 @@ struct Carousel: View {
                         .tag(index)
                     }
                 }
-                .tabViewStyle(PageTabViewStyle())
+                .tabViewStyle(.page)
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
                 .frame(height: 155.0) //163
                 .onChange(of: selection) { value in
                     selection = value
