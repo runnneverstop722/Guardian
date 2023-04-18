@@ -217,7 +217,6 @@ import CloudKit
     
     func addButtonPressed() {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
-        guard !leadTimeToSymptoms.isEmpty else { return }
         if isUpdated {
             updateEpisode()
         } else {
