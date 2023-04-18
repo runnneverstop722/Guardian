@@ -23,8 +23,7 @@ struct ProfileView: View {
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
     @State private var isUpdate = false
-    @State private var showingDataSavedAndDismissProfileViewAlert = false
-    @State private var validationAlert = false
+    @State private var activeAlert: ActiveAlert?
     @FocusState private var focusedField1: FormField1?
     @FocusState private var focusedField2: FormField2?
     @Environment(\.presentationMode) var presentationMode
@@ -181,24 +180,26 @@ struct ProfileView: View {
                         let validation = formValidation
                         if validation.validateForm() {
                             profileModel.addButtonPressed()
-                            showingAlert = true
+                            activeAlert = .saveConfirmation
                         } else {
-                            validationAlert = true
+                            activeAlert = .emptyValidation
                         }
                     } label: {
                         Symbols.done // Save
                     }
-                    .alert(isPresented: $validationAlert) {
-                        Alert(title: Text("入力の無い項目があります"),
-                              message: Text(formValidation.getEmptyFieldsMessage()),
-                              dismissButton: .default(Text("閉じる")))
-                    }
-                    .alert(isPresented: $showingDataSavedAndDismissProfileViewAlert) {
-                        Alert(title: Text("データが保存されました。"), // Data has been successfully saved
-                              message: Text(""),
-                              dismissButton: .default(Text("閉じる"), action: { // Close
-                            presentationMode.wrappedValue.dismiss()
-                        }))
+                    .alert(item: $activeAlert) { alertType in
+                        switch alertType {
+                        case .saveConfirmation:
+                            return Alert(title: Text("データが保存されました。"), // Data has been successfully saved
+                                         message: Text(""),
+                                         dismissButton: .default(Text("閉じる"), action: { // Close
+                                       presentationMode.wrappedValue.dismiss()
+                                   }))
+                        case .emptyValidation:
+                            return Alert(title: Text("入力の無い項目があります"),
+                                         message: Text(formValidation.getEmptyFieldsMessage()),
+                                         dismissButton: .default(Text("閉じる")))
+                        }
                     }
                 }
             }
