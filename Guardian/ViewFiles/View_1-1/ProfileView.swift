@@ -23,7 +23,7 @@ struct ProfileView: View {
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
     @State private var isUpdate = false
-    @State private var showingAlert = false
+    @State private var showingDataSavedAndDismissProfileViewAlert = false
     @State private var validationAlert = false
     @FocusState private var focusedField1: FormField1?
     @FocusState private var focusedField2: FormField2?
@@ -193,7 +193,7 @@ struct ProfileView: View {
                               message: Text(formValidation.getEmptyFieldsMessage()),
                               dismissButton: .default(Text("閉じる")))
                     }
-                    .alert(isPresented: $showingAlert) {
+                    .alert(isPresented: $showingDataSavedAndDismissProfileViewAlert) {
                         Alert(title: Text("データが保存されました。"), // Data has been successfully saved
                               message: Text(""),
                               dismissButton: .default(Text("閉じる"), action: { // Close
