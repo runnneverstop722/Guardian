@@ -22,8 +22,8 @@ struct ProfileView: View {
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
-    @State private var showingAlert = false
     @State private var isUpdate = false
+    @State private var showingAlert = false
     @State private var validationAlert = false
     @FocusState private var focusedField1: FormField1?
     @FocusState private var focusedField2: FormField2?
@@ -74,12 +74,14 @@ struct ProfileView: View {
                             Section {
                                 TextField("姓", text: $profileModel.lastName, prompt: Text("姓 *"))
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
+                                    .focused($focusedField1, equals: .lastName)
                                     .onChange(of: profileModel.lastName) { _ in
                                         isLastNameEmpty = profileModel.lastName.isEmpty
                                     }
                                 Divider()
                                 TextField("名", text: $profileModel.firstName, prompt: Text("名 *"))
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
+                                    .focused($focusedField1, equals: .firstName)
                                     .onChange(of: profileModel.firstName) { _ in
                                         isFirstNameEmpty = profileModel.firstName.isEmpty
                                     }
@@ -190,6 +192,13 @@ struct ProfileView: View {
                         Alert(title: Text("入力の無い項目があります"),
                               message: Text(formValidation.getEmptyFieldsMessage()),
                               dismissButton: .default(Text("閉じる")))
+                    }
+                    .alert(isPresented: $showingAlert) {
+                        Alert(title: Text("データが保存されました。"), // Data has been successfully saved
+                              message: Text(""),
+                              dismissButton: .default(Text("閉じる"), action: { // Close
+                            presentationMode.wrappedValue.dismiss()
+                        }))
                     }
                 }
             }
