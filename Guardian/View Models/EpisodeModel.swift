@@ -239,26 +239,33 @@ import CloudKit
     }
     
     //MARK: - UPDATE/EDIT @CK Private DataBase
-    
     func updateEpisode() {
         let myRecord = record
+        CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
+            guard let record = record else { return }
+            DispatchQueue.main.sync {
+                self.updateEpisode(record: record)
+            }
+        }
+    }
+    func updateEpisode(record: CKRecord) {
         if let episodePhoto = getImageURL(for: episodeImages) {
             let urls = episodePhoto.map { return CKAsset(fileURL: $0)
             }
-            myRecord["data"] = urls
+            record["data"] = urls
         }
-        myRecord["episodeDate"] = episodeDate
-        myRecord["firstKnownExposure"] = firstKnownExposure
-        myRecord["wentToHospital"] = wentToHospital
-        myRecord["typeOfExposure"] = typeOfExposure
-        myRecord["intakeAmount"] = intakeAmount
-        myRecord["symptoms"] = symptoms
-        myRecord["severity"] = severity
-        myRecord["leadTimeToSymptoms"] = leadTimeToSymptoms
-        myRecord["didExercise"] = didExercise
-        myRecord["treatments"] = treatments
-        myRecord["otherTreatment"] = otherTreatment
-        updateRecord(record: myRecord)
+        record["episodeDate"] = episodeDate
+        record["firstKnownExposure"] = firstKnownExposure
+        record["wentToHospital"] = wentToHospital
+        record["typeOfExposure"] = typeOfExposure
+        record["intakeAmount"] = intakeAmount
+        record["symptoms"] = symptoms
+        record["severity"] = severity
+        record["leadTimeToSymptoms"] = leadTimeToSymptoms
+        record["didExercise"] = didExercise
+        record["treatments"] = treatments
+        record["otherTreatment"] = otherTreatment
+        saveItem(record: record)
     }
     
     private func addItem(
