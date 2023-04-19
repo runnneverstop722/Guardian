@@ -102,16 +102,22 @@ struct YourRecordsView: View {
                             VStack {
                                 HStack {
                                     Spacer()
-                                    NavigationLink(
-                                        destination: DiagnosisView(profile: profile),
-                                        isActive: $isAddingNewDiagnosis
-                                    ) {
+                                    Button {
+                                        isAddingNewDiagnosis = true
+                                    } label: {
                                         Symbols.addNew
                                             .foregroundColor(.primary)
                                     }
-                                    .onReceive(existingDiagnosisData) { data in
+                                    .background(
+                                        NavigationLink(
+                                            destination: DiagnosisView(profile: profile),
+                                            isActive: $isAddingNewDiagnosis,
+                                            label: {}
+                                        )
+                                    ).onReceive(existingDiagnosisData) { data in
                                         if let data = data.object as? DiagnosisListModel {
-                                            let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID }
+                                            let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID
+                                            }
                                             if let index = index {
                                                 diagnosisModel.diagnosisInfo[index] = data
                                             } else {
@@ -125,7 +131,8 @@ struct YourRecordsView: View {
                                     }
                                     .onReceive(existingAllergenData) { data in
                                         if let data = data.object as? AllergensListModel {
-                                            let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID }
+                                            let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID
+                                            }
                                             if let index = index {
                                                 episodeModel.allergens[index] = data
                                             } else {
@@ -137,49 +144,6 @@ struct YourRecordsView: View {
                                             }
                                         }
                                     }
-
-//                                    Button {
-//                                        isAddingNewDiagnosis = true
-//                                    } label: {
-//                                        Symbols.addNew
-//                                            .foregroundColor(.primary)
-//                                    }
-//                                    .background(
-//                                        NavigationLink(
-//                                            destination: DiagnosisView(profile: profile),
-//                                            isActive: $isAddingNewDiagnosis,
-//                                            label: {}
-//                                        )
-//                                    ).onReceive(existingDiagnosisData) { data in
-//                                        if let data = data.object as? DiagnosisListModel {
-//                                            let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID
-//                                            }
-//                                            if let index = index {
-//                                                diagnosisModel.diagnosisInfo[index] = data
-//                                            } else {
-//                                                diagnosisModel.diagnosisInfo.insert(data, at: 0)
-//                                            }
-//                                        } else if let recordID = data.object as? CKRecord.ID {
-//                                            diagnosisModel.diagnosisInfo.removeAll {
-//                                                $0.record.recordID == recordID
-//                                            }
-//                                        }
-//                                    }
-//                                    .onReceive(existingAllergenData) { data in
-//                                        if let data = data.object as? AllergensListModel {
-//                                            let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID
-//                                            }
-//                                            if let index = index {
-//                                                episodeModel.allergens[index] = data
-//                                            } else {
-//                                                episodeModel.allergens.insert(data, at: 0)
-//                                            }
-//                                        } else if let recordID = data.object as? CKRecord.ID {
-//                                            diagnosisModel.diagnosisInfo.removeAll {
-//                                                $0.record.recordID == recordID
-//                                            }
-//                                        }
-//                                    }
                                     .onAppear() {
                                         if !didLoad {
                                             didLoad = true
@@ -343,7 +307,7 @@ struct Carousel: View {
                 }
                 .tabViewStyle(.page)
                 .indexViewStyle(.page(backgroundDisplayMode: .always)) //Page Indicator
-                .frame(height: 155.0) //163
+                .frame(height: 164.0)
                 .onChange(of: selection) { value in
                     selection = value
                 }
@@ -351,7 +315,6 @@ struct Carousel: View {
         }
     }
 }
-
 
 
 struct Card: View {
@@ -409,16 +372,13 @@ struct Card: View {
                                 .fontWeight(.semibold)
                         }
                         .font(.subheadline)
+                        Text("")
+                            .font(.callout)
                     }
-                    .padding(20.0)
+                    .padding(14.0)
                     .background(
                         Group {
                             Color("detail-background")
-//                            if colorScheme == .dark {
-//                                Color(.secondarySystemGroupedBackground)
-//                            } else {
-//                                Color(red: 252/255, green: 227/255, blue: 138/255)
-//                            }
                         }
                     )
                     .cornerRadius(10.0)
@@ -436,15 +396,10 @@ struct Card: View {
                             .fontWeight(.semibold)
                             .font(.subheadline)
                     }
-                    .padding(20.0)
+                    .padding(60.0)
                     .background(
                         Group {
                             Color("detail-background")
-//                            if colorScheme == .dark {
-//                                Color(.secondarySystemGroupedBackground)
-//                            } else {
-//                                Color(red: 252/255, green: 227/255, blue: 138/255)
-//                            }
                         }
                     )
                     .cornerRadius(10.0)
