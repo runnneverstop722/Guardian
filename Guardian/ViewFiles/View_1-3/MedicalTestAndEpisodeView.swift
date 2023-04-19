@@ -28,9 +28,7 @@ struct MedicalTestAndEpisodeView: View {
     @State private var showAlert = false
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false
-//    @State private var isAddingNewEpisode = false
-//    @State private var isUpdate = false
-//    @State private var showingRemoveDiagnosisAlert = false
+
     @State private var viewDidLoad = false
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme

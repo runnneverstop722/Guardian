@@ -34,13 +34,32 @@ struct BloodTest: Identifiable {
     }
 }
 enum BloodTestGrade: String, CaseIterable {
-    case negative = "陰性(~0.35)"
-    case grade1 = "1グレード"
-    case grade2 = "2グレード"
-    case grade3 = "3グレード"
-    case grade4 = "4グレード"
-    case grade5 = "5グレード"
-    case grade6 = "6グレード"
+    case negative = "クラス0(陰性)"
+    case grade1 = "クラス1(偽陽性)"
+    case grade2 = "クラス2(陽性)"
+    case grade3 = "クラス3(陽性)"
+    case grade4 = "クラス4(陽性)"
+    case grade5 = "クラス5(陽性)"
+    case grade6 = "クラス6(陽性)"
+    
+    static func gradeForLevel(_ level: Double) -> BloodTestGrade {
+        switch level {
+        case 0.0..<0.35:
+            return .negative
+        case 0.35..<0.7:
+            return .grade1
+        case 0.7..<3.5:
+            return .grade2
+        case 3.5..<17.5:
+            return .grade3
+        case 17.5..<50:
+            return .grade4
+        case 50..<100:
+            return .grade5
+        default:
+            return .grade6
+        }
+    }
 }
 
 //MARK: - Struct: Skin Test
@@ -110,6 +129,20 @@ struct MedicalTestView: View {
         return "TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
     }
     
+    func generateChartData(for testType: String) -> [Double] {
+        switch testType {
+        case "BloodTest":
+            return mediacalTest.bloodTest.map { Double($0.bloodTestLevel) ?? 0.0 }
+        case "SkinTest":
+            return mediacalTest.skinTest.map { Double($0.SkinTestResultValue) ?? 0.0 }
+        case "OralFoodChallenge":
+            return mediacalTest.oralFoodChallenge.map { Double($0.oralFoodChallengeQuantity) ?? 0.0 }
+        default:
+            return []
+        }
+    }
+
+    
     //MARK: - Body View
     
     var body: some View {
@@ -163,19 +196,36 @@ struct MedicalTestView: View {
         let newSkinTests = mediacalTest.skinTest.filter { $0.record == nil }
         let neworalTests = mediacalTest.oralFoodChallenge.filter { $0.record == nil }
         
-        newBloodTests.forEach {
-//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
+        for var bloodTest in newBloodTests {
             let myRecord = CKRecord(recordType: "BloodTest")
             
-            myRecord["bloodTestDate"] = $0.bloodTestDate
-            myRecord["bloodTestLevel"] = $0.bloodTestLevel
-            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
+            // Update the bloodTestGrade based on the bloodTestLevel value
+            if let level = Double(bloodTest.bloodTestLevel) {
+                bloodTest.bloodTestGrade = BloodTestGrade.gradeForLevel(level)
+            }
+            
+            myRecord["bloodTestDate"] = bloodTest.bloodTestDate
+            myRecord["bloodTestLevel"] = bloodTest.bloodTestLevel
+            myRecord["bloodTestGrade"] = bloodTest.bloodTestGrade.rawValue
             
             let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
+            // Save the record to CloudKit
             save(record: myRecord)
         }
+//        newBloodTests.forEach {
+//            let myRecord = CKRecord(recordType: "BloodTest")
+//            if let level = Double($0.bloodTestLevel) {
+//                $0.bloodTestGrade = BloodTestGrade.gradeForLevel(level)
+//            }
+//            myRecord["bloodTestDate"] = $0.bloodTestDate
+//            myRecord["bloodTestLevel"] = $0.bloodTestLevel
+//            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
+//
+//            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
+//            myRecord["allergen"] = reference as CKRecordValue
+//            save(record: myRecord)
+//        }
         newSkinTests.forEach {
 //            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
 //            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
@@ -254,13 +304,21 @@ struct MedicalTestView: View {
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     @Binding var deleteIDs: [CKRecord.ID]
+    @State private var isShowingBloodTestTutorialAlert = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
 
         VStack {
             List {
-                Text("昇順：「検査日」") // Order: Test Date Descending
-                    .foregroundColor(.secondary)
+                Button {
+                    isShowingBloodTestTutorialAlert = true
+                } label: {
+                    HStack {
+                        Text("単位について")
+                        Symbols.question
+                    }
+                    .foregroundColor(.accentColor)
+                }
                 ForEach($bloodTests) { test in
                     BloodTestFormView(bloodTest: test)
                 }
@@ -272,6 +330,11 @@ struct BloodTestSection: View {
                     }
                     bloodTests.remove(atOffsets: indexSet)
                 })
+            }
+            .alert(isPresented: $isShowingBloodTestTutorialAlert) {
+                Alert(title: Text("UA/mL = IU/mL = KU/L"),
+                      message: Text("どちらも量は同じです。\nKU/Lは欧米でよく使われている単位です。"),
+                      dismissButton: .default(Text("閉じる")))
             }
             Button(action: {
                 bloodTests.insert(BloodTest(), at: 0) // Add new record at the top
@@ -301,8 +364,6 @@ struct SkinTestSection: View {
     var body: some View {
         VStack {
             List {
-                Text("昇順：「検査日」") // Order: Test Date Descending
-                    .foregroundColor(.secondary)
                 ForEach(skinTests.indices, id: \.self) { index in
                     SkinTestFormView(skinTest: $skinTests[index])
                 }
@@ -341,11 +402,10 @@ struct OralFoodChallengeSection: View {
     @Binding var oralFoodChallenges: [OralFoodChallenge]
     @Binding var deleteIDs: [CKRecord.ID]
     @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         VStack {
             List {
-                Text("昇順：「検査日」") // Order: Test Date Descending
-                    .foregroundColor(.secondary)
                 ForEach(oralFoodChallenges.indices, id: \.self) { index in
                     OralFoodChallengeFormView(oralFoodChallenge: $oralFoodChallenges[index])
                 }
@@ -358,6 +418,7 @@ struct OralFoodChallengeSection: View {
                     oralFoodChallenges.remove(atOffsets: indexSet)
                 })
             }
+            
             
             Button(action: {
                 oralFoodChallenges.insert(OralFoodChallenge(), at: 0) // Add new record at the top                
@@ -395,6 +456,14 @@ struct BloodTestFormView: View {
             }
         )
     }
+    private var currentGradeString: String {
+            if let level = Double(bloodTest.bloodTestLevel) {
+                let grade = BloodTestGrade.gradeForLevel(level)
+                return grade.rawValue
+            } else {
+                return ""
+            }
+        }
     
     var body: some View {
         VStack {
@@ -415,14 +484,10 @@ struct BloodTestFormView: View {
                 .submitLabel(.done)
                 .focused($bloodTestFocusedField, equals: .bloodTestLevel)
             }
-            VStack(alignment: .leading) {
-                Picker("IgEクラス", selection: $bloodTest.bloodTestGrade) { // BloodTest Test Grade
-                    ForEach(BloodTestGrade.allCases, id: \.self) { grade in
-                        Text(grade.rawValue).tag(grade)
-                    }
-                }
-                .pickerStyle(.menu)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+            HStack {
+                Text("IgEクラス")
+                Spacer()
+                Text("\(currentGradeString)")
             }
         }
     }

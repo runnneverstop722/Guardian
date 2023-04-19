@@ -395,7 +395,7 @@ struct Card: View {
                             .fontWeight(.semibold)
                             .font(.subheadline)
                     }
-                    .padding(80.0)
+                    .padding(90.0)
                     .background(
                         Group {
                             Color("detail-background")
@@ -474,6 +474,8 @@ struct YourRecordsViewGridCell: View {
                 
                 Text(headline)
                     .font(.headline)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
 //                    .foregroundColor(.white)
                 
                 HStack {
