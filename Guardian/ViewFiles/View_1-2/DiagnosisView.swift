@@ -40,12 +40,17 @@ struct DiagnosisView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) private var dismiss
     
+    @State private var isDiagnosisEmpty = true
+    
     init(profile: CKRecord) {
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(record: profile))
     }
     init(record: CKRecord) {
         _isUpdate = State(wrappedValue: true)
         _diagnosisModel = StateObject(wrappedValue: DiagnosisModel(diagnosis: record))
+    }
+    private var formValidation: FormValidationDiagnosis {
+        FormValidationDiagnosis(isAllergensEmpty: diagnosisModel.allergens.isEmpty, isDiagnosisEmpty: diagnosisModel.diagnosis.isEmpty)
     }
     
     func validateData() -> Bool {
@@ -62,11 +67,11 @@ struct DiagnosisView: View {
             Section {
                 HStack {
                     Text("診断名")// Diagnosis Result
-                    Text("*")
-                    .foregroundColor(.red)
                     Spacer()
                     Text(diagnosisModel.diagnosis.isEmpty ? "選択する" : diagnosisModel.diagnosis) // Select
                         .foregroundColor(diagnosisModel.diagnosis.isEmpty ? .secondary : .accentColor)
+                        .modifier(RequiredTextStyle(isEmpty: diagnosisModel.diagnosis.isEmpty))
+
                 }
                 .onTapGesture {
                     isShowingActionSheet = true
@@ -108,8 +113,7 @@ struct DiagnosisView: View {
             Section(header: HStack {
                 Text("アレルゲン（複数選択可）") // Allergens (Available to select multiply)
                     .font(.headline)
-                Text("*")
-                .foregroundColor(.red)}) {
+            }) {
                 ForEach(diagnosisModel.allergens, id: \.self) { allergen in
                     Text(allergen)
                 }
@@ -117,9 +121,12 @@ struct DiagnosisView: View {
                 Button(action: {
                     showingAddAllergen.toggle()
                 }) {
-                    HStack {
-                        Symbols.allergens
-                        Text("アレルゲンを選択") // Add Allergens
+                    ZStack {
+                        RowBackground(isEmpty: diagnosisModel.allergens.isEmpty)
+                        HStack {
+                            Symbols.allergens
+                            Text("アレルゲンを選択") // Add Allergens
+                        }
                     }
                 }
                 .sheet(isPresented: $showingAddAllergen) {
@@ -221,15 +228,15 @@ struct DiagnosisView: View {
         .navigationBarTitle("診断記録") // Diagnosis
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    if validateData() {
-                        print("Data is valid, showing confirmation alert")
-                        activeAlert = .saveConfirmation
+                Button() {
+                    let validation = formValidation
+                    if validation.validateForm() {
+                        diagnosisModel.addButtonPressed()
+                        presentationMode.wrappedValue.dismiss()
                     } else {
-                        print("Data is not valid, showing validation alert")
                         activeAlert = .emptyValidation
                     }
-                }) {
+                } label: {
                     Symbols.done // Save
                 }
                 .alert(item: $activeAlert) { alertType in
@@ -238,17 +245,45 @@ struct DiagnosisView: View {
                         return Alert(title: Text("データが保存されました。"), // The data has successfully saved
                                      message: Text(""),
                                      dismissButton: .default(Text("閉じる"), action: {
-                            diagnosisModel.addButtonPressed()
                             presentationMode.wrappedValue.dismiss()
                         }))
                     case .emptyValidation:
-                        return Alert(title: Text("「診断名」と「アレルゲン」を\n記入してください。"), // Please select diagnosis and allergens.
-                                     message: Text(""),
-                                     dismissButton: .default(Text("OK")))
+                        return Alert(title: Text("入力エラー"), // Please select diagnosis and allergens.
+                                     message: Text(formValidation.getEmptyFieldsMessage()),
+                                     dismissButton: .default(Text("閉じる")))
                     }
                 }
 
             }
+//            ToolbarItem(placement: .confirmationAction) {
+//                Button(action: {
+//                    if validateData() {
+//                        print("Data is valid, showing confirmation alert")
+//                        activeAlert = .saveConfirmation
+//                    } else {
+//                        print("Data is not valid, showing validation alert")
+//                        activeAlert = .emptyValidation
+//                    }
+//                }) {
+//                    Symbols.done // Save
+//                }
+//                .alert(item: $activeAlert) { alertType in
+//                    switch alertType {
+//                    case .saveConfirmation:
+//                        return Alert(title: Text("データが保存されました。"), // The data has successfully saved
+//                                     message: Text(""),
+//                                     dismissButton: .default(Text("閉じる"), action: {
+//                            diagnosisModel.addButtonPressed()
+//                            presentationMode.wrappedValue.dismiss()
+//                        }))
+//                    case .emptyValidation:
+//                        return Alert(title: Text("入力エラー"), // Please select diagnosis and allergens.
+//                                     message: Text("「診断名」,「アレルゲン」\nを入力してください。"),
+//                                     dismissButton: .default(Text("閉じる")))
+//                    }
+//                }
+//
+//            }
 
         }
     }

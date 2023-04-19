@@ -389,14 +389,13 @@ struct Card: View {
             ZStack(alignment: Alignment(horizontal: .leading, vertical: .center)) {
                 VStack {
                     Spacer()
-//                        .frame(height: 50)
                     VStack(alignment: .leading, spacing: 8.0) {
                         Text("記録が登録されていません。")
                             .foregroundColor(.primary)
                             .fontWeight(.semibold)
                             .font(.subheadline)
                     }
-                    .padding(60.0)
+                    .padding(80.0)
                     .background(
                         Group {
                             Color("detail-background")

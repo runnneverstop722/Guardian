@@ -47,8 +47,8 @@ struct ProfileView: View {
         _isFirstNameEmpty = State(initialValue: profile["firstName"] == nil || (profile["firstName"] as? String)?.isEmpty == true)
     }
     
-    private var formValidation: FormValidation {
-        FormValidation(isLastNameEmpty: isLastNameEmpty, isFirstNameEmpty: isFirstNameEmpty, isAllergensEmpty: profileModel.allergens.isEmpty)
+    private var formValidation: FormValidationProfile {
+        FormValidationProfile(isLastNameEmpty: isLastNameEmpty, isFirstNameEmpty: isFirstNameEmpty, isAllergensEmpty: profileModel.allergens.isEmpty)
     }
     
     //MARK: - Body
@@ -71,14 +71,14 @@ struct ProfileView: View {
 #endif
                             
                             Section {
-                                TextField("姓", text: $profileModel.lastName, prompt: Text("姓 *"))
+                                TextField("姓", text: $profileModel.lastName, prompt: Text("姓"))
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
                                     .focused($focusedField1, equals: .lastName)
                                     .onChange(of: profileModel.lastName) { _ in
                                         isLastNameEmpty = profileModel.lastName.isEmpty
                                     }
                                 Divider()
-                                TextField("名", text: $profileModel.firstName, prompt: Text("名 *"))
+                                TextField("名", text: $profileModel.firstName, prompt: Text("名"))
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
                                     .focused($focusedField1, equals: .firstName)
                                     .onChange(of: profileModel.firstName) { _ in
@@ -130,8 +130,6 @@ struct ProfileView: View {
                 Section(header: HStack {
                     Text("管理するアレルゲン") // Allergens that will be managed
                         .font(.headline)
-                    Text("*")
-                        .foregroundColor(Color.red)
                 }) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in
                         Text(allergen)
@@ -196,7 +194,7 @@ struct ProfileView: View {
                                        presentationMode.wrappedValue.dismiss()
                                    }))
                         case .emptyValidation:
-                            return Alert(title: Text("入力の無い項目があります"),
+                            return Alert(title: Text("入力エラー"),
                                          message: Text(formValidation.getEmptyFieldsMessage()),
                                          dismissButton: .default(Text("閉じる")))
                         }

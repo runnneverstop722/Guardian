@@ -103,9 +103,6 @@ struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @EnvironmentObject var mediacalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
-    //    private var bloodTestObjects: [CKRecord] = []
-    //    private var skinTestObjects: [CKRecord] = []
-    //    private var oralFoodTestObjects: [CKRecord] = []
     @State private var showingAlert = false
     @Environment(\.presentationMode) var presentationMode
     

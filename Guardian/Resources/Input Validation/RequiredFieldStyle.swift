@@ -15,8 +15,6 @@ struct RequiredFieldStyle: TextFieldStyle {
             .padding(10)
             .background(isEmpty ? Color.red.opacity(0.3) : Color.clear)
             .cornerRadius(5)
-//            .overlay(RoundedRectangle(cornerRadius: 5)
-//                .stroke(isEmpty ? Color.red : Color.gray, lineWidth: 1))
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  FormValidation.swift
+//  FormValidationProfile.swift
 //  Guardian
 //
 //  Created by Teff on 2023/04/18.
@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct FormValidation {
+struct FormValidationProfile {
+    
     let isLastNameEmpty: Bool
     let isFirstNameEmpty: Bool
     let isAllergensEmpty: Bool

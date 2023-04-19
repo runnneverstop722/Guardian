@@ -319,7 +319,8 @@ import CloudKit
     
     func deleteRecord(record: CKRecord) {
         if record.recordType == "EpisodeInfo" {
-            allergen["totalNumberOfEpisodes"] = max(episodeInfo.count - 1, 0)
+            // allergen["totalNumberOfEpisodes"] = max(episodeInfo.count - 1, 0)
+            allergen["totalNumberOfEpisodes"] = max(Int(truncating: allergen["totalNumberOfEpisodes"] as! NSNumber) - 1, 0)
             CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
             }
             PersistenceController.shared.addAllergen(allergen: allergen)
