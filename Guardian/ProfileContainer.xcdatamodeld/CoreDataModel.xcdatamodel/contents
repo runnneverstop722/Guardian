@@ -18,12 +18,16 @@
     </entity>
     <entity name="BloodTestEntity" representedClassName="BloodTestEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergenID" optional="YES" attributeType="String"/>
-        <attribute name="allergens" optional="YES" attributeType="Transformable"/>
         <attribute name="bloodTestDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="bloodTestGrade" optional="YES" attributeType="String"/>
         <attribute name="bloodTestLevel" optional="YES" attributeType="String"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="recordID" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="recordID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="DiagnosisEntity" representedClassName="DiagnosisEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergens" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
@@ -65,6 +69,19 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="OralFoodChallengeEntity" representedClassName="OralFoodChallengeEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="allergenID" optional="YES" attributeType="String"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="oralFoodChallengeDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="oralFoodChallengeQuantity" optional="YES" attributeType="String"/>
+        <attribute name="oralFoodChallengeResult" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="recordID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="ProfileInfoEntity" representedClassName="ProfileInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="allergist" optional="YES" attributeType="String"/>
         <attribute name="allergistContactInfo" optional="YES" attributeType="String"/>
@@ -78,6 +95,19 @@
         <attribute name="profileImageData" optional="YES" attributeType="String"/>
         <attribute name="recordID" optional="YES" attributeType="String"/>
         <relationship name="allergens" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AllergenEntity" inverseName="profiles" inverseEntity="AllergenEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="recordID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="SkinTestEntity" representedClassName="SkinTestEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="allergenID" optional="YES" attributeType="String"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="recordID" optional="YES" attributeType="String"/>
+        <attribute name="skinTestDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="skinTestResult" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="skinTestResultValue" optional="YES" attributeType="String"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="recordID"/>

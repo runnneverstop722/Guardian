@@ -10,9 +10,7 @@ import CloudKit
 
 class PersistenceController {
     static let shared = PersistenceController()
-
     let container: NSPersistentContainer
-
     var context: NSManagedObjectContext {
         return container.viewContext
     }
@@ -99,7 +97,6 @@ class PersistenceController {
         entity.update(with: record)
         saveContext()
     }
-    
     func deleteEpisode(recordID: String) {
         let fetchRequest = EpisodeEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
@@ -112,6 +109,66 @@ class PersistenceController {
             }
         } catch let error as NSError {
             print("Could not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func addBloodTest(record: CKRecord) {
+        let entity = BloodTestEntity(context: container.viewContext)
+        entity.update(with: record)
+        saveContext()
+    }
+    func deleteBloodTest(recordID: String) {
+        let fetchRequest = BloodTestEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func addSkinTest(record: CKRecord) {
+        let entity = SkinTestEntity(context: container.viewContext)
+        entity.update(with: record)
+        saveContext()
+    }
+    func deleteSkinTest(recordID: String) {
+        let fetchRequest = SkinTestEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func addOralFoodChallenge(record: CKRecord) {
+        let entity = OralFoodChallengeEntity(context: container.viewContext)
+        entity.update(with: record)
+        saveContext()
+    }
+    func deleteOralFoodChallenge(recordID: String) {
+        let fetchRequest = OralFoodChallengeEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
         }
     }
 }
@@ -222,10 +279,6 @@ extension EpisodeEntity {
                         let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                         let name = String(format: "%@.jpg", fileURL.lastPathComponent)
                         let path = doc.appendingPathComponent(name)
-                        //                    if FileManager.default.fileExists(atPath: path.path) {
-                        //                        self.profileImageData = name
-                        //                    } else {
-                        //                    }
                         try? FileManager.default.removeItem(at: path)
                         try FileManager.default.copyItem(at: fileURL, to: path)
                         imagePaths.append(name)
@@ -237,5 +290,35 @@ extension EpisodeEntity {
             }
         }
         self.episodePhoto = imagePaths
+    }
+}
+extension BloodTestEntity {
+    func update(with record: CKRecord) {
+        self.recordID = record.recordID.recordName
+        self.allergenID = (record["allergen"] as? CKRecord.Reference)?.recordID.recordName
+        self.creationDate = record.creationDate
+        bloodTestDate = record["bloodTestDate"] as? Date
+        bloodTestLevel = record["bloodTestLevel"] as? String
+        bloodTestGrade = record["bloodTestGrade"] as? String
+    }
+}
+extension SkinTestEntity {
+    func update(with record: CKRecord) {
+        self.recordID = record.recordID.recordName
+        self.allergenID = (record["allergen"] as? CKRecord.Reference)?.recordID.recordName
+        self.creationDate = record.creationDate
+        skinTestDate = record["skinTestDate"] as? Date
+        skinTestResult = record["skinTestResult"] as? Bool ?? false
+        skinTestResultValue = record["skinTestResultValue"] as? String
+    }
+}
+extension OralFoodChallengeEntity {
+    func update(with record: CKRecord) {
+        self.recordID = record.recordID.recordName
+        self.allergenID = (record["allergen"] as? CKRecord.Reference)?.recordID.recordName
+        self.creationDate = record.creationDate
+        oralFoodChallengeDate = record["oralFoodChallengeDate"] as? Date
+        oralFoodChallengeQuantity = record["oralFoodChallengeQuantity"] as? String
+        oralFoodChallengeResult = record["oralFoodChallengeResult"] as? Bool ?? false
     }
 }

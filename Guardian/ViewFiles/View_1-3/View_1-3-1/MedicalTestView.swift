@@ -67,21 +67,21 @@ enum BloodTestGrade: String, CaseIterable {
 struct SkinTest: Identifiable {
     let id = UUID()
     var skinTestDate: Date = Date()
-    var SkinTestResultValue: String = ""
-    var SkinTestResult: Bool = false
+    var skinTestResultValue: String = ""
+    var skinTestResult: Bool = false
     var record: CKRecord?
     
     init?(record: CKRecord) {
         self.record = record
         guard let skinTestDate = record["skinTestDate"] as? Date,
-              let SkinTestResultValue = record["SkinTestResultValue"] as? String,
-              let SkinTestResult = record["SkinTestResult"] as? Bool
+              let skinTestResultValue = record["skinTestResultValue"] as? String,
+              let skinTestResult = record["skinTestResult"] as? Bool
         else {
             return
         }
         self.skinTestDate = skinTestDate
-        self.SkinTestResultValue = SkinTestResultValue
-        self.SkinTestResult = SkinTestResult
+        self.skinTestResultValue = skinTestResultValue
+        self.skinTestResult = skinTestResult
     }
     init() {
         
@@ -115,7 +115,7 @@ struct OralFoodChallenge: Identifiable {
 //MARK: - MedicalTestView
 
 enum MedicalTestFormField {
-    case bloodTestLevel, SkinTestResultValue, oralFoodChallengeQuantity
+    case bloodTestLevel, skinTestResultValue, oralFoodChallengeQuantity
 }
 
 struct MedicalTestView: View {
@@ -128,21 +128,6 @@ struct MedicalTestView: View {
     var totalNumberOfMedicalTest: String {
         return "TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
     }
-    
-    func generateChartData(for testType: String) -> [Double] {
-        switch testType {
-        case "BloodTest":
-            return mediacalTest.bloodTest.map { Double($0.bloodTestLevel) ?? 0.0 }
-        case "SkinTest":
-            return mediacalTest.skinTest.map { Double($0.SkinTestResultValue) ?? 0.0 }
-        case "OralFoodChallenge":
-            return mediacalTest.oralFoodChallenge.map { Double($0.oralFoodChallengeQuantity) ?? 0.0 }
-        default:
-            return []
-        }
-    }
-
-    
     //MARK: - Body View
     
     var body: some View {
@@ -171,9 +156,6 @@ struct MedicalTestView: View {
                 Button(role: .none) {
                     showingAlert = true
                 } label: {
-//                    Image(systemName: "square.and.arrow.up.on.square")
-//                        .font(.caption)
-//                        .fontWeight(.bold)
                     Symbols.done // Save
                 }
                 .alert(isPresented: $showingAlert) {
@@ -227,21 +209,17 @@ struct MedicalTestView: View {
 //            save(record: myRecord)
 //        }
         newSkinTests.forEach {
-//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "SkinTest")
             
             myRecord["skinTestDate"] = $0.skinTestDate
-            myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
-            myRecord["SkinTestResult"] = $0.SkinTestResult
+            myRecord["skinTestResultValue"] = $0.skinTestResultValue
+            myRecord["skinTestResult"] = $0.skinTestResult
             
             let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
         neworalTests.forEach {
-//            let ckRecordZoneID = CKRecordZone(zoneName: "Profile")
-//            let ckRecordID = CKRecord.ID(zoneID: ckRecordZoneID.zoneID)
             let myRecord = CKRecord(recordType: "OralFoodChallenge")
             
             myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
@@ -271,8 +249,8 @@ struct MedicalTestView: View {
         skinTests.forEach {
             let myRecord = $0.record!
             myRecord["skinTestDate"] = $0.skinTestDate
-            myRecord["SkinTestResultValue"] = $0.SkinTestResultValue
-            myRecord["SkinTestResult"] = $0.SkinTestResult
+            myRecord["skinTestResultValue"] = $0.skinTestResultValue
+            myRecord["skinTestResult"] = $0.skinTestResult
             records.append(myRecord)
         }
         oralTests.forEach {
@@ -513,18 +491,18 @@ struct SkinTestFormView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    CustomTextField(text: $skinTest.SkinTestResultValue,
+                    CustomTextField(text: $skinTest.skinTestResultValue,
                                     placeholder: "0.0",
                                     keyboardType: .phonePad)
                     .keyboardType(.decimalPad)
                     .submitLabel(.done)
-                    .focused($skinTestFocusedField, equals: .SkinTestResultValue)
+                    .focused($skinTestFocusedField, equals: .skinTestResultValue)
                 }
             }
             HStack {
                 Text("陽性有無") // SkinTest Result
                 Spacer()
-                Toggle("", isOn: $skinTest.SkinTestResult)
+                Toggle("", isOn: $skinTest.skinTestResult)
                     .toggleStyle(SwitchToggleStyle())
             }
         }
