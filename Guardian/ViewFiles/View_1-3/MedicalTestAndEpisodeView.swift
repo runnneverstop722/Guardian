@@ -16,6 +16,10 @@ import CloudKit
     init(allergen: CKRecord) {
         self.allergen = allergen
     }
+    
+    var totalTest: Int {
+        return bloodTest.count + skinTest.count + oralFoodChallenge.count
+    }
 }
 
 struct MedicalTestAndEpisodeView: View {
@@ -47,7 +51,20 @@ struct MedicalTestAndEpisodeView: View {
         self.symbolImage = symbolImage
     }
 
+    func fetchLocalData() {
+        let allergenID = mediacalTest.allergen.recordID.recordName
+        mediacalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
+            BloodTest(entity: $0)
+        })
+        mediacalTest.skinTest = PersistenceController.shared.fetchSkinTest(allergenID: allergenID).compactMap({
+            SkinTest(entity: $0)
+        })
+        mediacalTest.oralFoodChallenge = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID).compactMap({
+            OralFoodChallenge(entity: $0)
+        })
+    }
     private func fetchData() {
+        fetchLocalData()
         let dispatchWork = DispatchGroup()
         let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
@@ -60,7 +77,11 @@ struct MedicalTestAndEpisodeView: View {
         bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = BloodTest(record: returnedRecord) {
-                    self.mediacalTest.bloodTest.append(object)
+                    let isExist = self.mediacalTest.bloodTest.contains { $0.record?.recordID == object.record?.recordID
+                    }
+                    if !isExist {
+                        self.mediacalTest.bloodTest.append(object)
+                    }
                 }
             }
         }
@@ -84,7 +105,11 @@ struct MedicalTestAndEpisodeView: View {
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
-                    self.mediacalTest.skinTest.append(object)
+                    let isExist = self.mediacalTest.skinTest.contains { $0.record?.recordID == object.record?.recordID
+                    }
+                    if !isExist {
+                        self.mediacalTest.skinTest.append(object)
+                    }
                 }
             }
         }
@@ -109,7 +134,11 @@ struct MedicalTestAndEpisodeView: View {
         OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = OralFoodChallenge(record: returnedRecord) {
-                    self.mediacalTest.oralFoodChallenge.append(object)
+                    let isExist = self.mediacalTest.oralFoodChallenge.contains { $0.record?.recordID == object.record?.recordID
+                    }
+                    if !isExist {
+                        self.mediacalTest.oralFoodChallenge.append(object)
+                    }
                 }
             }
         }

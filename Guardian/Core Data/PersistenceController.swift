@@ -112,6 +112,19 @@ class PersistenceController {
         }
     }
     
+    func fetchBloodTest(allergenID: String) -> [BloodTestEntity] {
+        let fetchRequest = BloodTestEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "allergenID == %@", allergenID)
+        do {
+            let records = try context.fetch(fetchRequest)
+            return records
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+        return []
+    }
+    
     func addBloodTest(record: CKRecord) {
         let entity = BloodTestEntity(context: container.viewContext)
         entity.update(with: record)
@@ -130,6 +143,34 @@ class PersistenceController {
         } catch let error as NSError {
             print("Counld not delete from local cache. \(error), \(error.userInfo)")
         }
+    }
+    
+    func deleteBloodTest(recordIDs: [String]) {
+        let fetchRequest = BloodTestEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID IN %@", recordIDs)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func fetchSkinTest(allergenID: String) -> [SkinTestEntity] {
+        let fetchRequest = SkinTestEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "allergenID == %@", allergenID)
+        do {
+            let records = try context.fetch(fetchRequest)
+            return records
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+        return []
     }
     
     func addSkinTest(record: CKRecord) {
@@ -152,6 +193,34 @@ class PersistenceController {
         }
     }
     
+    func deleteSkinTest(recordIDs: [String]) {
+        let fetchRequest = SkinTestEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID IN %@", recordIDs)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func fetchOralFoodChallenge(allergenID: String) -> [OralFoodChallengeEntity] {
+        let fetchRequest = OralFoodChallengeEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "allergenID == %@", allergenID)
+        do {
+            let records = try context.fetch(fetchRequest)
+            return records
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+        return []
+    }
+    
     func addOralFoodChallenge(record: CKRecord) {
         let entity = OralFoodChallengeEntity(context: container.viewContext)
         entity.update(with: record)
@@ -160,6 +229,20 @@ class PersistenceController {
     func deleteOralFoodChallenge(recordID: String) {
         let fetchRequest = OralFoodChallengeEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
+        
+        do{
+            let fetchedItems = try context.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                context.delete(itemToDelete)
+                try context.save()
+            }
+        } catch let error as NSError {
+            print("Counld not delete from local cache. \(error), \(error.userInfo)")
+        }
+    }
+    func deleteOralFoodChallenge(recordIDs: [String]) {
+        let fetchRequest = OralFoodChallengeEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recordID IN %@", recordIDs)
         
         do{
             let fetchedItems = try context.fetch(fetchRequest)

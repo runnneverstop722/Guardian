@@ -32,6 +32,17 @@ struct BloodTest: Identifiable {
     init() {
         
     }
+    
+    init?(entity: BloodTestEntity) {
+        let myRecord = CKRecord(recordType: "BloodTest", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        myRecord["bloodTestDate"] = entity.bloodTestDate
+        myRecord["bloodTestLevel"] = entity.bloodTestLevel
+        myRecord["bloodTestGrade"] = entity.bloodTestGrade
+        let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
+        let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
+        myRecord["allergen"] = reference as CKRecordValue
+        self.init(record: myRecord)
+    }
 }
 enum BloodTestGrade: String, CaseIterable {
     case negative = "クラス0(陰性)"
@@ -86,6 +97,17 @@ struct SkinTest: Identifiable {
     init() {
         
     }
+    
+    init?(entity: SkinTestEntity) {
+        let myRecord = CKRecord(recordType: "SkinTest", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        myRecord["skinTestDate"] = entity.skinTestDate
+        myRecord["skinTestResultValue"] = entity.skinTestResultValue
+        myRecord["skinTestResult"] = entity.skinTestResult
+        let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
+        let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
+        myRecord["allergen"] = reference as CKRecordValue
+        self.init(record: myRecord)
+    }
 }
 
 //MARK: - Struct: OFC
@@ -109,6 +131,16 @@ struct OralFoodChallenge: Identifiable {
     }
     init() {
         
+    }
+    init?(entity: OralFoodChallengeEntity) {
+        let myRecord = CKRecord(recordType: "OralFoodChallenge", recordID: CKRecord.ID.init(recordName: entity.recordID!))
+        myRecord["oralFoodChallengeDate"] = entity.oralFoodChallengeDate
+        myRecord["oralFoodChallengeQuantity"] = entity.oralFoodChallengeQuantity
+        myRecord["oralFoodChallengeResult"] = entity.oralFoodChallengeResult
+        let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
+        let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
+        myRecord["allergen"] = reference as CKRecordValue
+        self.init(record: myRecord)
     }
 }
 
@@ -230,8 +262,17 @@ struct MedicalTestView: View {
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
+        let allergen = mediacalTest.allergen
+        allergen["totalNumberOfMedicalTests"]  = mediacalTest.totalTest
+        updateRecord(record: allergen)
+        NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
+        PersistenceController.shared.addAllergen(allergen: allergen)
     }
-    
+    func updateRecord(record: CKRecord) {
+        CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
+
+        }
+    }
     //MARK: - Func Update
     func updateData() {
         let bloodTests = mediacalTest.bloodTest.filter { $0.record != nil }
@@ -264,15 +305,48 @@ struct MedicalTestView: View {
         let allergen = mediacalTest.allergen
         allergen["totalNumberOfMedicalTests"] = mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count
         records.append(allergen)
-        CKContainer.default().privateCloudDatabase.modifyRecords(saving: records, deleting: deleteIDs) { result in
-            
+        let modifyRecords = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: deleteIDs)
+        modifyRecords.savePolicy = .allKeys
+        modifyRecords.queuePriority = .veryHigh
+        modifyRecords.modifyRecordsCompletionBlock = { savedRecord, deletedIDs, error in
+            savedRecord?.forEach({ record in
+                switch record.recordType {
+                case "BloodTest":
+                    PersistenceController.shared.addBloodTest(record: record)
+                case "SkinTest":
+                    PersistenceController.shared.addSkinTest(record: record)
+                case "OralFoodChallenge":
+                    PersistenceController.shared.addOralFoodChallenge(record: record)
+                default:
+                    break
+                }
+            })
+            if let deletedIDs = deletedIDs {
+                let ids = deletedIDs.map { $0.recordName }
+                PersistenceController.shared.deleteBloodTest(recordIDs: ids)
+                PersistenceController.shared.deleteSkinTest(recordIDs: ids)
+                PersistenceController.shared.deleteOralFoodChallenge(recordIDs: ids)
+            }
         }
+        CKContainer.default().privateCloudDatabase.add(modifyRecords)
     }
     
     private func save(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let record = returnedRecord {
+                switch record.recordType {
+                case "BloodTest":
+                    PersistenceController.shared.addBloodTest(record: record)
+                case "SkinTest":
+                    PersistenceController.shared.addSkinTest(record: record)
+                case "OralFoodChallenge":
+                    PersistenceController.shared.addOralFoodChallenge(record: record)
+                default:
+                    break
+                }
+            }
         }
     }
 }
