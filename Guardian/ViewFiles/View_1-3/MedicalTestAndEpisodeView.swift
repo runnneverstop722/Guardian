@@ -180,7 +180,7 @@ struct MedicalTestAndEpisodeView: View {
                     .padding(.top)) {
                         VStack(alignment: .leading) {
                             HStack {
-                                Text("血液検査") // Blood Test
+                                Text("血液(特異的IgE抗体)検査") // Blood Test
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
@@ -215,11 +215,8 @@ struct MedicalTestAndEpisodeView: View {
                         }) {
                             HStack {
                                 Spacer()
-                                Symbols.addNew
-                                Text("新規作成") // Add New
-                                Text("＆")
                                 Image(systemName: "book.fill")
-                                Text("記録内容の確認") // Confirm Details
+                                Text("記録管理") // Confirm Details
                                 Spacer()
                             }
                             .font(.headline)

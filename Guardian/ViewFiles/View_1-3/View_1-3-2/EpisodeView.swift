@@ -48,11 +48,7 @@ struct EpisodeView: View {
                 .foregroundColor(.secondary)) {
                     ForEach(episodeModel.typeOfExposureOptions, id: \.self) { typeOfExposureOption in
                         Button(action: {
-                            if let index = episodeModel.typeOfExposure.firstIndex(of: typeOfExposureOption) {
-                                episodeModel.typeOfExposure.remove(at: index)
-                            } else {
-                                episodeModel.typeOfExposure.append(typeOfExposureOption)
-                            }
+                            episodeModel.selectExposureType(typeOfExposureOption)
                         }) {
                             HStack {
                                 Text(typeOfExposureOption)
@@ -68,7 +64,8 @@ struct EpisodeView: View {
                             .submitLabel(.done)
                             .focused($episodeFocusedField, equals: .intakeAmount)
                     }
-                }
+            }
+
             
             Section(header: Text("現れた症状（複数選択可）")
                 .font(.headline)) {
