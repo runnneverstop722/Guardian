@@ -29,6 +29,8 @@ struct MedicalTestAndEpisodeView: View {
     @State private var firstKnownExposure: Bool = false
     @State private var isLoading = true
 
+    @State private var showChartView = false
+
     @State private var showAlert = false
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false

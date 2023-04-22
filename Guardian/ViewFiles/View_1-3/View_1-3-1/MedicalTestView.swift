@@ -171,6 +171,14 @@ struct MedicalTestView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
+            
+            TestChartsView(
+                bloodTestData: medicalTest.bloodTest,
+                skinTestData: medicalTest.skinTest,
+                oralFoodChallengeData: medicalTest.oralFoodChallenge,
+                selectedTestIndex: selectedTestIndex
+            )
+            
             VStack {
                 if selectedTestIndex == 0 {
                     BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
@@ -224,22 +232,9 @@ struct MedicalTestView: View {
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
-            // Save the record to CloudKit
             save(record: myRecord)
         }
-//        newBloodTests.forEach {
-//            let myRecord = CKRecord(recordType: "BloodTest")
-//            if let level = Double($0.bloodTestLevel) {
-//                $0.bloodTestGrade = BloodTestGrade.gradeForLevel(level)
-//            }
-//            myRecord["bloodTestDate"] = $0.bloodTestDate
-//            myRecord["bloodTestLevel"] = $0.bloodTestLevel
-//            myRecord["bloodTestGrade"] = $0.bloodTestGrade.rawValue
-//
-//            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
-//            myRecord["allergen"] = reference as CKRecordValue
-//            save(record: myRecord)
-//        }
+    
         newSkinTests.forEach {
             let myRecord = CKRecord(recordType: "SkinTest")
             

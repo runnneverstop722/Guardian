@@ -40,6 +40,8 @@
 		05F6AB1C29EE641A00AA59EB /* FormValidationProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB1B29EE641A00AA59EB /* FormValidationProfile.swift */; };
 		05F6AB1E29EFA3D400AA59EB /* FormValidationDiagnosis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB1D29EFA3D400AA59EB /* FormValidationDiagnosis.swift */; };
 		05F6AB2029EFA9ED00AA59EB /* RequiredTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB1F29EFA9ED00AA59EB /* RequiredTextStyle.swift */; };
+		05F6AB4229F3ADC800AA59EB /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 05F6AB4129F3ADC800AA59EB /* SwiftUICharts */; };
+		05F6AB4B29F3B5FE00AA59EB /* TestChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F6AB4A29F3B5FE00AA59EB /* TestChartsView.swift */; };
 		37f2e1003a6b61103d3870dfe150cbfb /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */; };
 		4682c16ece746ce0412b453df0e131b7 /* ExportDiaryClinicalRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984f572cc79bdd9332d486006d6d2463 /* ExportDiaryClinicalRecords.swift */; };
 		5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */; };
@@ -88,6 +90,7 @@
 		05F6AB1B29EE641A00AA59EB /* FormValidationProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormValidationProfile.swift; sourceTree = "<group>"; };
 		05F6AB1D29EFA3D400AA59EB /* FormValidationDiagnosis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormValidationDiagnosis.swift; sourceTree = "<group>"; };
 		05F6AB1F29EFA9ED00AA59EB /* RequiredTextStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredTextStyle.swift; sourceTree = "<group>"; };
+		05F6AB4A29F3B5FE00AA59EB /* TestChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestChartsView.swift; sourceTree = "<group>"; };
 		286a28a490ee8f1d80a0b9c470c169c1 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullWidthButtonStyle.swift; sourceTree = "<group>"; };
 		7511ec6c10495ef1d733df87b4c9f251 /* MemberListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListModel.swift; sourceTree = "<group>"; };
@@ -106,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05F6AB4229F3ADC800AA59EB /* SwiftUICharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				051A27BE29CE891300A890D0 /* MedicalTestView.swift */,
+				05F6AB4A29F3B5FE00AA59EB /* TestChartsView.swift */,
 			);
 			path = "View_1-3-1";
 			sourceTree = "<group>";
@@ -340,6 +345,9 @@
 			dependencies = (
 			);
 			name = Guardian;
+			packageProductDependencies = (
+				05F6AB4129F3ADC800AA59EB /* SwiftUICharts */,
+			);
 			productName = Guardian;
 			productReference = d661d5d391b9c15bb4dd3ecf4fc484d4 /* Guardian.app */;
 			productType = "com.apple.product-type.application";
@@ -368,6 +376,9 @@
 				Base,
 			);
 			mainGroup = 95D396F2291C4B380053F8C8;
+			packageReferences = (
+				05F6AB4029F3ADC800AA59EB /* XCRemoteSwiftPackageReference "ChartView" */,
+			);
 			productRefGroup = 95D396FC291C4B380053F8C8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -433,6 +444,7 @@
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
 				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
+				05F6AB4B29F3B5FE00AA59EB /* TestChartsView.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,
 				051A27DB29D08DE400A890D0 /* MedicalTestAndEpisodeView.swift in Sources */,
 			);
@@ -643,6 +655,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		05F6AB4029F3ADC800AA59EB /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		05F6AB4129F3ADC800AA59EB /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 05F6AB4029F3ADC800AA59EB /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */ = {
