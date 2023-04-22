@@ -24,7 +24,7 @@ import CloudKit
 
 struct MedicalTestAndEpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
-    @StateObject private var mediacalTest: MedicalTest
+    @StateObject private var medicalTest: MedicalTest
     @State private var episodeDate: Date = Date()
     @State private var firstKnownExposure: Bool = false
     @State private var isLoading = true
@@ -47,26 +47,26 @@ struct MedicalTestAndEpisodeView: View {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
         _episodeModel = StateObject(wrappedValue: EpisodeModel(record: allergen))
-        _mediacalTest = StateObject(wrappedValue: MedicalTest(allergen: allergen))
+        _medicalTest = StateObject(wrappedValue: MedicalTest(allergen: allergen))
         self.symbolImage = symbolImage
     }
 
     func fetchLocalData() {
-        let allergenID = mediacalTest.allergen.recordID.recordName
-        mediacalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
+        let allergenID = medicalTest.allergen.recordID.recordName
+        medicalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
             BloodTest(entity: $0)
         })
-        mediacalTest.skinTest = PersistenceController.shared.fetchSkinTest(allergenID: allergenID).compactMap({
+        medicalTest.skinTest = PersistenceController.shared.fetchSkinTest(allergenID: allergenID).compactMap({
             SkinTest(entity: $0)
         })
-        mediacalTest.oralFoodChallenge = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID).compactMap({
+        medicalTest.oralFoodChallenge = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID).compactMap({
             OralFoodChallenge(entity: $0)
         })
     }
     private func fetchData() {
         fetchLocalData()
         let dispatchWork = DispatchGroup()
-        let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
+        let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
 
         //MARK: - Blood
@@ -77,10 +77,10 @@ struct MedicalTestAndEpisodeView: View {
         bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = BloodTest(record: returnedRecord) {
-                    let isExist = self.mediacalTest.bloodTest.contains { $0.record?.recordID == object.record?.recordID
+                    let isExist = self.medicalTest.bloodTest.contains { $0.record?.recordID == object.record?.recordID
                     }
                     if !isExist {
-                        self.mediacalTest.bloodTest.append(object)
+                        self.medicalTest.bloodTest.append(object)
                     }
                 }
             }
@@ -88,7 +88,7 @@ struct MedicalTestAndEpisodeView: View {
         bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Blood Test' queryResultBlock")
             DispatchQueue.main.async {
-                self.mediacalTest.bloodTest = self.mediacalTest.bloodTest.sorted(by: { item1, item2 in
+                self.medicalTest.bloodTest = self.medicalTest.bloodTest.sorted(by: { item1, item2 in
                     return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedDescending
                 })
                 dispatchWork.leave()
@@ -105,10 +105,10 @@ struct MedicalTestAndEpisodeView: View {
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
-                    let isExist = self.mediacalTest.skinTest.contains { $0.record?.recordID == object.record?.recordID
+                    let isExist = self.medicalTest.skinTest.contains { $0.record?.recordID == object.record?.recordID
                     }
                     if !isExist {
-                        self.mediacalTest.skinTest.append(object)
+                        self.medicalTest.skinTest.append(object)
                     }
                 }
             }
@@ -116,7 +116,7 @@ struct MedicalTestAndEpisodeView: View {
         skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Skin Test' queryResultBlock")
             DispatchQueue.main.async {
-                self.mediacalTest.skinTest = self.mediacalTest.skinTest.sorted(by: { item1, item2 in
+                self.medicalTest.skinTest = self.medicalTest.skinTest.sorted(by: { item1, item2 in
                     return item1.skinTestDate.compare(item2.skinTestDate) == .orderedDescending
                 })
                 dispatchWork.leave()
@@ -134,10 +134,10 @@ struct MedicalTestAndEpisodeView: View {
         OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = OralFoodChallenge(record: returnedRecord) {
-                    let isExist = self.mediacalTest.oralFoodChallenge.contains { $0.record?.recordID == object.record?.recordID
+                    let isExist = self.medicalTest.oralFoodChallenge.contains { $0.record?.recordID == object.record?.recordID
                     }
                     if !isExist {
-                        self.mediacalTest.oralFoodChallenge.append(object)
+                        self.medicalTest.oralFoodChallenge.append(object)
                     }
                 }
             }
@@ -145,7 +145,7 @@ struct MedicalTestAndEpisodeView: View {
         OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED 'Oral Food Challenge' queryResultBlock")
             DispatchQueue.main.async {
-                self.mediacalTest.oralFoodChallenge = self.mediacalTest.oralFoodChallenge.sorted(by: { item1, item2 in
+                self.medicalTest.oralFoodChallenge = self.medicalTest.oralFoodChallenge.sorted(by: { item1, item2 in
                     return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedDescending
                 })
                 dispatchWork.leave()
@@ -185,7 +185,7 @@ struct MedicalTestAndEpisodeView: View {
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.bloodTest.count)")
+                                Text("\(medicalTest.bloodTest.count)")
                                 Text("件")
                             }
                             Divider()
@@ -195,7 +195,7 @@ struct MedicalTestAndEpisodeView: View {
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.skinTest.count)")
+                                Text("\(medicalTest.skinTest.count)")
                                 Text("件")
                             }
                             Divider()
@@ -205,7 +205,7 @@ struct MedicalTestAndEpisodeView: View {
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(mediacalTest.oralFoodChallenge.count)")
+                                Text("\(medicalTest.oralFoodChallenge.count)")
                                 Text("件")
                             }
                         }
@@ -229,7 +229,7 @@ struct MedicalTestAndEpisodeView: View {
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .background(
                             NavigationLink(
-                                destination: MedicalTestView().environmentObject(mediacalTest),
+                                destination: MedicalTestView().environmentObject(medicalTest),
                                 isActive: $showMedicalTestView,
                                 label: {}
                             )
@@ -307,13 +307,13 @@ struct MedicalTestAndEpisodeView: View {
                     primaryButton: .destructive(Text("削除")) { // Delete
                         // Delete all data action
                         episodeModel.deleteAllData()
-                        for test in mediacalTest.bloodTest where test.record != nil {
+                        for test in medicalTest.bloodTest where test.record != nil {
                             episodeModel.deleteRecord(record: test.record!)
                         }
-                        for test in mediacalTest.skinTest where test.record != nil {
+                        for test in medicalTest.skinTest where test.record != nil {
                             episodeModel.deleteRecord(record: test.record!)
                         }
-                        for test in mediacalTest.oralFoodChallenge where test.record != nil {
+                        for test in medicalTest.oralFoodChallenge where test.record != nil {
                             episodeModel.deleteRecord(record: test.record!)
                         }
                         presentationMode.wrappedValue.dismiss()

@@ -152,13 +152,13 @@ enum MedicalTestFormField {
 
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
-    @EnvironmentObject var mediacalTest: MedicalTest
+    @EnvironmentObject var medicalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
     @State private var showingAlert = false
     @Environment(\.presentationMode) var presentationMode
     
     var totalNumberOfMedicalTest: String {
-        return "TotalNumberOfMedicalTestData: \(mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count)"
+        return "TotalNumberOfMedicalTestData: \(medicalTest.bloodTest.count + medicalTest.skinTest.count + medicalTest.oralFoodChallenge.count)"
     }
     //MARK: - Body View
     
@@ -173,11 +173,11 @@ struct MedicalTestView: View {
             .padding()
             VStack {
                 if selectedTestIndex == 0 {
-                    BloodTestSection(bloodTests: $mediacalTest.bloodTest, deleteIDs: $deleteIDs)
+                    BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
                 } else if selectedTestIndex == 1 {
-                    SkinTestSection(skinTests: $mediacalTest.skinTest, deleteIDs: $deleteIDs)
+                    SkinTestSection(skinTests: $medicalTest.skinTest, deleteIDs: $deleteIDs)
                 } else {
-                    OralFoodChallengeSection(oralFoodChallenges: $mediacalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
+                    OralFoodChallengeSection(oralFoodChallenges: $medicalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
                 }
             }
             .animation(.default, value: selectedTestIndex)
@@ -206,9 +206,9 @@ struct MedicalTestView: View {
     func saveData() {
         updateData()
         
-        let newBloodTests = mediacalTest.bloodTest.filter { $0.record == nil }
-        let newSkinTests = mediacalTest.skinTest.filter { $0.record == nil }
-        let neworalTests = mediacalTest.oralFoodChallenge.filter { $0.record == nil }
+        let newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
+        let newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
+        let neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
         
         for var bloodTest in newBloodTests {
             let myRecord = CKRecord(recordType: "BloodTest")
@@ -222,7 +222,7 @@ struct MedicalTestView: View {
             myRecord["bloodTestLevel"] = bloodTest.bloodTestLevel
             myRecord["bloodTestGrade"] = bloodTest.bloodTestGrade.rawValue
             
-            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             // Save the record to CloudKit
             save(record: myRecord)
@@ -247,7 +247,7 @@ struct MedicalTestView: View {
             myRecord["skinTestResultValue"] = $0.skinTestResultValue
             myRecord["skinTestResult"] = $0.skinTestResult
             
-            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
@@ -258,12 +258,12 @@ struct MedicalTestView: View {
             myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
             myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
             
-            let reference = CKRecord.Reference(recordID: mediacalTest.allergen.recordID, action: .deleteSelf)
+            let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             save(record: myRecord)
         }
-        let allergen = mediacalTest.allergen
-        allergen["totalNumberOfMedicalTests"]  = mediacalTest.totalTest
+        let allergen = medicalTest.allergen
+        allergen["totalNumberOfMedicalTests"]  = medicalTest.totalTest
         updateRecord(record: allergen)
         NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
         PersistenceController.shared.addAllergen(allergen: allergen)
@@ -275,9 +275,9 @@ struct MedicalTestView: View {
     }
     //MARK: - Func Update
     func updateData() {
-        let bloodTests = mediacalTest.bloodTest.filter { $0.record != nil }
-        let skinTests = mediacalTest.skinTest.filter { $0.record != nil }
-        let oralTests = mediacalTest.oralFoodChallenge.filter { $0.record != nil }
+        let bloodTests = medicalTest.bloodTest.filter { $0.record != nil }
+        let skinTests = medicalTest.skinTest.filter { $0.record != nil }
+        let oralTests = medicalTest.oralFoodChallenge.filter { $0.record != nil }
         
         var records = [CKRecord]()
         bloodTests.forEach {
@@ -302,8 +302,8 @@ struct MedicalTestView: View {
             records.append(myRecord)
         }
         
-        let allergen = mediacalTest.allergen
-        allergen["totalNumberOfMedicalTests"] = mediacalTest.bloodTest.count + mediacalTest.skinTest.count + mediacalTest.oralFoodChallenge.count
+        let allergen = medicalTest.allergen
+        allergen["totalNumberOfMedicalTests"] = medicalTest.bloodTest.count + medicalTest.skinTest.count + medicalTest.oralFoodChallenge.count
         records.append(allergen)
         let modifyRecords = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: deleteIDs)
         modifyRecords.savePolicy = .allKeys
