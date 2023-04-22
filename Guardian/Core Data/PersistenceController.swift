@@ -254,6 +254,37 @@ class PersistenceController {
             print("Counld not delete from local cache. \(error), \(error.userInfo)")
         }
     }
+    func exportAllRecordsToPDF(completion: @escaping (Result<URL, Error>) -> Void) {
+        // Fetch records from CoreData and CloudKit
+        // For example, fetch all ProfileInfoEntity records:
+        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
+        do {
+            let profileInfoRecords = try context.fetch(fetchRequest)
+            
+            // You can fetch other entities and combine them into a single array
+            let allRecords: [Any] = profileInfoRecords // Add other fetched entities as needed
+            
+            // Create the PDF
+            let pdfCreator = PDFCreator()
+            let pdfData = pdfCreator.createPDF(from: allRecords)
+            
+            // Save the PDF data to a file
+            let fileManager = FileManager.default
+            let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let pdfFileName = "GuardianFoodAllergy_ExportedData.pdf"
+            let pdfFileURL = documentDirectory.appendingPathComponent(pdfFileName)
+            
+            do {
+                try pdfData.write(to: pdfFileURL)
+                completion(.success(pdfFileURL))
+            } catch {
+                completion(.failure(error))
+            }
+            
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 extension ProfileInfoEntity {

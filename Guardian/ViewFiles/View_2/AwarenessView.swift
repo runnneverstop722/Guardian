@@ -25,6 +25,8 @@ struct AwarenessView: View {
         animation: .default)
     private var profiles: FetchedResults<ProfileInfoEntity>
     @State private var selectedProfile: ProfileInfoEntity?
+    @State private var showingShareSheet = false
+    @State private var pdfFileURL: URL?
     @ObservedObject var allergensList = AllergensList()
     @State var didLoad = false
     private func allergensList(profile: ProfileInfoEntity?) -> String {
@@ -55,6 +57,21 @@ struct AwarenessView: View {
         }
         return nil
     }
+    func sharePDF() {
+        PersistenceController.shared.exportAllRecordsToPDF { result in
+            switch result {
+            case .success(let pdfFileURL):
+                DispatchQueue.main.async {
+                    self.pdfFileURL = pdfFileURL
+                    self.showingShareSheet = true
+                    print("PDF File URL: \(pdfFileURL)")
+                }
+            case .failure(let error):
+                print("Error exporting PDF: \(error)")
+            }
+        }
+    }
+
     
     var body: some View {
         GeometryReader { geometry in
@@ -105,6 +122,23 @@ struct AwarenessView: View {
                         .font(.headline)
                         .foregroundColor(.white)
                     Spacer()
+                    Button {
+                        sharePDF()
+                    } label: {
+                        Text("Export Your All Records")
+                    }
+                    .sheet(isPresented: $showingShareSheet) {
+                        if let pdfURL = pdfFileURL {
+                            ShareSheet(activityItems: [pdfURL])
+                        } else {
+                            Text("No PDF file to share")
+                        }
+                    }
+
+
+
+
+
                 }
                 .navigationBarTitle("Awareness")
                 .navigationBarItems(trailing: Button(action: {
