@@ -18,35 +18,29 @@ class PDFContent {
         self.viewContext = viewContext
     }
     
-    func draw(in context: CGContext, pageRect: CGRect) {
-        let title = "Exported Your Data"
-        let titleFont = UIFont.systemFont(ofSize: 18.0, weight: .bold)
-        let titleAttributes: [NSAttributedString.Key: Any] = [
-            .font: titleFont
-        ]
-        let attributedTitle = NSAttributedString(string: title, attributes: titleAttributes)
-        let titleStringSize = attributedTitle.size()
-        let titleStringRect = CGRect(x: (pageRect.width - titleStringSize.width) / 2.0, y: 260, width: titleStringSize.width, height: titleStringSize.height)
-        attributedTitle.draw(in: titleStringRect)
-        // Draw the selected profile's first name with string "'s records"
-        let profileName = "\(profile.firstName ?? "")の記録"
-        let profileNameFont = UIFont.systemFont(ofSize: 16.0, weight: .bold)
-        let profileNameAttributes: [NSAttributedString.Key: Any] = [
-            .font: profileNameFont
-        ]
-        let attributedProfileName = NSAttributedString(string: profileName, attributes: profileNameAttributes)
-        let profileNameStringSize = attributedProfileName.size()
-        let profileNameStringRect = CGRect(x: (pageRect.width - profileNameStringSize.width) / 2.0, y: titleStringRect.origin.y + titleStringRect.height + 30, width: profileNameStringSize.width, height: profileNameStringSize.height)
-        attributedProfileName.draw(in: profileNameStringRect)
+    func drawPageContent(in context: CGContext, pageRect: CGRect, textTop: CGFloat, isFirstPage: Bool) -> (CGFloat, Bool) {
+        var hasMoreContent = false
         
-        // Draw the divider
-        context.setLineWidth(1)
-        context.move(to: CGPoint(x: 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
-        context.addLine(to: CGPoint(x: pageRect.width - 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
-        context.strokePath()
-        
+        if isFirstPage {
+            // Draw the selected profile's first name with string "'s records"
+            let profileName = "\(profile.firstName ?? "")の記録"
+            let profileNameFont = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+            let profileNameAttributes: [NSAttributedString.Key: Any] = [
+                .font: profileNameFont
+            ]
+            let attributedProfileName = NSAttributedString(string: profileName, attributes: profileNameAttributes)
+            let profileNameStringSize = attributedProfileName.size()
+            let profileNameStringRect = CGRect(x: (pageRect.width - profileNameStringSize.width) / 2.0, y: textTop, width: profileNameStringSize.width, height: profileNameStringSize.height)
+            attributedProfileName.draw(in: profileNameStringRect)
+            
+            // Draw the divider
+            context.setLineWidth(1)
+            context.move(to: CGPoint(x: 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
+            context.addLine(to: CGPoint(x: pageRect.width - 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
+            context.strokePath()
+        }
         // Draw the content
-        var textTop = profileNameStringRect.origin.y + profileNameStringRect.height + 40
+        var textTop = textTop
         
         // Fetch necessary data
         let diagnosisData = fetchDiagnosisData(for: profile)
@@ -57,7 +51,7 @@ class PDFContent {
         
         // Draw diagnosis data
         if !diagnosisData.isEmpty {
-            let diagnosisTitle = "Diagnosis:"
+            let diagnosisTitle = "診断記録"
             let diagnosisTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
             let diagnosisTitleAttributes: [NSAttributedString.Key: Any] = [
                 .font: diagnosisTitleFont
@@ -68,8 +62,6 @@ class PDFContent {
             attributedDiagnosisTitle.draw(in: diagnosisTitleStringRect)
             
             textTop += diagnosisTitleStringSize.height + 10
-            
-            
             
             for diagnosis in diagnosisData {
                 let items = [
@@ -94,14 +86,17 @@ class PDFContent {
                     attributedItemText.draw(in: itemTextRect)
                     
                     textTop += itemTextSize.height + 6
+                    
+                    if textTop >= pageRect.height {
+                        hasMoreContent = true
+                        break
+                    }
                 }
-                
-                textTop += 10
             }
         }
         
         // Draw episodes data
-        if !episodesData.isEmpty {
+        if !episodesData.isEmpty && !hasMoreContent {
             let episodesTitle = "発症記録:"
             let episodesTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
             let episodesTitleAttributes: [NSAttributedString.Key: Any] = [.font: episodesTitleFont ]
@@ -136,10 +131,16 @@ class PDFContent {
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
+                    
+                    if textTop >= pageRect.height {
+                        hasMoreContent = true
+                        break
+                    }
                 }
                 textTop += 10
             }
         }
+        return (textTop, hasMoreContent)
     }
     
     private func fetchDiagnosisData(for profile: ProfileInfoEntity) -> [DiagnosisEntity] {

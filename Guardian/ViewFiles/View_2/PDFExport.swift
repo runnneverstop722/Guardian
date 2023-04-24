@@ -11,35 +11,73 @@ import CoreData
 class PDFExport {
     private let profile: ProfileInfoEntity
     private let viewContext: NSManagedObjectContext
-
+    
+    private let topPadding: CGFloat = 50
+    private let bottomPadding: CGFloat = 50
+    private let leftPadding: CGFloat = 50
+    private let rightPadding: CGFloat = 50
+    
     init(profile: ProfileInfoEntity, viewContext: NSManagedObjectContext) {
         self.profile = profile
         self.viewContext = viewContext
     }
-
+    
     func createPDF() -> Data {
         let pdfMetaData = [
             kCGPDFContextCreator: "Guardian ~Food Allergy~",
             kCGPDFContextAuthor: "SwifTeff"
         ]
+        
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
-
+        
         let pageRect = CGRect(x: 0, y: 0, width: 612, height: 792)
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
-
+        
         let data = renderer.pdfData { (context) in
             context.beginPage()
-            // Add the code to draw the PDF content here
-            // Draw the logo image
+            
+            var pageNumber = 1
+            
             if let logoImage = UIImage(named: "Logo") {
-                let logoRect = CGRect(x: (pageRect.width - 200) / 2.0, y: 30, width: 200, height: 200)
+                let logoRect = CGRect(x: (pageRect.width - 200) / 2.0, y: topPadding, width: 200, height: 200)
                 logoImage.draw(in: logoRect)
             }
-            // Draw the rest of the PDF content
+            
             let pdfContent = PDFContent(profile: profile, viewContext: viewContext)
-            pdfContent.draw(in: context.cgContext, pageRect: pageRect)
+            let logoBottomYPosition: CGFloat = topPadding + 200
+            var (textTop, hasMoreContent) = pdfContent.drawPageContent(in: context.cgContext, pageRect: pageRect, textTop: logoBottomYPosition, isFirstPage: true)
+            
+            drawPageNumber(context.cgContext, pageRect: pageRect, pageNumber: pageNumber)
+            
+            while hasMoreContent {
+                context.beginPage()
+                pageNumber += 1
+                
+                let contentTop = topPadding
+                
+                (textTop, hasMoreContent) = pdfContent.drawPageContent(in: context.cgContext, pageRect: pageRect, textTop: contentTop, isFirstPage: false)
+                
+                drawPageNumber(context.cgContext, pageRect: pageRect, pageNumber: pageNumber)
+            }
         }
         return data
+    }
+    
+    func drawPageNumber(_ context: CGContext, pageRect: CGRect, pageNumber: Int) {
+        let font = UIFont.systemFont(ofSize: 12)
+        let pageNumberString = "Page \(pageNumber)"
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: UIColor.black
+        ]
+        
+        let attributedPageNumber = NSAttributedString(string: pageNumberString, attributes: attributes)
+        let textSize = attributedPageNumber.size()
+        
+        let xPosition = pageRect.midX - textSize.width / 2.0
+        let yPosition = pageRect.height - bottomPadding + 10
+        
+        attributedPageNumber.draw(at: CGPoint(x: xPosition, y: yPosition))
     }
 }
