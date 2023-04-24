@@ -155,7 +155,7 @@ struct MedicalTestView: View {
     @EnvironmentObject var medicalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
     @State private var showingAlert = false
-    @State private var showTestChartsView = true
+//    @State private var showChartsView = true
     @Environment(\.presentationMode) var presentationMode
     
     var totalNumberOfMedicalTest: String {
@@ -173,18 +173,18 @@ struct MedicalTestView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding()
             
-            if showTestChartsView {
-                TestChartsView(
-                    bloodTestData: medicalTest.bloodTest,
-                    skinTestData: medicalTest.skinTest,
-                    oralFoodChallengeData: medicalTest.oralFoodChallenge,
-                    selectedTestIndex: selectedTestIndex
-                )
-            }
-            
+//            if showChartsView {
+//                ChartsView(
+//                    bloodTestData: medicalTest.bloodTest,
+//                    skinTestData: medicalTest.skinTest,
+//                    oralFoodChallengeData: medicalTest.oralFoodChallenge,
+//                    selectedTestIndex: selectedTestIndex
+//                )
+//            }
+//
             VStack {
                 if selectedTestIndex == 0 {
-                    BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs, showTestChartsView: $showTestChartsView)
+                    BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
                 } else if selectedTestIndex == 1 {
                     SkinTestSection(skinTests: $medicalTest.skinTest, deleteIDs: $deleteIDs)
                 } else {
@@ -354,7 +354,7 @@ struct MedicalTestView: View {
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     @Binding var deleteIDs: [CKRecord.ID]
-    @Binding var showTestChartsView: Bool
+//    @Binding var showTestChartsView: Bool
     @State private var isShowingBloodTestTutorialAlert = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {

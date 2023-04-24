@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>NSFileReadDataUsageDescription</key>
+	<string>PDFデータを書き出すために、ファイルにアクセスする必要があります。</string>
+	<key>NSUserPreferenceReadUsageDescription</key>
+	<string>PDFデータをエクスポートするために、ユーザー設定にアクセスする必要があります。</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+</dict>
 </plist>

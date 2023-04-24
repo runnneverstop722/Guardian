@@ -26,6 +26,9 @@ struct AwarenessView: View {
     private var profiles: FetchedResults<ProfileInfoEntity>
     @State private var selectedProfile: ProfileInfoEntity?
     @State private var showingShareSheet = false
+    @State private var progressMessage: String = ""
+    @State private var isGeneratingPDF = false
+    @State private var isCancelled = false
     @State private var pdfFileURL: URL?
     @ObservedObject var allergensList = AllergensList()
     @State var didLoad = false
@@ -45,34 +48,41 @@ struct AwarenessView: View {
         return ""
     }
     func loadImageFromURL(urlString: String) -> UIImage? {
-        if let url = URL(string: urlString), url.isFileURL {
-            do {
-                let imageData = try Data(contentsOf: url)
-                return UIImage(data: imageData)
-            } catch {
-                print("Error loading image: \(error)")
-            }
-        } else {
-            print("Invalid URL or not a file URL: \(urlString)")
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(urlString)
+        do {
+            let imageData = try Data(contentsOf: fileURL)
+            return UIImage(data: imageData)
+        } catch {
+            print("Error loading image: \(error)")
         }
         return nil
     }
-    func sharePDF() {
-        PersistenceController.shared.exportAllRecordsToPDF { result in
-            switch result {
-            case .success(let pdfFileURL):
+    func sharePDF(viewContext: NSManagedObjectContext) {
+        if let selectedProfile = selectedProfile {
+            isGeneratingPDF = true
+            isCancelled = false
+            progressMessage = "PDFファイルを作成中です..."
+            PersistenceController.shared.exportAllRecordsToPDF(selectedProfile: selectedProfile, viewContext: viewContext) { result in
                 DispatchQueue.main.async {
-                    self.pdfFileURL = pdfFileURL
+                    switch result {
+                    case .success(let pdfFileURL):
+                        self.pdfFileURL = pdfFileURL
+                        print("PDF File URL: \(pdfFileURL)")
+                    case .failure(let error):
+                        if let _ = error as? CancellationError {
+                            self.isCancelled = true
+                        } else {
+                            print("Error exporting PDF: \(error)")
+                        }
+                    }
+                    self.isGeneratingPDF = false
                     self.showingShareSheet = true
-                    print("PDF File URL: \(pdfFileURL)")
                 }
-            case .failure(let error):
-                print("Error exporting PDF: \(error)")
             }
         }
     }
-
-    
+ 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -89,9 +99,13 @@ struct AwarenessView: View {
                     if let selectedProfile = selectedProfile {
                         Image(uiImage: loadImageFromURL(urlString: selectedProfile.profileImageData ?? "") ?? UIImage())
                             .resizable()
+                            .scaledToFill()
                             .foregroundColor(.white)
+                            .clipShape(Circle())
                             .frame(width: 100, height: 100)
-                            .padding(.top, 50)
+                            .onAppear {
+                                print("Profile Image URL String: \(selectedProfile.profileImageData ?? "No URL String")")
+                            }
                         
                         Text("\(selectedProfile.firstName ?? "")")
                             .font(.title)
@@ -122,23 +136,30 @@ struct AwarenessView: View {
                         .font(.headline)
                         .foregroundColor(.white)
                     Spacer()
-                    Button {
-                        sharePDF()
-                    } label: {
-                        Text("Export Your All Records")
-                    }
-                    .sheet(isPresented: $showingShareSheet) {
-                        if let pdfURL = pdfFileURL {
+                    Button(action: {
+                        showingShareSheet = true
+                        sharePDF(viewContext: viewContext)
+                    }, label: {
+                        Text("本ユーザーの記録済データを共有する")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                    }).sheet(isPresented: $showingShareSheet) {
+                        if isGeneratingPDF {
+                            VStack {
+                                ProgressView(progressMessage)
+                                    .progressViewStyle(CircularProgressViewStyle())
+                                Button("キャンセル", action: {
+                                    PersistenceController.shared.cancelPDFGeneration()
+                                    isGeneratingPDF = false
+                                })
+                            }
+                        } else if let pdfURL = pdfFileURL {
                             ShareSheet(activityItems: [pdfURL])
-                        } else {
-                            Text("No PDF file to share")
+                        } else if isCancelled {
+                            Text("PDFファイルの作成がキャンセルされました。")
                         }
                     }
-
-
-
-
-
                 }
                 .navigationBarTitle("Awareness")
                 .navigationBarItems(trailing: Button(action: {
@@ -162,7 +183,6 @@ struct AwarenessView: View {
                         selectedProfile = profiles.first
                     }
                 }
-                
             }
         }
     }

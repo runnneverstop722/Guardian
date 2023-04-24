@@ -7,16 +7,6 @@
 
 import Foundation
 
-//extension Date {
-//    var dateFormat: String {
-//        let formatter = DateFormatter()
-//        formatter.locale = Locale(identifier: "ja_JP")
-//        formatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
-//        formatter.dateStyle = .medium
-//        formatter.timeStyle = .none
-//        return formatter.string(from: self)
-//    }
-//}
 extension Date {
     
     var calendar: Calendar {

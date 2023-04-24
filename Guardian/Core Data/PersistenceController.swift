@@ -5,10 +5,14 @@
 //  Created by Teff on 2023/04/09.
 //
 
+import Foundation
 import CoreData
 import CloudKit
+//import UIKit
+//import Combine
 
 class PersistenceController {
+    private var workItem: DispatchWorkItem?
     static let shared = PersistenceController()
     let container: NSPersistentContainer
     var context: NSManagedObjectContext {
@@ -254,20 +258,11 @@ class PersistenceController {
             print("Counld not delete from local cache. \(error), \(error.userInfo)")
         }
     }
-    func exportAllRecordsToPDF(completion: @escaping (Result<URL, Error>) -> Void) {
-        // Fetch records from CoreData and CloudKit
-        // For example, fetch all ProfileInfoEntity records:
-        let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
-        do {
-            let profileInfoRecords = try context.fetch(fetchRequest)
-            
-            // You can fetch other entities and combine them into a single array
-            let allRecords: [Any] = profileInfoRecords // Add other fetched entities as needed
-            
-            // Create the PDF
-            let pdfCreator = PDFCreator()
-            let pdfData = pdfCreator.createPDF(from: allRecords)
-            
+    
+    func exportAllRecordsToPDF(selectedProfile: ProfileInfoEntity, viewContext: NSManagedObjectContext, completion: @escaping (Result<URL, Error>) -> Void) {
+        let workItem = DispatchWorkItem { [weak self] in
+            let pdfExport = PDFExport(profile: selectedProfile, viewContext: viewContext)
+            let pdfData = pdfExport.createPDF()
             // Save the PDF data to a file
             let fileManager = FileManager.default
             let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -280,12 +275,16 @@ class PersistenceController {
             } catch {
                 completion(.failure(error))
             }
-            
-        } catch {
-            completion(.failure(error))
         }
+        self.workItem = workItem
+        DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
+    }
+    func cancelPDFGeneration() {
+        workItem?.cancel()
+        workItem = nil
     }
 }
+struct CancellationError: Error {}
 
 extension ProfileInfoEntity {
     func update(with record: CKRecord) {
@@ -305,10 +304,7 @@ extension ProfileInfoEntity {
                     let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                     let name = String(format: "%@.jpg", self.recordID!)
                     let path = doc.appendingPathComponent(name)
-//                    if FileManager.default.fileExists(atPath: path.path) {
-//                        self.profileImageData = name
-//                    } else {
-//                    }
+
                     try? FileManager.default.removeItem(at: path)
                     try FileManager.default.copyItem(at: fileURL, to: path)
                     self.profileImageData = name
@@ -354,10 +350,7 @@ extension DiagnosisEntity {
                         let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                         let name = String(format: "%@.jpg", fileURL.lastPathComponent)
                         let path = doc.appendingPathComponent(name)
-                        //                    if FileManager.default.fileExists(atPath: path.path) {
-                        //                        self.profileImageData = name
-                        //                    } else {
-                        //                    }
+                        
                         try? FileManager.default.removeItem(at: path)
                         try FileManager.default.copyItem(at: fileURL, to: path)
                         imagePaths.append(name)
@@ -380,10 +373,12 @@ extension EpisodeEntity {
         firstKnownExposure = record["firstKnownExposure"] as? Bool ?? false
         wentToHospital = record["wentToHospital"] as? Bool ?? false
         typeOfExposure = record["typeOfExposure"] as? [String]
+        intakeAmount = record["intakeAmount"] as? String
         symptoms = record["symptoms"] as? [String]
         severity = record["severity"] as? String
         leadTimeToSymptoms = record["leadTimeToSymptoms"] as? String
         didExercise = record["didExercise"] as? Bool ?? false
+        otherTreatment = record["otherTreatmemt"] as? String
         var imagePaths = [String]()
         if let images = record["data"] as? [CKAsset] {
             for image in images {
