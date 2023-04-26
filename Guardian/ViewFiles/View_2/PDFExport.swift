@@ -12,7 +12,7 @@ class PDFExport {
     private let profile: ProfileInfoEntity
     private let viewContext: NSManagedObjectContext
     
-    private let topPadding: CGFloat = 50
+    private let topPadding: CGFloat = 20
     private let bottomPadding: CGFloat = 50
     private let leftPadding: CGFloat = 50
     private let rightPadding: CGFloat = 50
@@ -31,21 +31,19 @@ class PDFExport {
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
         
-        let pageRect = CGRect(x: 0, y: 0, width: 612, height: 792)
+        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8)// A4, 72 dpi
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         
         let data = renderer.pdfData { (context) in
             context.beginPage()
-            
-            var pageNumber = 1
-            
             if let logoImage = UIImage(named: "Logo") {
-                let logoRect = CGRect(x: (pageRect.width - 200) / 2.0, y: topPadding, width: 200, height: 200)
-                logoImage.draw(in: logoRect)
+                let resizeImage = logoImage.scaleImageToSize(newSize: CGSize(width: 200, height: 100))
+                let logoRect = CGRect(x: (pageRect.width/2.0) - 100, y: topPadding, width: 200, height: 100)
+                resizeImage.draw(in: logoRect)
             }
             
             let pdfContent = PDFContent(profile: profile, viewContext: viewContext)
-            let logoBottomYPosition: CGFloat = topPadding + 200
+            let logoBottomYPosition: CGFloat = topPadding + 120
             pdfContent.drawPageContent(in: context, pageRect: pageRect, textTop: logoBottomYPosition)
         }
         return data

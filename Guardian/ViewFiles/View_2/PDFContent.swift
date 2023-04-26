@@ -35,12 +35,13 @@ class PDFContent {
         let profileNameStringRect = CGRect(x: (pageRect.width - profileNameStringSize.width) / 2.0, y: textTop, width: profileNameStringSize.width, height: profileNameStringSize.height)
         attributedProfileName.draw(in: profileNameStringRect)
         
+        textTop += profileNameStringSize.height
         // Draw the divider
         context.setLineWidth(1)
-        context.move(to: CGPoint(x: 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
-        context.addLine(to: CGPoint(x: pageRect.width - 20, y: profileNameStringRect.origin.y + profileNameStringRect.height + 20))
+        context.move(to: CGPoint(x: 20, y: textTop + 10))
+        context.addLine(to: CGPoint(x: pageRect.width - 20, y: textTop + 10))
         context.strokePath()
-        textTop += profileNameStringSize.height
+        textTop += 20
         // Fetch necessary data
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy/MM/dd"
@@ -117,15 +118,16 @@ class PDFContent {
             textTop += 10
             textTop += offsetY
             textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+            
             // Draw medical data
             let allergenID = allergen.recordID!
             let bloodTests = PersistenceController.shared.fetchBloodTest(allergenID: allergenID)
             for (index, bloodTest) in bloodTests.enumerated() {
                 let items = [
-                    ("BloodTest result: ", "\(index + 1)"),
-                    ("発症日: ", dateFormatter.string(from: bloodTest.bloodTestDate ?? Date())),
-                    ("bloodTestLevel: ", bloodTest.bloodTestLevel ?? "0.0"),
-                    ("bloodTestGrade: ", bloodTest.bloodTestGrade)
+                    ("血液検査記録: ", "\(index + 1)"),
+                    ("検査日: ", dateFormatter.string(from: bloodTest.bloodTestDate ?? Date())),
+                    ("IgEレベル(UA/mL): ", bloodTest.bloodTestLevel ?? "0.0"),
+                    ("IgEクラス: ", bloodTest.bloodTestGrade)
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -148,9 +150,10 @@ class PDFContent {
             let skinTests = PersistenceController.shared.fetchSkinTest(allergenID: allergenID)
             for (index, skinTest) in skinTests.enumerated() {
                 let items = [
-                    ("SkinTest result: ", "\(index + 1)"),
-                    ("発症日: ", dateFormatter.string(from: skinTest.skinTestDate ?? Date())),
-                    ("skinTestResultValue: ", skinTest.skinTestResultValue ?? "0.0")
+                    ("皮膚プリック検査記録: ", "\(index + 1)"),
+                    ("検査日: ", dateFormatter.string(from: skinTest.skinTestDate ?? Date())),
+                    ("結果(mm): ", skinTest.skinTestResultValue ?? "0.0"),
+                    ("陽性有無: ", skinTest.skinTestResult == true ? "陽性" : "陰性")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -173,9 +176,10 @@ class PDFContent {
             let oralFoodChallenges = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID)
             for (index, oralFoodChallenge) in oralFoodChallenges.enumerated() {
                 let items = [
-                    ("OralFoodChallenge result: ", "\(index + 1)"),
-                    ("発症日: ", dateFormatter.string(from: oralFoodChallenge.creationDate ?? Date())),
-                    ("oralFoodChallengeQuantity: ", oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0")
+                    ("食物経口負荷試験記録: ", "\(index + 1)"),
+                    ("検査日: ", dateFormatter.string(from: oralFoodChallenge.creationDate ?? Date())),
+                    ("食べた量(mm): ", oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0"),
+                    ("陽性有無: ", oralFoodChallenge.oralFoodChallengeResult == true ? "陽性" : "陰性"),
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -218,7 +222,8 @@ class PDFContent {
                         ("症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")),
                         ("重症度評価: ", episode.severity ?? ""),
                         ("発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""),
-                        ("運動後だった: ", episode.didExercise ? "はい" : "いいえ")
+                        ("運動後だった: ", episode.didExercise ? "はい" : "いいえ"),
+                        ("添付写真: ", " ")
                     ]
                     
                     let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -237,6 +242,31 @@ class PDFContent {
                     }
                     textTop += 10
                     textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                    let episodePhoto = episode.episodePhoto ?? []
+                    if !episodePhoto.isEmpty {
+                        let episodePhotos = episodePhoto.chunk(size: 3)
+                        for photos in episodePhotos {
+                            // 165
+                            var imageY = textTop
+                            textTop = renderer.checkContext(cursor: imageY + 165, pdfSize: pageRect.size)
+                            if textTop != imageY + 165 {
+                                imageY = textTop
+                            }
+                            if textTop == 40 {
+                                textTop += 165
+                            }
+                            for (index, url) in photos.enumerated() {
+                                let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                                let filePath = doc.appendingPathComponent(url)
+                                if let image = UIImage(contentsOfFile: filePath.path) {
+                                    let resize = image.scaleImageToSize(newSize: CGSize(width: 165, height: 165))
+                                    let logoRect = CGRect(x: 20.0 + CGFloat(165*index) + CGFloat(10*index), y: imageY, width: 165, height: 165)
+                                    resize.draw(in: logoRect)
+                                }
+                            }
+                            textTop += 10
+                        }
+                    }
                 }
             }
             // Draw the divider
@@ -305,5 +335,42 @@ extension UIGraphicsPDFRendererContext {
             return 40
         }
         return cursor
+    }
+}
+extension Array {
+    func chunk(size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
+}
+extension UIImage {
+
+
+    /// Scales an image to fit within a bounds with a size governed by the passed size. Also keeps the aspect ratio.
+    /// Switch MIN to MAX for aspect fill instead of fit.
+    ///
+    /// - parameter newSize: newSize the size of the bounds the image must fit within.
+    ///
+    /// - returns: a new scaled image.
+    func scaleImageToSize(newSize: CGSize) -> UIImage {
+        var scaledImageRect = CGRect.zero
+
+        let aspectWidth = newSize.width/size.width
+        let aspectheight = newSize.height/size.height
+
+        let aspectRatio = max(aspectWidth, aspectheight)
+
+        scaledImageRect.size.width = size.width * aspectRatio;
+        scaledImageRect.size.height = size.height * aspectRatio;
+        scaledImageRect.origin.x = (newSize.width - scaledImageRect.size.width) / 2.0;
+        scaledImageRect.origin.y = (newSize.height - scaledImageRect.size.height) / 2.0;
+
+        UIGraphicsBeginImageContext(newSize)
+        draw(in: scaledImageRect)
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return scaledImage!
     }
 }

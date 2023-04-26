@@ -192,7 +192,7 @@ struct MedicalTestAndEpisodeView: View {
                             }
                             Divider()
                             HStack {
-                                Text("皮膚プリックテスト") // Skin Test
+                                Text("皮膚プリック検査") // Skin Test
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)

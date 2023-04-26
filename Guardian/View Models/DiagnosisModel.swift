@@ -278,6 +278,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     //MARK: - Fetching from CK Private DataBase Custom Zone
     
     func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
+        fetchItemsFromLocalCache()
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "profile == %@", reference)
         
@@ -294,6 +295,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
                     if existedObject == nil {
                         self.diagnosisInfo.append(member)
                     }
+                    PersistenceController.shared.addDiagnosis(record: returnedRecord)
                 }
             }
         }

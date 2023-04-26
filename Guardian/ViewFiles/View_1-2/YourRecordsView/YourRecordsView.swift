@@ -183,14 +183,6 @@ struct YourRecordsView: View {
                     HStack {
                         Spacer()
                         ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-//                            Image("card_bg2")
-//                                .resizable()
-//                                .scaleEffect(2.5)
-//                                .blur(radius: 40)
-//                                .cornerRadius(14)
-//                                .frame(maxWidth: (screenWidth - 20))
-//                                .frame(maxHeight: 250)
-//                                .opacity(0.7)
                             HStack {
                                 Spacer()
                                 VStack {

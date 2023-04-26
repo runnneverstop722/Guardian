@@ -607,7 +607,7 @@ struct OralFoodChallengeFormView: View {
                 .focused($oralFoodChallengeFocusedField, equals: .oralFoodChallengeQuantity)
             }
             HStack {
-                Text("症状有無") // OralFoodChallenge Result
+                Text("陽性有無") // OralFoodChallenge Result
                 Spacer()
                 Toggle("", isOn: $oralFoodChallenge.oralFoodChallengeResult)
                     .toggleStyle(SwitchToggleStyle())
