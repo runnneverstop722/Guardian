@@ -46,20 +46,7 @@ class PDFExport {
             
             let pdfContent = PDFContent(profile: profile, viewContext: viewContext)
             let logoBottomYPosition: CGFloat = topPadding + 200
-            var (textTop, hasMoreContent) = pdfContent.drawPageContent(in: context.cgContext, pageRect: pageRect, textTop: logoBottomYPosition, isFirstPage: true)
-            
-            drawPageNumber(context.cgContext, pageRect: pageRect, pageNumber: pageNumber)
-            
-            while hasMoreContent {
-                context.beginPage()
-                pageNumber += 1
-                
-                let contentTop = topPadding
-                
-                (textTop, hasMoreContent) = pdfContent.drawPageContent(in: context.cgContext, pageRect: pageRect, textTop: contentTop, isFirstPage: false)
-                
-                drawPageNumber(context.cgContext, pageRect: pageRect, pageNumber: pageNumber)
-            }
+            pdfContent.drawPageContent(in: context, pageRect: pageRect, textTop: logoBottomYPosition)
         }
         return data
     }
