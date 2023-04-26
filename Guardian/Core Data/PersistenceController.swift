@@ -96,6 +96,48 @@ class PersistenceController {
         }
     }
     
+//    func fetchDiagnosis(profileID: String, allergen: String) -> [DiagnosisEntity] {
+//        let fetchRequest = DiagnosisEntity.fetchRequest()
+//        fetchRequest.predicate = NSPredicate(format: "profileID == %@ AND %@ IN %K", profileID, allergen, "allergens")
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+//        do {
+//            let fetchedItems = try context.fetch(fetchRequest)
+//            return fetchedItems
+//        } catch let error as NSError {
+//            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+//        }
+//        return []
+//    }
+    
+    
+  
+
+    func fetchDiagnosis(profileID: String, allergen: String) -> [DiagnosisEntity] {
+        let fetchRequest: NSFetchRequest<DiagnosisEntity> = DiagnosisEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "profileID == %@", profileID)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+        do {
+            let fetchedItems = try context.fetch(fetchRequest)
+            
+            // Filter the fetchedItems based on the allergen
+            let filteredItems = fetchedItems.filter { diagnosisEntity in
+                guard let allergensData = diagnosisEntity.allergens else {
+                    return false
+                }
+
+                return allergensData.contains(allergen)
+            }
+            
+            return filteredItems
+        } catch let error as NSError {
+            print("Could not fetch from local cache. \(error), \(error.userInfo)")
+        }
+        return []
+    }
+
+    
+    
     func addEpisode(record: CKRecord) {
         let entity = EpisodeEntity(context: container.viewContext)
         entity.update(with: record)

@@ -42,7 +42,7 @@ struct MedicalTestAndEpisodeView: View {
     var allergenName: String = "Unknown Allergen"
     let allergen: CKRecord
     let existingEpisodeData = NotificationCenter.default.publisher(for: Notification.Name("existingEpisodeData"))
-
+    @State private var diagnosis = [DiagnosisListModel]()
     let symbolImage: Image
 
     init(allergen: CKRecord, symbolImage: Image) {
@@ -64,6 +64,11 @@ struct MedicalTestAndEpisodeView: View {
         medicalTest.oralFoodChallenge = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID).compactMap({
             OralFoodChallenge(entity: $0)
         })
+        if let profileID = (medicalTest.allergen["profile"] as? CKRecord.Reference)?.recordID.recordName {
+            diagnosis = PersistenceController.shared.fetchDiagnosis(profileID: profileID, allergen: allergenName).compactMap({
+                DiagnosisListModel(entity: $0)
+            })
+        }
     }
     private func fetchData() {
         fetchLocalData()
@@ -175,6 +180,16 @@ struct MedicalTestAndEpisodeView: View {
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             List {
+                Section(header: Text("Diagnosis") // Medical Test
+                    .font(.title2)
+                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .fontWeight(.semibold)
+                    .padding(.top)) {
+                        ForEach(diagnosis, id: \.self) { item in
+                            
+                            Text(item.caption1)
+                        }
+                    }
                 Section(header: Text("医療検査記録") // Medical Test
                     .font(.title2)
                     .foregroundColor(colorScheme == .light ? .black : .white)
