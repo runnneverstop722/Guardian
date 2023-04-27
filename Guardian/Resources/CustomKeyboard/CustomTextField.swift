@@ -47,10 +47,8 @@ struct CustomTextField: UIViewRepresentable {
         
         func textFieldDidEndEditing(_ textField: UITextField) {
             if let text = textField.text, let floatValue = Float(text), floor(floatValue) == floatValue {
-                DispatchQueue.main.async {
-                    textField.text = String(format: "%.1f", floatValue)
-                    self.parent.text = textField.text ?? ""
-                }
+                textField.text = String(format: "%.1f", floatValue)
+                self.parent.text = textField.text ?? ""
             }
         }
     }

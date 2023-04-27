@@ -197,6 +197,10 @@ struct ProfileView: View {
                             return Alert(title: Text("入力エラー"),
                                          message: Text(formValidation.getEmptyFieldsMessage()),
                                          dismissButton: .default(Text("閉じる")))
+                        case .saveError:
+                            return Alert(title: Text("Error"), // Please select diagnosis and allergens.
+                                         message: Text("Please try again!"),
+                                         dismissButton: .default(Text("閉じる")))
                         }
                     }
                 }

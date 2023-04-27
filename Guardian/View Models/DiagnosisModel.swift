@@ -156,11 +156,11 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     
     //MARK: - Saving to Private DataBase
     
-    func addButtonPressed() {
+    func addButtonPressed(completion: @escaping ((SaveAlert) -> Void)) {
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !allergens.isEmpty else { return }
         if isUpdated {
-            updateDiagnosis()
+            updateDiagnosis(completion: completion)
         } else {
             addItem(
                 record: record,
@@ -170,23 +170,27 @@ struct diagnosisInfoModel: Hashable, Identifiable {
                 diagnosedAllergist: diagnosedAllergist,
                 diagnosedAllergistComment: diagnosedAllergistComment,
                 allergens: allergens,
-                diagnosisPhoto: getImageURL(for: diagnosisImages)
+                diagnosisPhoto: getImageURL(for: diagnosisImages),
+                completion: completion
             )
         }
     }
     
     //MARK: - UPDATE/EDIT @CK Private DataBase
         
-    func updateDiagnosis() {
+    func updateDiagnosis(completion: @escaping ((SaveAlert) -> Void)) {
         let myRecord = record
         CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
-            guard let record = record else { return }
+            guard let record = record else {
+                completion(.error)
+                return
+            }
             DispatchQueue.main.sync {
-                self.updateDiagnosis(record: record)
+                self.updateDiagnosis(record: record, completion: completion)
             }
         }
     }
-    func updateDiagnosis(record: CKRecord) {
+    func updateDiagnosis(record: CKRecord, completion: @escaping ((SaveAlert) -> Void)) {
         if let diagnosisPhoto = getImageURL(for: diagnosisImages) {
             let urls = diagnosisPhoto.map { return CKAsset(fileURL: $0)
             }
@@ -198,7 +202,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         record["diagnosedAllergist"] = diagnosedAllergist
         record["diagnosedAllergistComment"] = diagnosedAllergistComment
         record["allergens"] = allergens
-        saveItem(record: record)
+        saveItem(record: record, completion: completion)
     }
     
     
@@ -210,7 +214,8 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         diagnosedAllergist: String?,
         diagnosedAllergistComment: String?,
         allergens: [String],
-        diagnosisPhoto: [URL]?
+        diagnosisPhoto: [URL]?,
+        completion: @escaping ((SaveAlert) -> Void)
     ) {
             let myRecord = CKRecord(recordType: "DiagnosisInfo")
             if let diagnosisPhoto = diagnosisPhoto {
@@ -226,7 +231,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             myRecord["allergens"] = allergens
             let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
             myRecord["profile"] = reference as CKRecordValue
-            saveItem(record: myRecord)
+            saveItem(record: myRecord, completion: completion)
         }
     
     func updateRecord(record: CKRecord) {
@@ -247,19 +252,23 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         }
     }
     
-    private func saveItem(record: CKRecord) {
+    private func saveItem(record: CKRecord, completion: @escaping ((SaveAlert) -> Void)) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
             if let error = returnedError {
                 print("Error saving record(Diagnosis): \(error.localizedDescription)")
+                completion(.error)
                 return
             }
             if let record = returnedRecord {
                 DispatchQueue.main.async {
                    NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: DiagnosisListModel(record: record))
                     PersistenceController.shared.addDiagnosis(record: record)
+                    completion(.success)
                 }
+            } else {
+                completion(.error)
             }
         }
     }

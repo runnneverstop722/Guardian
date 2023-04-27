@@ -20,6 +20,12 @@ import CloudKit
     var totalTest: Int {
         return bloodTest.count + skinTest.count + oralFoodChallenge.count
     }
+    
+    func cleanUpdateUnSaveData() {
+        bloodTest.removeAll { $0.record == nil }
+        skinTest.removeAll { $0.record == nil }
+        oralFoodChallenge.removeAll { $0.record == nil }
+    }
 }
 
 struct MedicalTestAndEpisodeView: View {
@@ -365,6 +371,8 @@ struct MedicalTestAndEpisodeView: View {
                 if !viewDidLoad {
                     viewDidLoad = true
                     fetchData()
+                } else {
+                    medicalTest.cleanUpdateUnSaveData()
                 }
             }
         }

@@ -155,7 +155,7 @@ struct MedicalTestView: View {
     @EnvironmentObject var medicalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
     @State private var showingAlert = false
-//    @State private var showChartsView = true
+    @State private var isLoading = true
     @Environment(\.presentationMode) var presentationMode
     
     var totalNumberOfMedicalTest: String {
@@ -172,16 +172,6 @@ struct MedicalTestView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
-            
-//            if showChartsView {
-//                ChartsView(
-//                    bloodTestData: medicalTest.bloodTest,
-//                    skinTestData: medicalTest.skinTest,
-//                    oralFoodChallengeData: medicalTest.oralFoodChallenge,
-//                    selectedTestIndex: selectedTestIndex
-//                )
-//            }
-//
             VStack {
                 if selectedTestIndex == 0 {
                     BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
@@ -197,6 +187,7 @@ struct MedicalTestView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(role: .none) {
+                    saveData()
                     showingAlert = true
                 } label: {
                     Symbols.done // Save
@@ -214,9 +205,8 @@ struct MedicalTestView: View {
     }
     
     //MARK: - Func Save
-    func saveData() {
+    func saveData(completion: @escaping ((SaveAlert) -> Void)) {
         updateData()
-        
         let newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
         let newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
         let neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
