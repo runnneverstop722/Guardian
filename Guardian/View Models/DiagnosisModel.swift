@@ -146,7 +146,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
             let documentsDirectoryPath:NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
             let tempImageName = String(format: "%@.jpg", UUID().uuidString)
             let path:String = documentsDirectoryPath.appendingPathComponent(tempImageName)
-            //            try? image.jpegData(compressionQuality: 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+
             let imageURL = URL(fileURLWithPath: path)
             try? image.data.write(to: imageURL, options: [.atomic])
             imageURLs.append(imageURL)
@@ -157,7 +157,6 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     //MARK: - Saving to Private DataBase
     
     func addButtonPressed(completion: @escaping ((SaveAlert) -> Void)) {
-        /// Gender, Birthdate are not listed on 'guard' since they have already values
         guard !allergens.isEmpty else { return }
         if isUpdated {
             updateDiagnosis(completion: completion)
@@ -290,7 +289,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     }
     //MARK: - Fetching from CK Private DataBase Custom Zone
     
-    func fetchItemsFromCloud(complete: (() ->Void)? = nil) {
+    func fetchItemsFromCloud(complete: (() -> Void)? = nil) {
         fetchItemsFromLocalCache()
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "profile == %@", reference)
@@ -302,11 +301,11 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
-                if let member = DiagnosisListModel(record: returnedRecord) {
+                if let diagnosisItem = DiagnosisListModel(record: returnedRecord) {
                     let existedObject = self.diagnosisInfo.first(where: { $0.record.recordID == returnedRecord.recordID
                     })
                     if existedObject == nil {
-                        self.diagnosisInfo.append(member)
+                        self.diagnosisInfo.append(diagnosisItem)
                     }
                     PersistenceController.shared.addDiagnosis(record: returnedRecord)
                 }

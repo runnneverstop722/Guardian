@@ -198,24 +198,23 @@ struct MedicalTestView: View {
                 } label: {
                     Symbols.done // Save
                 }
-                .alert(item: $activeAlert) { alertType in
-                    switch alertType {
-                    case .saveConfirmation:
-                        return Alert(title: Text("データが保存されました。"), // The data has successfully saved
-                                     message: Text(""),
-                                     dismissButton: .default(Text("閉じる"), action: {
-                            
-                            presentationMode.wrappedValue.dismiss()
-                        }))
-                    default:
-                        return Alert(title: Text("Error"), // Please select diagnosis and allergens.
-                                     message: Text("Please try again!"),
-                                     dismissButton: .default(Text("閉じる")))
+                    .alert(item: $activeAlert) { alertType in
+                        switch alertType {
+                        case .saveConfirmation:
+                            return Alert(title: Text("データが保存されました。"), // The data has successfully saved
+                                         message: Text(""),
+                                         dismissButton: .default(Text("閉じる"), action: {
+                                presentationMode.wrappedValue.dismiss()
+                            }))
+                        default:
+                            return Alert(title: Text("Error"), // Please select diagnosis and allergens.
+                                         message: Text("Please try again!"),
+                                         dismissButton: .default(Text("閉じる")))
+                        }
                     }
                 }
             }
         }
-    }
     
     //MARK: - Func Save
     func saveData(completion: @escaping ((SaveAlert) -> Void)) {

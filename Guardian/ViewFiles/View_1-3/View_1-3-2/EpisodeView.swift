@@ -12,14 +12,31 @@ import CoreTransferable
 enum EpisodeFormField {
     case intakeAmount, otherTreatment
 }
+
+enum ActiveAlertOnEpisode: Identifiable {
+    case saveConfirmation, saveError
+    
+    var id: Int {
+        switch self {
+        case .saveConfirmation:
+            return 0
+        case .saveError:
+            return 1
+        }
+    }
+}
+
 struct EpisodeView: View {
     @StateObject var episodeModel: EpisodeModel
     @State private var isPickerPresented: Bool = false
     @State private var selectedImages: [Image] = []
+    @State private var isLoading = false
     @State private var showingAlert = false
     @State private var isUpdate = false
     @State private var showRemoveAlert = false
+    @State private var activeAlertEpisode: ActiveAlertOnEpisode?
     @FocusState private var episodeFocusedField: EpisodeFormField?
+    @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) private var dismiss
     
     let allergen: CKRecord
@@ -64,8 +81,8 @@ struct EpisodeView: View {
                             .submitLabel(.done)
                             .focused($episodeFocusedField, equals: .intakeAmount)
                     }
-            }
-
+                }
+            
             
             Section(header: Text("現れた症状（複数選択可）")
                 .font(.headline)) {
@@ -197,27 +214,27 @@ struct EpisodeView: View {
                 }
             
             if isUpdate {
-                Section {
-                    Button(action: {
-                        showRemoveAlert.toggle()
-                    }) {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "trash")
-                            Text("この発症記録を削除する") // Delete this episode.
-                            Spacer()
+                Button(action: {
+                    showRemoveAlert.toggle()
+                }) {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "trash")
+                        Text("この発症記録を削除する")
+                        Spacer()
+                    }
+                    .foregroundColor(.red)
+                }
+                .alert(isPresented: $showRemoveAlert) {
+                    Alert(title: Text("この発症記録を削除しますか？"),
+                          message: Text(""),
+                          primaryButton: .destructive(Text("削除")) {
+                        episodeModel.deleteRecord(record: episodeModel.record) { isSuccess in
+                            if isSuccess {
+                                dismiss.callAsFunction()
+                            }
                         }
-                        .foregroundColor(.red)
-                    }
-                    .alert(isPresented: $showRemoveAlert) {
-                        Alert(title: Text("この発症記録を削除しますか？"),
-                              message: Text(""), // Delete this episode, are you sure?
-                              primaryButton: .destructive(Text("削除")) { // Delete
-                            episodeModel.deleteRecord(record: episodeModel.record)
-                            dismiss.callAsFunction()
-                            
-                        }, secondaryButton: .cancel(Text("キャンセル"))) // Cancel
-                    }
+                    }, secondaryButton: .cancel(Text("キャンセル")))
                 }
             }
         }
@@ -225,21 +242,41 @@ struct EpisodeView: View {
         .navigationBarTitle("発症記録") // Episode
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .none) {
-                    episodeModel.addButtonPressed()
-                    showingAlert = true
+                Button() {
+                    isLoading = true
+                    episodeModel.addButtonPressed { result in
+                        isLoading = false
+                        switch result {
+                        case .success:
+                            activeAlertEpisode = .saveConfirmation
+                        default:
+                            activeAlertEpisode = .saveError
+                            break
+                        }
+                    }
                 } label: {
                     Symbols.done // Save
                 }
-                .alert(isPresented: $showingAlert) {
-                    Alert(title: Text("データが保存されました。"), // The data has successfully saved
-                          message: Text(""),
-                          dismissButton: .default(Text("閉じる"), action: { // Close
-                        dismiss()
-                        
-                    }))
+                .alert(item: $activeAlertEpisode) { alertType in
+                    switch alertType {
+                    case .saveConfirmation:
+                        return Alert(title: Text("データが保存されました。"),
+                                     message: Text(""),
+                                     dismissButton: .default(Text("閉じる"), action: {
+                            
+                            presentationMode.wrappedValue.dismiss()
+                        }))
+                    case .saveError:
+                        return Alert(title: Text("もう一度試してください。"),
+                                     message: Text(""),
+                                     dismissButton: .default(Text("閉じる")))
+                    }
                 }
             }
+        }
+        if isLoading {
+            Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
+            LoadingAlert()
         }
     }
     private func createAdaptiveColumns() -> [GridItem] {
@@ -252,10 +289,10 @@ struct EpisodeView: View {
     }
 }
 
-struct EpisodeView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        let allergen = CKRecord(recordType: "allergen")
-        EpisodeView(record: allergen)
-    }
-}
+//struct EpisodeView_Previews: PreviewProvider {
+//
+//    static var previews: some View {
+//        let allergen = CKRecord(recordType: "allergen")
+//        EpisodeView(record: allergen)
+//    }
+//}

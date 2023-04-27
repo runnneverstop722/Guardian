@@ -213,21 +213,20 @@ struct DiagnosisView: View {
                     }
                 
                 if isUpdate {
-                    
                     Button(action: {
                         showingRemoveDiagnosisAlert.toggle()
                     }) {
                         HStack {
                             Spacer()
                             Image(systemName: "trash")
-                            Text("この診断記録を削除する")// Delete this diagnosis.
+                            Text("この診断記録を削除する")
                             Spacer()
                         }
                         .foregroundColor(.red)
                     }
                     .alert(isPresented: $showingRemoveDiagnosisAlert) {
                         Alert(title: Text("診断記録を削除しますか？"),
-                              message: Text(""), // Delete this diagnosis, are you sure?
+                              message: Text(""),
                               primaryButton: .destructive(Text("削除")) {
                             diagnosisModel.deleteItemsFromCloud { isSuccess in
                                 if isSuccess {
@@ -265,23 +264,22 @@ struct DiagnosisView: View {
                     .alert(item: $activeAlert) { alertType in
                         switch alertType {
                         case .saveConfirmation:
-                            return Alert(title: Text("データが保存されました。"), // The data has successfully saved
+                            return Alert(title: Text("データが保存されました。"),
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる"), action: {
                                 
                                 presentationMode.wrappedValue.dismiss()
                             }))
                         case .emptyValidation:
-                            return Alert(title: Text("入力エラー"), // Please select diagnosis and allergens.
+                            return Alert(title: Text("入力エラー"),
                                          message: Text(formValidation.getEmptyFieldsMessage()),
                                          dismissButton: .default(Text("閉じる")))
                         case .saveError:
-                            return Alert(title: Text("Error"), // Please select diagnosis and allergens.
-                                         message: Text("Please try again!"),
+                            return Alert(title: Text("もう一度試してください。"),
+                                         message: Text(""),
                                          dismissButton: .default(Text("閉じる")))
                         }
                     }
-                    
                 }
             }
             if isLoading {
@@ -304,8 +302,6 @@ struct DiagnosisView: View {
         return adaptiveColumns
     }
 }
-
-
 
 //struct NewDiagnosis_Previews: PreviewProvider {
 //    static var previews: some View {
