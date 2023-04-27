@@ -177,6 +177,11 @@ struct MedicalTestAndEpisodeView: View {
         addOperation(operation: OFCQueryOperation)
         episodeModel.fetchItemsFromLocalCache()
         
+        dispatchWork.enter()
+        episodeModel.fetchItemsFromCloud {
+            dispatchWork.leave()
+        }
+        
         dispatchWork.notify(queue: DispatchQueue.main) {
             isLoading = false
         }

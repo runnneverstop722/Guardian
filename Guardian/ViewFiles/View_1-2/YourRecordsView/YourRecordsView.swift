@@ -148,9 +148,7 @@ struct YourRecordsView: View {
                                         if !didLoad {
                                             didLoad = true
                                             diagnosisModel.fetchItemsFromCloud {
-                                                episodeModel.fetchItemsFromCloud {
-                                                    isLoading = false
-                                                }
+                                                isLoading = false
                                             }
                                         }
                                     }

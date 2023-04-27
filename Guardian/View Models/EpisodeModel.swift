@@ -367,7 +367,7 @@ import CloudKit
     //MARK: - Fetch from CK Private DataBase
     
     func fetchItemsFromCloud(complete: @escaping () -> Void) {
-        let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
+        let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
         let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
@@ -378,8 +378,13 @@ import CloudKit
         queryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let episodeItem = EpisodeListModel(record: returnedRecord) {
-                    self.episodeInfo.append(episodeItem)
+                    let existedObject = self.episodeInfo.first(where: { $0.record.recordID == returnedRecord.recordID
+                    })
+                    if existedObject == nil {
+                        self.episodeInfo.append(episodeItem)
+                    }
                 }
+                PersistenceController.shared.addEpisode(record: returnedRecord)
             }
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
