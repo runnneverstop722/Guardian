@@ -105,8 +105,10 @@ struct YourRecordsView: View {
                                     Button {
                                         isAddingNewDiagnosis = true
                                     } label: {
-                                        Symbols.addNew
-                                            .foregroundColor(.primary)
+                                        HStack {
+                                            Symbols.addNew
+                                            Text("登録")
+                                        }.foregroundColor(.primary)
                                     }
                                     .background(
                                         NavigationLink(
