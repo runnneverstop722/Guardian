@@ -400,9 +400,10 @@ struct BloodTestSection: View {
                 .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
                 .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
+                .cornerRadius(10)
             }
             .padding(.bottom)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .padding(.horizontal)
         }
     }
 }
@@ -441,9 +442,10 @@ struct SkinTestSection: View {
                 .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
                 .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
+                .cornerRadius(10)
             }
             .padding(.bottom)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .padding(.horizontal)
         }
     }
 }
@@ -484,9 +486,10 @@ struct OralFoodChallengeSection: View {
                 .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                 .padding()
                 .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
+                .cornerRadius(10)
             }
             .padding(.bottom)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .padding(.horizontal)
         }
     }
 }

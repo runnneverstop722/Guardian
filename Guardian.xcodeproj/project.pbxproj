@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05099BC029FA1378003D7E8D /* AllergenTranslations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05099BBF29FA1378003D7E8D /* AllergenTranslations.swift */; };
 		051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */; };
 		051A27B929CE881200A890D0 /* DiagnosisListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27B829CE881200A890D0 /* DiagnosisListModel.swift */; };
 		051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27BA29CE885400A890D0 /* EpisodeModel.swift */; };
@@ -55,6 +56,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05099BBF29FA1378003D7E8D /* AllergenTranslations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergenTranslations.swift; sourceTree = "<group>"; };
 		051A27B629CE87DD00A890D0 /* DiagnosisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisModel.swift; sourceTree = "<group>"; };
 		051A27B829CE881200A890D0 /* DiagnosisListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisListModel.swift; sourceTree = "<group>"; };
 		051A27BA29CE885400A890D0 /* EpisodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeModel.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				05F6AB1A29EE640A00AA59EB /* Input Validation */,
 				05F19E1B29ED8EA5004A4352 /* Symbols.swift */,
 				05F19E1D29ED9530004A4352 /* Theme.swift */,
+				05099BBF29FA1378003D7E8D /* AllergenTranslations.swift */,
 				69bf87161ea9a1894660a10e61015f2b /* FullWidthButtonStyle.swift */,
 				0590DD3829E6ED9C005A49EF /* KeyboardDismissViewModifier.swift */,
 				0590DD3029E53EC6005A49EF /* Color.swift */,
@@ -415,6 +418,7 @@
 				051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */,
 				051A27C629CE896800A890D0 /* SelectLocations.swift in Sources */,
 				05F6AB1929EE5C3300AA59EB /* RequiredFieldStyle.swift in Sources */,
+				05099BC029FA1378003D7E8D /* AllergenTranslations.swift in Sources */,
 				ad201ead098bdb7b65eeb519ef3daf70 /* FullWidthButtonStyle.swift in Sources */,
 				05552CFF29E2AF9100F9AC0A /* PersistenceController.swift in Sources */,
 				051A27D429CE8C9500A890D0 /* AddAllergenView.swift in Sources */,

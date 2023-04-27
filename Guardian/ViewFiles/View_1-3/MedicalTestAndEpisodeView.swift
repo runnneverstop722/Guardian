@@ -187,6 +187,8 @@ struct MedicalTestAndEpisodeView: View {
                     .padding(.top)) {
                         ForEach(diagnosis, id: \.self) { item in
                             Text("\(item.caption1) 「\(item.caption3)」にて「\(item.headline)」と診断されました。")
+                                .font(.subheadline)
+                                
                         }
                     }
                 Section(header: Text("医療検査記録") // Medical Test
@@ -299,7 +301,6 @@ struct MedicalTestAndEpisodeView: View {
                                 }
                             }
                         }
-                        
                     }
             }
             .navigationTitle(allergenName)
