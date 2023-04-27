@@ -79,7 +79,7 @@ class PDFContent {
                         .font: itemFont
                     ]
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
-                    let itemTextSize = attributedItemText.size()
+                    let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40, height: itemTextSize.height)
                     attributedItemText.draw(in: itemTextRect)
                     
@@ -139,7 +139,7 @@ class PDFContent {
                         .font: itemFont
                     ]
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
-                    let itemTextSize = attributedItemText.size()
+                    let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
@@ -165,7 +165,7 @@ class PDFContent {
                         .font: itemFont
                     ]
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
-                    let itemTextSize = attributedItemText.size()
+                    let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
@@ -191,7 +191,7 @@ class PDFContent {
                         .font: itemFont
                     ]
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
-                    let itemTextSize = attributedItemText.size()
+                    let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
@@ -235,7 +235,7 @@ class PDFContent {
                             .font: itemFont
                         ]
                         let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
-                        let itemTextSize = attributedItemText.size()
+                        let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                         let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
                         attributedItemText.draw(in: itemTextRect)
                         textTop += itemTextSize.height + 6
@@ -371,5 +371,15 @@ extension UIImage {
         UIGraphicsEndImageContext()
 
         return scaledImage!
+    }
+}
+
+extension NSAttributedString {
+    func getSize(withPreferredWidth width: CGFloat) -> CGSize {
+        let sizeConstraint = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingRect = self.boundingRect(with: sizeConstraint,
+                                                         options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                                         context: nil)
+        return CGSize(width: ceil(boundingRect.width), height: ceil(boundingRect.height))
     }
 }
