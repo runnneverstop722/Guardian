@@ -154,7 +154,7 @@ struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @EnvironmentObject var medicalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
-    @State private var showingAlert = false
+    @State private var activeAlert: ActiveAlert?
     @State private var isLoading = true
     @Environment(\.presentationMode) var presentationMode
     
@@ -187,18 +187,31 @@ struct MedicalTestView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(role: .none) {
-                    saveData()
-                    showingAlert = true
+                    saveData { result in
+                        switch result {
+                        case .success:
+                            activeAlert = .saveConfirmation
+                        default:
+                            activeAlert = .saveError
+                        }
+                    }
                 } label: {
                     Symbols.done // Save
                 }
-                .alert(isPresented: $showingAlert) {
-                    Alert(title: Text("データが保存されました。"), // Succeccfully Saved
-                          message: Text(""),
-                          dismissButton: .default(Text("閉じる"), action: { // Close
-                        saveData()
-                        presentationMode.wrappedValue.dismiss()
-                    }))
+                .alert(item: $activeAlert) { alertType in
+                    switch alertType {
+                    case .saveConfirmation:
+                        return Alert(title: Text("データが保存されました。"), // The data has successfully saved
+                                     message: Text(""),
+                                     dismissButton: .default(Text("閉じる"), action: {
+                            
+                            presentationMode.wrappedValue.dismiss()
+                        }))
+                    default:
+                        return Alert(title: Text("Error"), // Please select diagnosis and allergens.
+                                     message: Text("Please try again!"),
+                                     dismissButton: .default(Text("閉じる")))
+                    }
                 }
             }
         }
@@ -206,10 +219,11 @@ struct MedicalTestView: View {
     
     //MARK: - Func Save
     func saveData(completion: @escaping ((SaveAlert) -> Void)) {
-        updateData()
-        let newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
-        let newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
-        let neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
+        let dispatchGroup = DispatchGroup()
+        updateData(dispatchGroup: dispatchGroup)
+        var newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
+        var newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
+        var neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
         
         for var bloodTest in newBloodTests {
             let myRecord = CKRecord(recordType: "BloodTest")
@@ -225,36 +239,59 @@ struct MedicalTestView: View {
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
+            dispatchGroup.enter()
+            save(record: myRecord) { record in
+                bloodTest.record = record
+                if let index = medicalTest.bloodTest.firstIndex(where: { $0.id == bloodTest.id }) {
+                    medicalTest.bloodTest[index] = bloodTest
+                }
+                dispatchGroup.leave()
+            }
         }
-    
-        newSkinTests.forEach {
+        for var test in newSkinTests {
             let myRecord = CKRecord(recordType: "SkinTest")
             
-            myRecord["skinTestDate"] = $0.skinTestDate
-            myRecord["skinTestResultValue"] = $0.skinTestResultValue
-            myRecord["skinTestResult"] = $0.skinTestResult
+            myRecord["skinTestDate"] = test.skinTestDate
+            myRecord["skinTestResultValue"] = test.skinTestResultValue
+            myRecord["skinTestResult"] = test.skinTestResult
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
+            dispatchGroup.enter()
+            save(record: myRecord) { record in
+                test.record = record
+                if let index = medicalTest.skinTest.firstIndex(where: { $0.id == test.id }) {
+                    medicalTest.skinTest[index] = test
+                }
+                dispatchGroup.leave()
+            }
         }
-        neworalTests.forEach {
+        for var test in neworalTests {
             let myRecord = CKRecord(recordType: "OralFoodChallenge")
             
-            myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
-            myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
-            myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
+            myRecord["oralFoodChallengeDate"] = test.oralFoodChallengeDate
+            myRecord["oralFoodChallengeQuantity"] = test.oralFoodChallengeQuantity
+            myRecord["oralFoodChallengeResult"] = test.oralFoodChallengeResult
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
-            save(record: myRecord)
+            dispatchGroup.enter()
+            save(record: myRecord) { record in
+                test.record = record
+                if let index = medicalTest.oralFoodChallenge.firstIndex(where: { $0.id == test.id }) {
+                    medicalTest.oralFoodChallenge[index] = test
+                }
+                dispatchGroup.leave()
+            }
         }
         let allergen = medicalTest.allergen
         allergen["totalNumberOfMedicalTests"]  = medicalTest.totalTest
         updateRecord(record: allergen)
         NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
         PersistenceController.shared.addAllergen(allergen: allergen)
+        dispatchGroup.notify(queue: .main) {
+            completion(.success)
+        }
     }
     func updateRecord(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
@@ -262,7 +299,7 @@ struct MedicalTestView: View {
         }
     }
     //MARK: - Func Update
-    func updateData() {
+    func updateData(dispatchGroup: DispatchGroup) {
         let bloodTests = medicalTest.bloodTest.filter { $0.record != nil }
         let skinTests = medicalTest.skinTest.filter { $0.record != nil }
         let oralTests = medicalTest.oralFoodChallenge.filter { $0.record != nil }
@@ -296,6 +333,7 @@ struct MedicalTestView: View {
         let modifyRecords = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: deleteIDs)
         modifyRecords.savePolicy = .allKeys
         modifyRecords.queuePriority = .veryHigh
+        dispatchGroup.enter()
         modifyRecords.modifyRecordsCompletionBlock = { savedRecord, deletedIDs, error in
             savedRecord?.forEach({ record in
                 switch record.recordType {
@@ -315,11 +353,12 @@ struct MedicalTestView: View {
                 PersistenceController.shared.deleteSkinTest(recordIDs: ids)
                 PersistenceController.shared.deleteOralFoodChallenge(recordIDs: ids)
             }
+            dispatchGroup.leave()
         }
         CKContainer.default().privateCloudDatabase.add(modifyRecords)
     }
     
-    private func save(record: CKRecord) {
+    private func save(record: CKRecord, completion: @escaping ((CKRecord?) -> Void)) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
@@ -335,6 +374,7 @@ struct MedicalTestView: View {
                     break
                 }
             }
+            completion(returnedRecord)
         }
     }
 }
