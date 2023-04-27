@@ -92,15 +92,21 @@ struct MedicalTestAndEpisodeView: View {
                 }
             }
         }
-        bloodTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Blood Test' queryResultBlock")
+        bloodTestQueryOperation.queryResultBlock = { result in
             DispatchQueue.main.async {
-                self.medicalTest.bloodTest = self.medicalTest.bloodTest.sorted(by: { item1, item2 in
-                    return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedDescending
-                })
-                dispatchWork.leave()
+                switch result {
+                case .success:
+                    self.medicalTest.bloodTest = self.medicalTest.bloodTest.sorted(by: { item1, item2 in
+                        return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedDescending
+                    })
+                    dispatchWork.leave()
+                case .failure(let error):
+                    print("Error fetching Blood Test: \(error.localizedDescription)")
+                    dispatchWork.leave()
+                }
             }
         }
+
         addOperation(operation: bloodTestQueryOperation)
         
         //MARK: - Skin
@@ -120,13 +126,18 @@ struct MedicalTestAndEpisodeView: View {
                 }
             }
         }
-        skinTestQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Skin Test' queryResultBlock")
+        skinTestQueryOperation.queryResultBlock = { result in
             DispatchQueue.main.async {
-                self.medicalTest.skinTest = self.medicalTest.skinTest.sorted(by: { item1, item2 in
-                    return item1.skinTestDate.compare(item2.skinTestDate) == .orderedDescending
-                })
-                dispatchWork.leave()
+                switch result {
+                case .success:
+                    self.medicalTest.skinTest = self.medicalTest.skinTest.sorted(by: { item1, item2 in
+                        return item1.skinTestDate.compare(item2.skinTestDate) == .orderedDescending
+                    })
+                    dispatchWork.leave()
+                case .failure(let error):
+                    print("Error fetching Skin Test: \(error.localizedDescription)")
+                    dispatchWork.leave()
+                }
             }
         }
         addOperation(operation: skinTestQueryOperation)
@@ -149,23 +160,21 @@ struct MedicalTestAndEpisodeView: View {
                 }
             }
         }
-        OFCQueryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
-            print("RETURNED 'Oral Food Challenge' queryResultBlock")
+        OFCQueryOperation.queryResultBlock = { result in
             DispatchQueue.main.async {
-                self.medicalTest.oralFoodChallenge = self.medicalTest.oralFoodChallenge.sorted(by: { item1, item2 in
-                    return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedDescending
-                })
-                dispatchWork.leave()
+                switch result {
+                case .success:
+                    self.medicalTest.oralFoodChallenge = self.medicalTest.oralFoodChallenge.sorted(by: { item1, item2 in
+                        return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedDescending
+                    })
+                    dispatchWork.leave()
+                case .failure(let error):
+                    print("Error fetching OFC: \(error.localizedDescription)")
+                    dispatchWork.leave()
+                }
             }
         }
-        
         addOperation(operation: OFCQueryOperation)
-//        dispatchWork.enter()
-//        episodeModel.fetchItemsFromCloud {
-//            DispatchQueue.main.async {
-//                dispatchWork.leave()
-//            }
-//        }
         episodeModel.fetchItemsFromLocalCache()
         
         dispatchWork.notify(queue: DispatchQueue.main) {
@@ -185,10 +194,14 @@ struct MedicalTestAndEpisodeView: View {
                     .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
                     .padding(.top)) {
-                        ForEach(diagnosis, id: \.self) { item in
-                            Text("\(item.caption1) 「\(item.caption3)」にて「\(item.headline)」と診断されました。")
+                        if diagnosis.isEmpty {
+                            Text("⚠️本アレルゲンに対して診断記録がありません。")
                                 .font(.subheadline)
-                                
+                        } else {
+                            ForEach(diagnosis, id: \.self) { item in
+                                Text("\(item.caption1) 「\(item.caption3)」にて「\(item.headline)」と診断されました。")
+                                    .font(.subheadline)
+                            }
                         }
                     }
                 Section(header: Text("医療検査記録") // Medical Test
@@ -254,8 +267,7 @@ struct MedicalTestAndEpisodeView: View {
                             )
                             .opacity(0)
                         )
-                        
-                        
+                
                     }
                 
                 Section(header: Text("発症記録") // Episode
@@ -263,11 +275,16 @@ struct MedicalTestAndEpisodeView: View {
                     .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
                     .padding(.top)) {
-                        ForEach(episodeModel.episodeInfo, id: \.self) { item in
-                            NavigationLink(
-                                destination: EpisodeView(allergen: episodeModel.allergen, episode: item.record),
-                                label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
-                                })
+                        if episodeModel.episodeInfo.isEmpty {
+                            Text("⚠️本アレルゲンに対して発症記録がありません。")
+                                .font(.subheadline)
+                        } else {
+                            ForEach(episodeModel.episodeInfo, id: \.self) { item in
+                                NavigationLink(
+                                    destination: EpisodeView(allergen: episodeModel.allergen, episode: item.record),
+                                    label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
+                                    })
+                            }
                         }
                         ZStack {
                            NavigationLink(destination: EpisodeView(record: allergen)) {

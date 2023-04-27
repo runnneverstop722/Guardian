@@ -52,15 +52,6 @@ struct MembersView: View {
                 }
             }
         }
-        
-        //            .alert(item: $deleteItem, content: { item in
-        //                Alert(title: Text("このメンバーを削除しますか？"), message: Text(""), primaryButton: .destructive(Text("削除")) {
-        //                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
-        //                    }
-        //                }, secondaryButton: .cancel(Text("キャンセル")))
-        //
-        //            })
-        //        }
         .alert(item: $deleteItem) { item in
             Alert(
                 title: Text("このメンバーを削除しますか？"),

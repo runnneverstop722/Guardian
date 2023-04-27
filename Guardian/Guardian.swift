@@ -20,11 +20,11 @@ struct Guardian: App {
                 NavigationStack {
                     MembersView()
                 }
-                .tabItem { Label("管理メンバー", systemImage: "person.text.rectangle.fill") }
+                .tabItem { Label("記録する", systemImage: "person.text.rectangle.fill") }
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
 
                 AwarenessView()
-                    .tabItem { Label("周知", systemImage: "exclamationmark.bubble") }
+                    .tabItem { Label("知らせる", systemImage: "exclamationmark.bubble") }
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
 
                 EmptyView()

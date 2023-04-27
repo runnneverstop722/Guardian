@@ -91,7 +91,12 @@ struct AwarenessView: View {
                 ZStack {
                     LinearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom)
                     VStack(spacing: 20) {
-                        if !profiles.isEmpty {
+                        if profiles.isEmpty {
+                            Text("⚠️登録済のプロフィールがありません。")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .bold()
+                        } else {
                             Picker("Select Profile", selection: $selectedProfile) {
                                 ForEach(profiles, id: \.self) { (item: ProfileInfoEntity) in
                                     Text(item.firstName ?? "").tag(item as ProfileInfoEntity?)
@@ -120,25 +125,25 @@ struct AwarenessView: View {
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
-//                                Text("I have a Food Allergy")
-//                                    .multilineTextAlignment(.center)
-//                                    .foregroundColor(.white)
+                                //                                Text("I have a Food Allergy")
+                                //                                    .multilineTextAlignment(.center)
+                                //                                    .foregroundColor(.white)
                                 Text(allergensList(profile: selectedProfile))
                                     .font(.title2)
                                     .fontWeight(.bold)
-//                                    .foregroundColor(.black)
+                                //                                    .foregroundColor(.black)
                                     .padding()
                             }
                             Spacer()
                             Group {
                                 Text("アレルゲンの混入がないようにご協力を")
-//                                Text("Please ensure that my menu is free from them.")
-//                                    .multilineTextAlignment(.center)
-//                                    .foregroundColor(.white)
+                                //                                Text("Please ensure that my menu is free from them.")
+                                //                                    .multilineTextAlignment(.center)
+                                //                                    .foregroundColor(.white)
                                 Text("宜しくお願い申し上げます。")
-//                                Text("Thank you for your understanding.")
-//                                    .multilineTextAlignment(.center)
-//                                    .foregroundColor(.white)
+                                //                                Text("Thank you for your understanding.")
+                                //                                    .multilineTextAlignment(.center)
+                                //                                    .foregroundColor(.white)
                             }.font(.headline).foregroundColor(.white)
                             Spacer()
                             Button(action: {
@@ -176,6 +181,7 @@ struct AwarenessView: View {
                                 }
                             }
                         }
+                        
                     }
                     .padding(.vertical)
                     .navigationBarTitle("Awareness")

@@ -382,7 +382,7 @@ struct Card: View {
                 VStack {
                     Spacer()
                     VStack(alignment: .leading, spacing: 8.0) {
-                        Text("記録が登録されていません。")
+                        Text("⚠️診断記録がありません。")
                             .foregroundColor(.primary)
                             .fontWeight(.semibold)
                             .font(.subheadline)
@@ -444,12 +444,6 @@ struct YourRecordsViewGridCell: View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             Group {
                 Color("detail-background")
-//                if colorScheme == .dark {
-//                    Color(.secondarySystemGroupedBackground)
-//                    
-//                } else {
-//                    Color(red: 252/255, green: 227/255, blue: 138/255)
-//                }
             }
             .cornerRadius(10.0)
             .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
@@ -468,24 +462,18 @@ struct YourRecordsViewGridCell: View {
                     .font(.headline)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
-//                    .foregroundColor(.white)
                 
                 HStack {
                     Symbols.medicalTest
                         .font(.subheadline)
-//                        .foregroundColor(.white)
                     Text(caption1)
                         .font(.caption)
-//                        .foregroundColor(.white)
                     Text(" | ")
                         .font(.subheadline)
-//                        .foregroundColor(.primary)
                     Symbols.episode
                         .font(.subheadline)
-//                        .foregroundColor(.white)
                     Text(caption2)
                         .font(.caption)
-//                        .foregroundColor(.white)
                 }
             }
             .multilineTextAlignment(.center)
