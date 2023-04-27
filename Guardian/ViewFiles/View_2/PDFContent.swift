@@ -31,7 +31,7 @@ class PDFContent {
             .font: profileNameFont
         ]
         let attributedProfileName = NSAttributedString(string: profileName, attributes: profileNameAttributes)
-        let profileNameStringSize = attributedProfileName.size()
+        let profileNameStringSize = attributedProfileName.getSize(withPreferredWidth: pageRect.width - 40)
         let profileNameStringRect = CGRect(x: (pageRect.width - profileNameStringSize.width) / 2.0, y: textTop, width: profileNameStringSize.width, height: profileNameStringSize.height)
         attributedProfileName.draw(in: profileNameStringRect)
         
@@ -55,7 +55,7 @@ class PDFContent {
                 .font: diagnosisTitleFont
             ]
             let attributedDiagnosisTitle = NSAttributedString(string: diagnosisTitle, attributes: diagnosisTitleAttributes)
-            let diagnosisTitleStringSize = attributedDiagnosisTitle.size()
+            let diagnosisTitleStringSize = attributedDiagnosisTitle.getSize(withPreferredWidth: pageRect.width - 40)
             let diagnosisTitleStringRect = CGRect(x: 20, y: textTop, width: diagnosisTitleStringSize.width, height: diagnosisTitleStringSize.height)
             attributedDiagnosisTitle.draw(in: diagnosisTitleStringRect)
             
@@ -113,7 +113,7 @@ class PDFContent {
                 .font: allergenNameFont
             ]
             let attributedAllergenName = NSAttributedString(string: allergenName, attributes: allergenNameAttributes)
-            let allergenNameStringSize = attributedAllergenName.size()
+            let allergenNameStringSize = attributedAllergenName.getSize(withPreferredWidth: pageRect.width - 40)
             let allergenNameStringRect = CGRect(x: offsetX, y: textTop, width: allergenNameStringSize.width, height: allergenNameStringSize.height)
             attributedAllergenName.draw(in: allergenNameStringRect)
             textTop += 10
@@ -208,7 +208,7 @@ class PDFContent {
                 let episodesTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
                 let episodesTitleAttributes: [NSAttributedString.Key: Any] = [.font: episodesTitleFont ]
                 let attributedEpisodesTitle = NSAttributedString(string: episodesTitle, attributes: episodesTitleAttributes)
-                let episodesTitleStringSize = attributedEpisodesTitle.size()
+                let episodesTitleStringSize = attributedEpisodesTitle.getSize(withPreferredWidth: pageRect.width - 40)
                 let episodesTitleStringRect = CGRect(x: 20, y: textTop, width: episodesTitleStringSize.width, height: episodesTitleStringSize.height)
                 attributedEpisodesTitle.draw(in: episodesTitleStringRect)
                 
