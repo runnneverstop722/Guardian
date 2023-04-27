@@ -74,7 +74,7 @@ struct YourRecordsView: View {
                                                     Text("Diagnosis").font(.footnote).fontWeight(.light).shadow(radius: 6)
                                                     Spacer()
                                                 }
-                                                Text("初診記録").font(.title).bold()
+                                                Text("診断記録").font(.title).bold()
                                                 Label(
                                                     diagnosisModel.diagnosisInfo.count == 0 ? "0 / 0 件" : "\(selection + 1) / \(diagnosisModel.diagnosisInfo.count) 件", systemImage: "menucard")
                                                     .font(.footnote)
@@ -165,7 +165,7 @@ struct YourRecordsView: View {
                                 Spacer()
                             }
                             .alert(isPresented: $isShowingDiagnosisTutorialAlert) {
-                                Alert(title: Text("初診記録とは？"),
+                                Alert(title: Text("診断記録とは？"),
                                       message: Text("初めて医師より食物アレルギーと診断された際に記録します。\n５つの診断名から選択できます。\n(即時型IgE抗体アレルギー / 遅延型IgG抗体アレルギー / アレルギー性腸炎 / 好酸球性消化管疾患 / 新生児・乳児食物蛋白誘発胃腸症)"),
                                       dismissButton: .default(Text("OK")))
                             }

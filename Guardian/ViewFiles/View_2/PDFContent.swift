@@ -96,6 +96,7 @@ class PDFContent {
         context.addLine(to: CGPoint(x: pageRect.width - 20, y: textTop))
         context.strokePath()
         textTop += 10
+        
         for allergen in allergensData {
             let allergenName = allergen.allergen!
             var offsetX: CGFloat = 20
@@ -345,8 +346,6 @@ extension Array {
     }
 }
 extension UIImage {
-
-
     /// Scales an image to fit within a bounds with a size governed by the passed size. Also keeps the aspect ratio.
     /// Switch MIN to MAX for aspect fill instead of fit.
     ///

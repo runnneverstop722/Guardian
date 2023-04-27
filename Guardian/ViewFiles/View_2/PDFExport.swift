@@ -31,7 +31,7 @@ class PDFExport {
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
         
-        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8)// A4, 72 dpi
+        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4, 72 dpi
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         
         let data = renderer.pdfData { (context) in
@@ -47,22 +47,5 @@ class PDFExport {
             pdfContent.drawPageContent(in: context, pageRect: pageRect, textTop: logoBottomYPosition)
         }
         return data
-    }
-    
-    func drawPageNumber(_ context: CGContext, pageRect: CGRect, pageNumber: Int) {
-        let font = UIFont.systemFont(ofSize: 12)
-        let pageNumberString = "Page \(pageNumber)"
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: UIColor.black
-        ]
-        
-        let attributedPageNumber = NSAttributedString(string: pageNumberString, attributes: attributes)
-        let textSize = attributedPageNumber.size()
-        
-        let xPosition = pageRect.midX - textSize.width / 2.0
-        let yPosition = pageRect.height - bottomPadding + 10
-        
-        attributedPageNumber.draw(at: CGPoint(x: xPosition, y: yPosition))
     }
 }

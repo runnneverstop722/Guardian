@@ -180,14 +180,13 @@ struct MedicalTestAndEpisodeView: View {
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             List {
-                Section(header: Text("Diagnosis") // Medical Test
+                Section(header: Text("診断歴") // Medical Test
                     .font(.title2)
                     .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         ForEach(diagnosis, id: \.self) { item in
-                            
-                            Text(item.caption1)
+                            Text("\(item.caption1) 「\(item.caption3)」にて「\(item.headline)」と診断されました。")
                         }
                     }
                 Section(header: Text("医療検査記録") // Medical Test
@@ -233,13 +232,14 @@ struct MedicalTestAndEpisodeView: View {
                             HStack {
                                 Spacer()
                                 Image(systemName: "book.fill")
-                                Text("記録管理") // Confirm Details
+                                Text("詳細") // Confirm Details
                                 Spacer()
                             }
                             .font(.headline)
                             .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                             .padding()
-                            .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
+                            .background(Color(uiColor: .systemIndigo))
+//                            .background(colorScheme == .dark ? Color(.systemIndigo).opacity(0.8) : Color.blue)
                             .cornerRadius(10)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -303,7 +303,7 @@ struct MedicalTestAndEpisodeView: View {
                     }
             }
             .navigationTitle(allergenName)
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.sidebar)
             .refreshable {
                 episodeModel.fetchItemsFromCloud(complete: {})
                 
