@@ -245,6 +245,7 @@ struct DiagnosisView: View {
                         return Alert(title: Text("データが保存されました。"), // The data has successfully saved
                                      message: Text(""),
                                      dismissButton: .default(Text("閉じる"), action: {
+                            
                             presentationMode.wrappedValue.dismiss()
                         }))
                     case .emptyValidation:

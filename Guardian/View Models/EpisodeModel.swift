@@ -219,6 +219,7 @@ import CloudKit
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         if isUpdated {
             updateEpisode()
+            saveItem(record: record)
         } else {
             addItem(
                 episodeDate: episodeDate,

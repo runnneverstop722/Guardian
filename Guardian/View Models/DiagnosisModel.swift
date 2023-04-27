@@ -161,6 +161,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         guard !allergens.isEmpty else { return }
         if isUpdated {
             updateDiagnosis()
+            saveItem(record: record)
         } else {
             addItem(
                 record: record,

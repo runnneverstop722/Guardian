@@ -226,6 +226,7 @@ struct EpisodeView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .none) {
+                    episodeModel.addButtonPressed()
                     showingAlert = true
                 } label: {
                     Symbols.done // Save
@@ -234,7 +235,6 @@ struct EpisodeView: View {
                     Alert(title: Text("データが保存されました。"), // The data has successfully saved
                           message: Text(""),
                           dismissButton: .default(Text("閉じる"), action: { // Close
-                        episodeModel.addButtonPressed()
                         dismiss()
                         
                     }))
