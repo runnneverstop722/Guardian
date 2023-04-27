@@ -161,7 +161,6 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         guard !allergens.isEmpty else { return }
         if isUpdated {
             updateDiagnosis()
-            saveItem(record: record)
         } else {
             addItem(
                 record: record,
@@ -252,6 +251,10 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let error = returnedError {
+                print("Error saving record(Diagnosis): \(error.localizedDescription)")
+                return
+            }
             if let record = returnedRecord {
                 DispatchQueue.main.async {
                    NotificationCenter.default.post(name: NSNotification.Name.init("existingDiagnosisData"), object: DiagnosisListModel(record: record))

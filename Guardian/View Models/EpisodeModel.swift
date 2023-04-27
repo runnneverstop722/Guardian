@@ -219,7 +219,6 @@ import CloudKit
         /// Gender, Birthdate are not listed on 'guard' since they have already values
         if isUpdated {
             updateEpisode()
-            saveItem(record: record)
         } else {
             addItem(
                 episodeDate: episodeDate,
@@ -354,6 +353,10 @@ import CloudKit
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
+            if let error = returnedError {
+                print("Error saving record(Episode): \(error.localizedDescription)")
+                return
+            }
             if let record = returnedRecord {
                 DispatchQueue.main.async {
                    NotificationCenter.default.post(name: NSNotification.Name.init("existingEpisodeData"), object: EpisodeListModel(record: record))
