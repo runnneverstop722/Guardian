@@ -20,7 +20,7 @@ struct YourRecordsView: View {
     @State private var isShowingAllergensTutorialAlert = false
     @State private var selection = 0
     @State private var allergenCount: Int = 0
-
+    
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
@@ -53,12 +53,12 @@ struct YourRecordsView: View {
         LoadingView(isShowing: $isLoading) {
             ScrollView(.vertical) {
                 
-//MARK: - Diagnosis List View
+                //MARK: - Diagnosis List View
                 LazyVStack(spacing: 8.0) {
                     HStack {
                         Spacer()
                         ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-//                            Color(.orange)
+                            //                            Color(.orange)
                             Color("background")
                                 .cornerRadius(14)
                                 .frame(maxWidth: (screenWidth - 20))
@@ -70,17 +70,24 @@ struct YourRecordsView: View {
                                     VStack {
                                         HStack {
                                             VStack(alignment: .leading) {
+                                                Text("Diagnosis").font(.footnote).fontWeight(.light).shadow(radius: 6)
                                                 HStack {
-                                                    Text("Diagnosis").font(.footnote).fontWeight(.light).shadow(radius: 6)
+                                                    Button {
+                                                        isShowingDiagnosisTutorialAlert = true
+                                                    } label: {
+                                                        HStack {
+                                                            Text("診断記録").font(.title).bold()
+                                                            Symbols.question
+                                                        }.foregroundColor(.primary)
+                                                    }
                                                     Spacer()
                                                 }
-                                                Text("診断記録").font(.title).bold()
                                                 Label(
                                                     diagnosisModel.diagnosisInfo.count == 0 ? "0 / 0 件" : "\(selection + 1) / \(diagnosisModel.diagnosisInfo.count) 件", systemImage: "menucard")
-                                                    .font(.footnote)
-                                                    .fontWeight(.medium)
-                                                    .shadow(radius: 6)
-                                                    .bold()
+                                                .font(.footnote)
+                                                .fontWeight(.medium)
+                                                .shadow(radius: 6)
+                                                .bold()
                                                 Spacer()
                                             }
                                             .padding(.top)
@@ -97,20 +104,18 @@ struct YourRecordsView: View {
                                     
                                 }
                                 Spacer()
-                            }
-                            .padding(.bottom, 5)
+                            }.padding(.bottom, 5)
                             VStack {
                                 HStack {
                                     Spacer()
                                     Button {
                                         isAddingNewDiagnosis = true
                                     } label: {
-                                        HStack {
-                                            Symbols.addNew
-                                            Text("登録")
-                                        }.foregroundColor(.primary)
-                                    }
-                                    .background(
+                                        Symbols.addNew
+                                            .padding()
+                                            .font(.title3)
+                                            .foregroundColor(.primary)
+                                    }.background(
                                         NavigationLink(
                                             destination: DiagnosisView(profile: profile),
                                             isActive: $isAddingNewDiagnosis,
@@ -154,13 +159,6 @@ struct YourRecordsView: View {
                                             }
                                         }
                                     }
-                                    Button {
-                                        isShowingDiagnosisTutorialAlert = true
-                                    } label: {
-                                        Symbols.question
-                                            .padding()
-                                            .foregroundColor(.primary)
-                                    }
                                 }
                                 Spacer()
                             }
@@ -178,7 +176,7 @@ struct YourRecordsView: View {
                 
                 Spacer()
                 
-//MARK: - Allergen Grid Items View
+                //MARK: - Allergen Grid Items View
                 LazyVStack(spacing: 8.0) {
                     HStack {
                         Spacer()
@@ -193,7 +191,19 @@ struct YourRecordsView: View {
                                                     Text("Allergens").font(.footnote).fontWeight(.light).shadow(radius: 6)
                                                     Spacer()
                                                 }
-                                                Text("アレルゲン").font(.title).bold()
+                                                Button {
+                                                    isShowingAllergensTutorialAlert = true
+                                                } label: {
+                                                    HStack {
+                                                        Text("アレルゲン").font(.title).bold()
+                                                        Symbols.question
+                                                            
+                                                    }.foregroundColor(.primary)
+                                                }.alert(isPresented: $isShowingAllergensTutorialAlert) {
+                                                    Alert(title: Text("アレルゲンのリストを編集するには、"),
+                                                          message: Text("プロフィール設定画面にてアレルゲンの設定を変更してください。"),
+                                                          dismissButton: .default(Text("OK")))
+                                                }
                                                 Label("\(allergenCount) 件", systemImage: "allergens")
                                                     .font(.footnote)
                                                     .fontWeight(.medium)
@@ -221,33 +231,14 @@ struct YourRecordsView: View {
                                     }
                                 }
                                 Spacer()
-                            }
-                            .padding(.bottom, 20)
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        isShowingAllergensTutorialAlert = true
-                                    } label: {
-                                        Symbols.question
-                                            .padding()
-                                            .foregroundColor(.primary)
-                                    }
-                                }
-                                Spacer()
-                            }
-                            .alert(isPresented: $isShowingAllergensTutorialAlert) {
-                                Alert(title: Text("アレルゲンのリストを編集するには、"),
-                                      message: Text("プロフィール設定画面にてアレルゲンの設定を変更してください。"),
-                                      dismissButton: .default(Text("OK")))
-                            }
+                            }.padding(.bottom, 20)
                         }
                         Spacer()
                     }
                 }
                 .background(
                     Color("background")
-//                    Color(.orange)
+                    //                    Color(.orange)
                         .cornerRadius(14)
                         .frame(maxWidth: (screenWidth - 20))
                         .opacity(0.2)
@@ -318,7 +309,7 @@ struct Card: View {
         if let item = item {
             ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
                 VStack {
-//                    Spacer()
+                    //                    Spacer()
                     VStack(alignment: .leading, spacing: 8.0) {
                         HStack {
                             Text(item.headline)
