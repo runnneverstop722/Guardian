@@ -220,9 +220,9 @@ struct MedicalTestView: View {
     func saveData(completion: @escaping ((SaveAlert) -> Void)) {
         let dispatchGroup = DispatchGroup()
         updateData(dispatchGroup: dispatchGroup)
-        var newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
-        var newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
-        var neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
+        let newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
+        let newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
+        let neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
         
         for var bloodTest in newBloodTests {
             let myRecord = CKRecord(recordType: "BloodTest")

@@ -318,7 +318,7 @@ import CloudKit
         }
     }
     
-    func deleteRecord(record: CKRecord) {
+    func deleteRecord(record: CKRecord, completion: ((Bool) -> Void)? = nil) {
         if record.recordType == "EpisodeInfo" {
             allergen["totalNumberOfEpisodes"] = max(Int(truncating: allergen["totalNumberOfEpisodes"] as! NSNumber) - 1, 0)
             CKContainer.default().privateCloudDatabase.modifyRecords(saving: [allergen], deleting: []) { result in
@@ -333,6 +333,7 @@ import CloudKit
                     NotificationCenter.default.post(name: NSNotification.Name.init("existingEpisodeData"), object: recordID)
                 }
             }
+            completion?(error == nil)
         }
     }
     
@@ -397,12 +398,9 @@ import CloudKit
         }
         queryOperation.queryCompletionBlock = { (returnedCursor, returnedError) in
             print("RETURNED EpisodeInfo queryResultBlock")
-            if let completion = complete {
-                DispatchQueue.main.async {
-                    completion()
-                }
+            DispatchQueue.main.async {
+                complete?()
             }
-            complete?()
         }
         
         addOperation(operation: queryOperation)

@@ -105,11 +105,10 @@ struct MedicalTestAndEpisodeView: View {
                     self.medicalTest.bloodTest = self.medicalTest.bloodTest.sorted(by: { item1, item2 in
                         return item1.bloodTestDate.compare(item2.bloodTestDate) == .orderedDescending
                     })
-                    dispatchWork.leave()
                 case .failure(let error):
                     print("Error fetching Blood Test: \(error.localizedDescription)")
-                    dispatchWork.leave()
                 }
+                dispatchWork.leave()
             }
         }
 
@@ -139,11 +138,10 @@ struct MedicalTestAndEpisodeView: View {
                     self.medicalTest.skinTest = self.medicalTest.skinTest.sorted(by: { item1, item2 in
                         return item1.skinTestDate.compare(item2.skinTestDate) == .orderedDescending
                     })
-                    dispatchWork.leave()
                 case .failure(let error):
                     print("Error fetching Skin Test: \(error.localizedDescription)")
-                    dispatchWork.leave()
                 }
+                dispatchWork.leave()
             }
         }
         addOperation(operation: skinTestQueryOperation)
@@ -173,11 +171,10 @@ struct MedicalTestAndEpisodeView: View {
                     self.medicalTest.oralFoodChallenge = self.medicalTest.oralFoodChallenge.sorted(by: { item1, item2 in
                         return item1.oralFoodChallengeDate.compare(item2.oralFoodChallengeDate) == .orderedDescending
                     })
-                    dispatchWork.leave()
                 case .failure(let error):
                     print("Error fetching OFC: \(error.localizedDescription)")
-                    dispatchWork.leave()
                 }
+                dispatchWork.leave()
             }
         }
         addOperation(operation: OFCQueryOperation)
