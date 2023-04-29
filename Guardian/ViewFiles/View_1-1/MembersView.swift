@@ -9,7 +9,6 @@ struct MembersView: View {
     @State private var isMainUserSettingPresented = false
     @State private var isUpdate = false
     @State private var isFirstProfile = false
-    
     @State private var showDeleteAlert = false
     @State private var editItem: MemberListModel?
     @State private var deleteItem: MemberListModel?
@@ -27,46 +26,54 @@ struct MembersView: View {
     var body: some View {
         if profileModel.profileInfo.isEmpty {
             ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-                LinearGradient(colors: [.white, .yellow], startPoint: .top, endPoint: .bottom)
-                VStack(alignment: .center) {
+//                LinearGradient(colors: [.white, .yellow], startPoint: .top, endPoint: .bottom)
+                VStack(alignment: .center, spacing: 50) {
                     Spacer()
-                    VStack(spacing: 20.0) {
+                    VStack(spacing: 20) {
                         Image("profile")
                             .resizable()
                             .scaledToFit()
-                        Button(action: {
-                            accountStatusAlertShown = true
-                            isFirstProfile = true
-                            profileModel.isAddMemberPresented = true
-                        }) {
-                            HStack {
-                                Image(systemName: "person.crop.circle")
-                                Text("プロフィールを作成")
-                            }
-                        }
-                        .buttonStyle(GradientButtonStyle())
-                        .sheet(isPresented: $profileModel.isAddMemberPresented) {
-                        ProfileView(isFirstProfile: $isFirstProfile)
-                        }
+                        Text("プロフィールを作成しましょう。")
+                            .font(.title3)
                     }
-                    Spacer()
-                    Text("プロフィールを作成したら、")
-                        .font(.title3)
-                    Spacer()
+                    
                     VStack(spacing: 20) {
-                        Text("☝️医師から食物アレルギーと診断された時")
-                        Text("☝️医療検査時(血液・皮膚・経口負荷試験)")
-                        Text("☝️日常で食物アレルギーが発症した時")
-                    }
-                    .font(.title3)
-                    .bold()
-                    Spacer()
-                    VStack(spacing: 20) {
-                        Text("あなたのiCloud☁️に記録して、")
+                        Text("プロフィールを作成したら、")
+                        HStack {
+                            Image(systemName: "hand.point.up.fill")
+                                .font(.title2)
+                            Text("医師から食物アレルギーと診断された時")
+                        }
+                        HStack {
+                            Image(systemName: "hand.point.up.fill")
+                                .font(.title2)
+                            Text("医療検査を受けた時(血液・皮膚・経口負荷試験)")
+                        }
+                        HStack {
+                            Image(systemName: "hand.point.up.fill")
+                                .font(.title2)
+                            Text("日常で食物アレルギーが発症した時")
+                        }
+                        Text("あなたのiCloudに記録して、")
                         Text("いつどこでも共有できるようになります。")
-                        Text("サッと記録してサッと共有しよう。")
                     }
-                    .font(.title3)
+                    .font(.headline)
+                    .fontWeight(.regular)
+                    
+                    Button(action: {
+                        accountStatusAlertShown = true
+                        isFirstProfile = true
+                        profileModel.isAddMemberPresented = true
+                    }) {
+                        HStack {
+                            Image(systemName: "person.crop.circle")
+                            Text("プロフィールを作成")
+                        }
+                    }
+                    .buttonStyle(GradientButtonStyle())
+                    .sheet(isPresented: $profileModel.isAddMemberPresented) {
+                        ProfileView(isFirstProfile: $isFirstProfile)
+                    }
                     Spacer()
                 }.padding(.horizontal)
             }
