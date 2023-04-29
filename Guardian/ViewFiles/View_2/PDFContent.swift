@@ -68,7 +68,8 @@ class PDFContent {
                     ("アレルゲン: ", (diagnosis.allergens?.joined(separator: ", ") ?? "")),
                     ("医療機関名: ", diagnosis.diagnosedHospital ?? ""),
                     ("担当医: ", diagnosis.diagnosedAllergist ?? ""),
-                    ("担当医コメント: ", diagnosis.diagnosedAllergistComment ?? "")
+                    ("担当医コメント: ", diagnosis.diagnosedAllergistComment ?? ""),
+                    ("添付写真: ", " ")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -87,11 +88,49 @@ class PDFContent {
                     
                     textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                 }
+                textTop += 10
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                let diagnosisPhoto = diagnosis.diagnosisPhoto ?? []
+                if !diagnosisPhoto.isEmpty {
+                    let diagnosisPhotos = diagnosisPhoto.chunk(size: 3)
+                    for photos in diagnosisPhotos {
+                        // 165
+                        var imageY = textTop
+                        textTop = renderer.checkContext(cursor: imageY + 165, pdfSize: pageRect.size)
+                        if textTop != imageY + 165 {
+                            imageY = textTop
+                        }
+                        if textTop == 40 {
+                            textTop += 165
+                        }
+                        for (index, url) in photos.enumerated() {
+                            let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                            let filePath = doc.appendingPathComponent(url)
+                            if let image = UIImage(contentsOfFile: filePath.path) {
+                                let resize = image.scaleImageToSize(newSize: CGSize(width: 165, height: 165))
+                                let logoRect = CGRect(x: 20.0 + CGFloat(165*index) + CGFloat(10*index), y: imageY, width: 165, height: 165)
+                                resize.draw(in: logoRect)
+                            }
+                        }
+                        textTop += 10
+                    }
+                }
             }
+        } else {
+            let noDiagnosisMessage = "診断記録がありません。"
+            let noDiagnosisFont = UIFont.systemFont(ofSize: 12.0)
+            let position = CGPoint(x: 20, y: textTop)
+            textTop = drawText(message: noDiagnosisMessage, font: noDiagnosisFont, position: position, maxWidth: pageRect.width - 40)
         }
+        textTop += 100
+        let areaGuidanceMessage = "ここより以下はアレルゲン別の 「医療検査記録」 及び 「発症記録」 です。"
+        let areaGuidanceMessageFont = UIFont.systemFont(ofSize: 12.0)
+        let position = CGPoint(x: 20, y: textTop)
+        textTop = drawText(message: areaGuidanceMessage, font: areaGuidanceMessageFont, position: position, maxWidth: pageRect.width - 40, alignment: .left, textColor: .gray)
+        
         // Draw the divider
-        textTop += 10
-        context.setLineWidth(1)
+        context.setLineWidth(2)
+        context.setStrokeColor(UIColor.gray.cgColor)
         context.move(to: CGPoint(x: 20, y: textTop))
         context.addLine(to: CGPoint(x: pageRect.width - 20, y: textTop))
         context.strokePath()
@@ -114,7 +153,7 @@ class PDFContent {
             ]
             let attributedAllergenName = NSAttributedString(string: allergenName, attributes: allergenNameAttributes)
             let allergenNameStringSize = attributedAllergenName.getSize(withPreferredWidth: pageRect.width - 40)
-            let allergenNameStringRect = CGRect(x: offsetX, y: textTop, width: allergenNameStringSize.width, height: allergenNameStringSize.height)
+            let allergenNameStringRect = CGRect(x: offsetX, y: textTop + 10, width: allergenNameStringSize.width, height: allergenNameStringSize.height)
             attributedAllergenName.draw(in: allergenNameStringRect)
             textTop += 10
             textTop += offsetY
@@ -123,6 +162,9 @@ class PDFContent {
             // Draw medical data
             let allergenID = allergen.recordID!
             let bloodTests = PersistenceController.shared.fetchBloodTest(allergenID: allergenID)
+            if bloodTests.isEmpty {
+                textTop = drawText(message: "血液検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+            }
             for (index, bloodTest) in bloodTests.enumerated() {
                 let items = [
                     ("血液検査記録: ", "\(index + 1)"),
@@ -149,6 +191,9 @@ class PDFContent {
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let skinTests = PersistenceController.shared.fetchSkinTest(allergenID: allergenID)
+            if skinTests.isEmpty {
+                textTop = drawText(message: "皮膚プリック検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+            }
             for (index, skinTest) in skinTests.enumerated() {
                 let items = [
                     ("皮膚プリック検査記録: ", "\(index + 1)"),
@@ -175,6 +220,9 @@ class PDFContent {
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let oralFoodChallenges = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID)
+            if oralFoodChallenges.isEmpty {
+                textTop = drawText(message: "食物経口負荷試験記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+            }
             for (index, oralFoodChallenge) in oralFoodChallenges.enumerated() {
                 let items = [
                     ("食物経口負荷試験記録: ", "\(index + 1)"),
@@ -269,14 +317,30 @@ class PDFContent {
                         }
                     }
                 }
+            } else {
+                let noEpisodeMessage = "発症記録がありません。"
+                let noEpisodeFont = UIFont.systemFont(ofSize: 12.0)
+                let position = CGPoint(x: 20, y: textTop)
+                textTop = drawText(message: noEpisodeMessage, font: noEpisodeFont, position: position, maxWidth: pageRect.width - 40)
             }
-            // Draw the divider
-            context.setLineWidth(1)
-            context.move(to: CGPoint(x: 20, y: textTop))
-            context.addLine(to: CGPoint(x: pageRect.width - 20, y: textTop))
-            context.strokePath()
-            textTop += 10
         }
+    }
+    
+    func drawText(message: String, font:UIFont, position: CGPoint, maxWidth: CGFloat, alignment: NSTextAlignment = .left, textColor: UIColor = .black) -> CGFloat {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = alignment
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: textColor
+        ]
+        let attributedMessage = NSAttributedString(string: message, attributes: attributes)
+        let messageSize = attributedMessage.getSize(withPreferredWidth: maxWidth)
+        let messageRect = CGRect(x: position.x, y: position.y, width: maxWidth, height: messageSize.height)
+        attributedMessage.draw(in: messageRect)
+        
+        return position.y + messageSize.height + 10
     }
     
     private func fetchDiagnosisData(for profile: ProfileInfoEntity) -> [DiagnosisEntity] {

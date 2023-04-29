@@ -36,12 +36,12 @@ class PDFExport {
         
         let data = renderer.pdfData { (context) in
             context.beginPage()
-            if let logoImage = UIImage(named: "Logo") {
-                let resizeImage = logoImage.scaleImageToSize(newSize: CGSize(width: 200, height: 100))
+            if let logoImage = UIImage(named: "LogoForPDF") {
+//                let resizeImage = logoImage.scaleImageToSize(newSize: CGSize(width: 200, height: 100))
                 let logoRect = CGRect(x: (pageRect.width/2.0) - 100, y: topPadding, width: 200, height: 100)
-                resizeImage.draw(in: logoRect)
+//                resizeImage.draw(in: logoRect)
+                logoImage.draw(in: logoRect)
             }
-            
             let pdfContent = PDFContent(profile: profile, viewContext: viewContext)
             let logoBottomYPosition: CGFloat = topPadding + 120
             pdfContent.drawPageContent(in: context, pageRect: pageRect, textTop: logoBottomYPosition)
