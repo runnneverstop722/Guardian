@@ -8,7 +8,7 @@ struct MembersView: View {
     @StateObject var profileModel: ProfileModel
     @State private var isMainUserSettingPresented = false
     @State private var isUpdate = false
-    @State private var isFirstProfile = false
+    @State private var isFirstProfile = true
     @State private var showDeleteAlert = false
     @State private var editItem: MemberListModel?
     @State private var deleteItem: MemberListModel?
@@ -19,165 +19,161 @@ struct MembersView: View {
     init() {
         _profileModel = StateObject(wrappedValue: ProfileModel())
     }
-    init(record: CKRecord) {
-        _profileModel = StateObject(wrappedValue: ProfileModel(profile: record))
-    }
     
     var body: some View {
-        if profileModel.profileInfo.isEmpty {
-            ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-//                LinearGradient(colors: [.white, .yellow], startPoint: .top, endPoint: .bottom)
-                VStack(alignment: .center, spacing: 50) {
-                    Spacer()
-                    VStack(spacing: 20) {
-                        Image("profile")
-                            .resizable()
-                            .scaledToFit()
-                        Text("プロフィールを作成しましょう。")
-                            .font(.title3)
-                    }
-                    
-                    VStack(spacing: 20) {
-                        Text("プロフィールを作成したら、")
-                        HStack {
-                            Image(systemName: "hand.point.up.fill")
-                                .font(.title2)
-                            Text("医師から食物アレルギーと診断された時")
+        ZStack {
+            if isFirstProfile {
+                ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
+                    VStack(alignment: .center, spacing: 50) {
+                        Spacer()
+                        VStack(spacing: 20) {
+                            Image("profile")
+                                .resizable()
+                                .scaledToFit()
+                            Text("プロフィールを作成しましょう。")
+                                .font(.title3)
                         }
-                        HStack {
-                            Image(systemName: "hand.point.up.fill")
-                                .font(.title2)
-                            Text("医療検査を受けた時(血液・皮膚・経口負荷試験)")
+                        
+                        VStack(spacing: 20) {
+                            Text("プロフィールを作成したら、")
+                            HStack {
+                                Image(systemName: "hand.point.up.fill")
+                                    .font(.title2)
+                                Text("医師から食物アレルギーと診断された時")
+                            }
+                            HStack {
+                                Image(systemName: "hand.point.up.fill")
+                                    .font(.title2)
+                                Text("医療検査を受けた時(血液・皮膚・経口負荷試験)")
+                            }
+                            HStack {
+                                Image(systemName: "hand.point.up.fill")
+                                    .font(.title2)
+                                Text("日常で食物アレルギーが発症した時")
+                            }
+                            Text("あなたのiCloudに記録して、")
+                            Text("いつどこでも共有できるようになります。")
                         }
-                        HStack {
-                            Image(systemName: "hand.point.up.fill")
-                                .font(.title2)
-                            Text("日常で食物アレルギーが発症した時")
-                        }
-                        Text("あなたのiCloudに記録して、")
-                        Text("いつどこでも共有できるようになります。")
-                    }
-                    .font(.headline)
-                    .fontWeight(.regular)
-                    
-                    Button(action: {
-                        accountStatusAlertShown = true
-                        isFirstProfile = true
-                        profileModel.isAddMemberPresented = true
-                    }) {
-                        HStack {
-                            Image(systemName: "person.crop.circle")
-                            Text("プロフィールを作成")
-                        }
-                    }
-                    .buttonStyle(GradientButtonStyle())
-                    .sheet(isPresented: $profileModel.isAddMemberPresented) {
-                        ProfileView(isFirstProfile: $isFirstProfile)
-                    }
-                    Spacer()
-                }.padding(.horizontal)
-            }
-        } else {
-            List {
-                ForEach(profileModel.profileInfo, id: \.self) { item in
-                    NavigationLink(value: item) {
-                        MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
-                    }
-                    .swipeActions(edge: .leading) {
-                        Button(role: .none) {
-                            editItem = item
-                        } label: {
-                            Label("Edit", systemImage: "slider.horizontal.3")
-                        } .tint(.indigo)
-                    }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            deleteItem = item
-                            showDeleteAlert = true
-                        } label: {
-                            Label("Delete", systemImage: "trash.fill")
-                        }
-                    }
-                }
-                .onMove(perform: move(fromOffsets:toOffset:))
-                .onDelete { indexSet in
-                    indexSet.forEach { index in
-                        deleteItem = profileModel.profileInfo[index]
-                        showDeleteAlert = true
-                    }
-                }
-            }
-            .alert(item: $deleteItem) { item in
-                Alert(
-                    title: Text("このメンバーを削除しますか？"),
-                    message: Text(""),
-                    primaryButton: .destructive(Text("削除")) {
-                        profileModel.deleteItemsFromCloud(record: item.record) { _ in
-                            // Delete was successful, hide the alert and remove the item from the list
-                            deleteItem = nil
-                            if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
-                                withAnimation {
-                                    profileModel.profileInfo.remove(at: index)
-                                }
+                        .font(.headline)
+                        .fontWeight(.regular)
+                        
+                        Button(action: {
+                            accountStatusAlertShown = true
+                            profileModel.isAddMemberPresented = true
+                        }) {
+                            HStack {
+                                Image(systemName: "person.crop.circle")
+                                Text("プロフィールを作成")
                             }
                         }
-                    },
-                    secondaryButton: .cancel(Text("キャンセル")) {
-                        showDeleteAlert = false
-                    }
-                )
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("家族一覧")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        if profileModel.accountStatus != .available {
-                            accountStatusAlertShown = true
-                        } else {
-                            profileModel.isAddMemberPresented = true
+                        .buttonStyle(GradientButtonStyle())
+                        .sheet(isPresented: $profileModel.isAddMemberPresented) {
+                            ProfileView()
                         }
-                    }) {
-                        HStack {
-                            Symbols.newProfile
-                                .font(.title2)
+                        Spacer()
+                    }.padding(.horizontal)
+                }
+            } else {
+                List {
+                    ForEach(profileModel.profileInfo, id: \.self) { item in
+                        NavigationLink(value: item) {
+                            MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
                         }
-                        .foregroundColor(.blue)
+                        .swipeActions(edge: .leading) {
+                            Button(role: .none) {
+                                editItem = item
+                            } label: {
+                                Label("Edit", systemImage: "slider.horizontal.3")
+                            } .tint(.indigo)
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                deleteItem = item
+                                showDeleteAlert = true
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
+                            }
+                        }
                     }
                 }
-            }
-            .navigationDestination(for: MemberListModel.self) { item in
-                YourRecordsView(profile: item.record)
-            }
-            .sheet(isPresented: $profileModel.isAddMemberPresented) {
-                ProfileView(isFirstProfile: $isFirstProfile)
-            }
-            .sheet(item: $editItem) { item in
-                ProfileView(profile: item.record, isFirstProfile: $isFirstProfile)
-            }
-            .onReceive(onUpdateProfile) { data in
-                if let data = data.object as? CKRecord.ID {
-                    profileModel.profileInfo.removeAll { $0.record.recordID == data
-                    }
-                } else if let data = data.object as? MemberListModel {
-                    if let row = profileModel.profileInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
-                        profileModel.profileInfo[row] = data
-                    } else {
-                        profileModel.profileInfo.append(data)
+                .alert(item: $deleteItem) { item in
+                    Alert(
+                        title: Text("このメンバーを削除しますか？"),
+                        message: Text(""),
+                        primaryButton: .destructive(Text("削除")) {
+                            profileModel.deleteItemsFromCloud(record: item.record) { _ in
+                                // Delete was successful, hide the alert and remove the item from the list
+                                deleteItem = nil
+                                withAnimation {
+                                if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
+                                        profileModel.profileInfo.remove(at: index)
+                                    }
+                                }
+                            }
+                        },
+                        secondaryButton: .cancel(Text("キャンセル")) {
+                            showDeleteAlert = false
+                        }
+                    )
+                }
+                .listStyle(.insetGrouped)
+                .navigationTitle("家族一覧")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            if profileModel.accountStatus != .available {
+                                accountStatusAlertShown = true
+                            } else {
+                                profileModel.isAddMemberPresented = true
+                            }
+                        }) {
+                            HStack {
+                                Symbols.newProfile
+                                    .font(.title2)
+                            }
+                            .foregroundColor(.blue)
+                        }
                     }
                 }
+                .navigationDestination(for: MemberListModel.self) { item in
+                    YourRecordsView(profile: item.record)
+                }
+                .sheet(isPresented: $profileModel.isAddMemberPresented) {
+                    ProfileView()
+                }
+                .sheet(item: $editItem) { item in
+                    ProfileView(profile: item.record)
+                }
+                .alert("iCloudアカウントがログインされていません", isPresented: $accountStatusAlertShown, actions: {
+                    Button("キャンセル", role: .cancel, action: {})
+                }, message: {
+                    Text("ログインしてください")
+                })
             }
-            .alert("iCloudアカウントがログインされていません", isPresented: $accountStatusAlertShown, actions: {
-                Button("キャンセル", role: .cancel, action: {})
-            }, message: {
-                Text("ログインしてください")
-            })
-            .task {
-                try? await profileModel.getiCloudStatus()
-                if profileModel.accountStatus != .available {
-                    accountStatusAlertShown = true
+        }
+        .onReceive(onUpdateProfile) { data in
+            if let data = data.object as? CKRecord.ID {
+                profileModel.profileInfo.removeAll { $0.record.recordID == data
+                }
+            } else if let data = data.object as? MemberListModel {
+                if let row = profileModel.profileInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
+                    profileModel.profileInfo[row] = data
+                } else {
+                    profileModel.profileInfo.append(data)
                 }
             }
+        }
+        .task {
+            try? await profileModel.getiCloudStatus()
+            if profileModel.accountStatus != .available {
+                accountStatusAlertShown = true
+            }
+        }
+        .onChange(of: profileModel.profileInfo.count) { newValue in
+            isFirstProfile = newValue == 0
+        }
+        .onAppear() {
+            isFirstProfile = profileModel.profileInfo.isEmpty
         }
         
     }

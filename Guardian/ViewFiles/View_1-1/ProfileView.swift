@@ -20,7 +20,6 @@ enum FormField2 {
 struct ProfileView: View {
     
     @StateObject var profileModel: ProfileModel
-    @Binding var isFirstProfile: Bool
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
     @State private var isUpdate = false
@@ -36,18 +35,16 @@ struct ProfileView: View {
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "食物たんぱく誘発胃腸症（消化管アレルギー）"]
     private let allergenOptions = ["えび", "かに", "小麦", "そば", "卵", "乳", "落花生(ピーナッツ)", "アーモンド", "あわび", "いか", "いくら", "オレンジ", "カシューナッツ", "キウイフルーツ", "牛肉", "くるみ", "ごま", "さけ", "さば", "大豆", "鶏肉", "バナナ", "豚肉", "まつたけ", "もも", "やまいも", "りんご", "ゼラチン"]
     
-    init(isFirstProfile: Binding<Bool>) {
+    init() {
         _profileModel = StateObject(wrappedValue: ProfileModel())
-        _isFirstProfile = isFirstProfile
     }
     
-    init(profile: CKRecord, isFirstProfile: Binding<Bool>) {
+    init(profile: CKRecord) {
         self.profile = profile
         _isUpdate = State(initialValue: true)
         _profileModel = StateObject(wrappedValue: ProfileModel(profile: profile))
         _isLastNameEmpty = State(initialValue: profile["lastName"] == nil || (profile["lastName"] as? String)?.isEmpty == true)
         _isFirstNameEmpty = State(initialValue: profile["firstName"] == nil || (profile["firstName"] as? String)?.isEmpty == true)
-        _isFirstProfile = isFirstProfile
     }
     
     private var formValidation: FormValidationProfile {
@@ -194,12 +191,8 @@ struct ProfileView: View {
                             return Alert(title: Text("データが保存されました。"), // Data has been successfully saved
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる"), action: { // Close
-                                if isFirstProfile {
-                                    isFirstProfile = false
-                                    NotificationCenter.default.post(name: Notification.Name("updateProfile"), object: nil)
-                                    presentationMode.wrappedValue.dismiss()
-                                }
-                            }))
+                                       presentationMode.wrappedValue.dismiss()
+                                   }))
                         case .emptyValidation:
                             return Alert(title: Text("入力されてない項目があります。"),
                                          message: Text(formValidation.getEmptyFieldsMessage()),

@@ -12,7 +12,6 @@ struct YourRecordsView: View {
     @StateObject var diagnosisModel: DiagnosisModel
     @StateObject var episodeModel: EpisodeModel
     @State private var isShowingProfileView = false
-    @State private var isFirstProfile = false
     @State private var screenWidth = UIScreen.main.bounds.size.width
     @State private var isLoading = true
     @State private var isAddingNewDiagnosis = false
@@ -261,7 +260,7 @@ struct YourRecordsView: View {
                 }
             }
             .sheet(isPresented: $isShowingProfileView) {
-                ProfileView(profile: profile, isFirstProfile: $isFirstProfile)
+                ProfileView(profile: profile)
             }
         }
     }

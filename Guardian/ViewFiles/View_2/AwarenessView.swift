@@ -191,7 +191,7 @@ struct AwarenessView: View {
                         Image(systemName: "plus")
                     })
                     .onAppear() {
-                        DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {
                             if !didLoad {
                                 didLoad = true
                                 selectedProfile = profiles.first
