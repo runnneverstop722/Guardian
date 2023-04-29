@@ -27,7 +27,6 @@ class CustomUITextField: UITextField {
         let dotButton = UIBarButtonItem(title: "小数点(.)", style: .bordered, target: self, action: #selector(dotButtonTapped))
         let doneButton = UIBarButtonItem(title: "完了", style: .done, target: self, action: #selector(doneButtonTapped))
         toolbar.setItems([dotButton, flexSpace, flexSpace, doneButton], animated: true)
-
         self.inputAccessoryView = toolbar
     }
 

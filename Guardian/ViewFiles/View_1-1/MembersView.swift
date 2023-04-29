@@ -8,6 +8,8 @@ struct MembersView: View {
     @StateObject var profileModel: ProfileModel
     @State private var isMainUserSettingPresented = false
     @State private var isUpdate = false
+    @State private var isFirstProfile = false
+    
     @State private var showDeleteAlert = false
     @State private var editItem: MemberListModel?
     @State private var deleteItem: MemberListModel?
@@ -23,106 +25,154 @@ struct MembersView: View {
     }
     
     var body: some View {
-        List {
-            ForEach(profileModel.profileInfo, id: \.self) { item in
-                NavigationLink(value: item) {
-                    MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
-                }
-                .swipeActions(edge: .leading) {
-                    Button(role: .none) {
-                        editItem = item
-                    } label: {
-                        Label("Edit", systemImage: "slider.horizontal.3")
-                    } .tint(.indigo)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        deleteItem = item
-                        showDeleteAlert = true
-                    } label: {
-                        Label("Delete", systemImage: "trash.fill")
-                    }
-                }
-            }
-            .onMove(perform: move(fromOffsets:toOffset:))
-            .onDelete { indexSet in
-                indexSet.forEach { index in
-                    deleteItem = profileModel.profileInfo[index]
-                    showDeleteAlert = true
-                }
-            }
-        }
-        .alert(item: $deleteItem) { item in
-            Alert(
-                title: Text("このメンバーを削除しますか？"),
-                message: Text(""),
-                primaryButton: .destructive(Text("削除")) {
-                    profileModel.deleteItemsFromCloud(record: item.record) { _ in
-                        // Delete was successful, hide the alert and remove the item from the list
-                        deleteItem = nil
-                        if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
-                            withAnimation {
-                                profileModel.profileInfo.remove(at: index)
+        if profileModel.profileInfo.isEmpty {
+            ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
+                LinearGradient(colors: [.white, .yellow], startPoint: .top, endPoint: .bottom)
+                VStack(alignment: .center) {
+                    Spacer()
+                    VStack(spacing: 20.0) {
+                        Image("profile")
+                            .resizable()
+                            .scaledToFit()
+                        Button(action: {
+                            accountStatusAlertShown = true
+                            isFirstProfile = true
+                            profileModel.isAddMemberPresented = true
+                        }) {
+                            HStack {
+                                Image(systemName: "person.crop.circle")
+                                Text("プロフィールを作成")
                             }
                         }
+                        .buttonStyle(GradientButtonStyle())
+                        .sheet(isPresented: $profileModel.isAddMemberPresented) {
+                        ProfileView(isFirstProfile: $isFirstProfile)
+                        }
                     }
-                },
-                secondaryButton: .cancel(Text("キャンセル")) {
-                    showDeleteAlert = false
+                    Spacer()
+                    Text("プロフィールを作成したら、")
+                        .font(.title3)
+                    Spacer()
+                    VStack(spacing: 20) {
+                        Text("☝️医師から食物アレルギーと診断された時")
+                        Text("☝️医療検査時(血液・皮膚・経口負荷試験)")
+                        Text("☝️日常で食物アレルギーが発症した時")
+                    }
+                    .font(.title3)
+                    .bold()
+                    Spacer()
+                    VStack(spacing: 20) {
+                        Text("あなたのiCloud☁️に記録して、")
+                        Text("いつどこでも共有できるようになります。")
+                        Text("サッと記録してサッと共有しよう。")
+                    }
+                    .font(.title3)
+                    Spacer()
+                }.padding(.horizontal)
+            }
+        } else {
+            List {
+                ForEach(profileModel.profileInfo, id: \.self) { item in
+                    NavigationLink(value: item) {
+                        MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
+                    }
+                    .swipeActions(edge: .leading) {
+                        Button(role: .none) {
+                            editItem = item
+                        } label: {
+                            Label("Edit", systemImage: "slider.horizontal.3")
+                        } .tint(.indigo)
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            deleteItem = item
+                            showDeleteAlert = true
+                        } label: {
+                            Label("Delete", systemImage: "trash.fill")
+                        }
+                    }
                 }
-            )
-        }
-        .listStyle(.insetGrouped)
-        .navigationTitle("管理メンバー")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    if profileModel.accountStatus != .available {
-                        accountStatusAlertShown = true
+                .onMove(perform: move(fromOffsets:toOffset:))
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        deleteItem = profileModel.profileInfo[index]
+                        showDeleteAlert = true
+                    }
+                }
+            }
+            .alert(item: $deleteItem) { item in
+                Alert(
+                    title: Text("このメンバーを削除しますか？"),
+                    message: Text(""),
+                    primaryButton: .destructive(Text("削除")) {
+                        profileModel.deleteItemsFromCloud(record: item.record) { _ in
+                            // Delete was successful, hide the alert and remove the item from the list
+                            deleteItem = nil
+                            if let index = profileModel.profileInfo.firstIndex(where: { $0.record.recordID == item.record.recordID }) {
+                                withAnimation {
+                                    profileModel.profileInfo.remove(at: index)
+                                }
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel(Text("キャンセル")) {
+                        showDeleteAlert = false
+                    }
+                )
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("家族一覧")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        if profileModel.accountStatus != .available {
+                            accountStatusAlertShown = true
+                        } else {
+                            profileModel.isAddMemberPresented = true
+                        }
+                    }) {
+                        HStack {
+                            Symbols.newProfile
+                                .font(.title2)
+                        }
+                        .foregroundColor(.blue)
+                    }
+                }
+            }
+            .navigationDestination(for: MemberListModel.self) { item in
+                YourRecordsView(profile: item.record)
+            }
+            .sheet(isPresented: $profileModel.isAddMemberPresented) {
+                ProfileView(isFirstProfile: $isFirstProfile)
+            }
+            .sheet(item: $editItem) { item in
+                ProfileView(profile: item.record, isFirstProfile: $isFirstProfile)
+            }
+            .onReceive(onUpdateProfile) { data in
+                if let data = data.object as? CKRecord.ID {
+                    profileModel.profileInfo.removeAll { $0.record.recordID == data
+                    }
+                } else if let data = data.object as? MemberListModel {
+                    if let row = profileModel.profileInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
+                        profileModel.profileInfo[row] = data
                     } else {
-                        profileModel.isAddMemberPresented = true
+                        profileModel.profileInfo.append(data)
                     }
-                }) {
-                    HStack {
-                        Symbols.newProfile
-                            .font(.title2)
-                    }
-                    .foregroundColor(.blue)
+                }
+            }
+            .alert("iCloudアカウントがログインされていません", isPresented: $accountStatusAlertShown, actions: {
+                Button("キャンセル", role: .cancel, action: {})
+            }, message: {
+                Text("ログインしてください")
+            })
+            .task {
+                try? await profileModel.getiCloudStatus()
+                if profileModel.accountStatus != .available {
+                    accountStatusAlertShown = true
                 }
             }
         }
-        .navigationDestination(for: MemberListModel.self) { item in
-            YourRecordsView(profile: item.record)
-        }
-        .sheet(isPresented: $profileModel.isAddMemberPresented) {
-            ProfileView()
-        }
-        .sheet(item: $editItem) { item in
-            ProfileView(profile: item.record)
-        }
-        .onReceive(onUpdateProfile) { data in
-            if let data = data.object as? CKRecord.ID {
-                profileModel.profileInfo.removeAll { $0.record.recordID == data
-                }
-            } else if let data = data.object as? MemberListModel {
-                if let row = profileModel.profileInfo.firstIndex(where: {$0.record.recordID == data.record.recordID}) {
-                    profileModel.profileInfo[row] = data
-                } else {
-                    profileModel.profileInfo.append(data)
-                }
-            }
-        }
-        .alert("iCloud Account Disabled", isPresented: $accountStatusAlertShown, actions: {
-            Button("Cancel", role: .cancel, action: {})
-        }, message: {
-            Text("Please Login!")
-        })
-        .task {
-            try? await profileModel.getiCLoundStatus()
-            if profileModel.accountStatus != .available {
-                accountStatusAlertShown = true
-            }
-        }
+        
     }
 }
 

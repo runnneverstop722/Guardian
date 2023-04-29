@@ -79,7 +79,7 @@ import CoreData
         fetchAllergenFromLocalCache(recordID: record!.recordID.recordName)
         fetchAllergens(recordID: record!.recordID)
     }
-    func getiCLoundStatus() async throws  {
+    func getiCloudStatus() async throws  {
         accountStatus = try await CKContainer.default().accountStatus()
     }
     func fetchAllergenFromLocalCache(recordID: String) {

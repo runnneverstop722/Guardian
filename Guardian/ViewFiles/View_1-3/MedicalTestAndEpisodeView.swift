@@ -255,14 +255,13 @@ struct MedicalTestAndEpisodeView: View {
                             HStack {
                                 Spacer()
                                 Image(systemName: "book.fill")
-                                Text("詳細") // Confirm Details
+                                Text("詳細")
                                 Spacer()
                             }
                             .font(.headline)
                             .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
                             .padding()
                             .background(Color(uiColor: .systemIndigo))
-//                            .background(colorScheme == .dark ? Color(.systemIndigo).opacity(0.8) : Color.blue)
                             .cornerRadius(10)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -277,8 +276,8 @@ struct MedicalTestAndEpisodeView: View {
                         )
                 
                     }
-                
-                Section(header: Text("発症記録") // Episode
+                // Episode
+                Section(header: Text("発症記録")
                     .font(.title2)
                     .foregroundColor(colorScheme == .light ? .black : .white)
                     .fontWeight(.semibold)
@@ -301,7 +300,7 @@ struct MedicalTestAndEpisodeView: View {
                             HStack {
                                 Spacer()
                                 Symbols.addNew
-                                Text("新規作成") // Add New
+                                Text("新規作成")
                                 Spacer()
                             }
                             .font(.headline)
@@ -330,24 +329,19 @@ struct MedicalTestAndEpisodeView: View {
             }
             .navigationTitle(allergenName)
             .listStyle(.sidebar)
-            .refreshable {
-                episodeModel.fetchItemsFromCloud(complete: {})
-                
-            }
             .toolbar {
                 Button() {
                     showAlert.toggle()
                 } label: {
                     Image(systemName: "trash")
-                    //                        .font(.caption)
                 }
                 .tint(.red)
             }
             .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text("医療検査・発症記録を\n削除しますか？"), // Delete all items from the medical data and the episode. Are you sure?
+                    title: Text("医療検査・発症記録を\n削除しますか？"),
                     message: Text(""),
-                    primaryButton: .destructive(Text("削除")) { // Delete
+                    primaryButton: .destructive(Text("削除")) {
                         // Delete all data action
                         episodeModel.deleteAllData()
                         for test in medicalTest.bloodTest where test.record != nil {
@@ -361,7 +355,7 @@ struct MedicalTestAndEpisodeView: View {
                         }
                         presentationMode.wrappedValue.dismiss()
                     },
-                    secondaryButton: .cancel(Text("キャンセル")) // Cancel
+                    secondaryButton: .cancel(Text("キャンセル"))
                 )
             }
             .onAppear {
