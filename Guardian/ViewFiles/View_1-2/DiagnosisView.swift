@@ -229,8 +229,12 @@ struct DiagnosisView: View {
                               message: Text(""),
                               primaryButton: .destructive(Text("削除")) {
                             diagnosisModel.deleteItemsFromCloud { isSuccess in
-                                if isSuccess {
-                                    dismiss.callAsFunction()
+                                DispatchQueue.main.async {
+                                    if isSuccess {
+                                        dismiss.callAsFunction()
+                                    } else {
+                                        print("Failed to delete Diagnosis item.")
+                                    }
                                 }
                             }
                         }, secondaryButton: .cancel(Text("キャンセル")))
@@ -246,13 +250,15 @@ struct DiagnosisView: View {
                         if validation.validateForm() {
                             isLoading = true
                             diagnosisModel.addButtonPressed { result in
-                                isLoading = false
-                                switch result {
-                                case .success:
-                                    activeAlert = .saveConfirmation
-                                default:
-                                    activeAlert = .saveError
-                                    break
+                                DispatchQueue.main.async {
+                                    isLoading = false
+                                    switch result {
+                                    case .success:
+                                        activeAlert = .saveConfirmation
+                                    default:
+                                        activeAlert = .saveError
+                                        break
+                                    }
                                 }
                             }
                         } else {

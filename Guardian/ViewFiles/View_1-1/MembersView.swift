@@ -75,7 +75,7 @@ struct MembersView: View {
                 }
             } else {
                 List {
-                    ForEach(profileModel.profileInfo, id: \.self) { item in
+                    ForEach(profileModel.profileInfo, id: \.id) { item in
                         NavigationLink(value: item) {
                             MembersListRow(headline: item.headline, caption: item.caption, image: item.image)
                         }

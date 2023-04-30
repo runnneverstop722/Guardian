@@ -206,7 +206,7 @@ struct MedicalTestAndEpisodeView: View {
                             Text("⚠️本アレルゲンに対して診断記録がありません。")
                                 .font(.subheadline)
                         } else {
-                            ForEach(diagnosis, id: \.self) { item in
+                            ForEach(diagnosis, id: \.id) { item in
                                 Text("\(item.caption1) 「\(item.caption3)」にて「\(item.headline)」と診断されました。")
                                     .font(.subheadline)
                             }
@@ -286,7 +286,7 @@ struct MedicalTestAndEpisodeView: View {
                             Text("⚠️本アレルゲンに対して発症記録がありません。")
                                 .font(.subheadline)
                         } else {
-                            ForEach(episodeModel.episodeInfo, id: \.self) { item in
+                            ForEach(episodeModel.episodeInfo, id: \.id) { item in
                                 NavigationLink(
                                     destination: EpisodeView(allergen: episodeModel.allergen, episode: item.record),
                                     label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
@@ -311,17 +311,19 @@ struct MedicalTestAndEpisodeView: View {
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .onReceive(existingEpisodeData) { data in
-                            if let data = data.object as? EpisodeListModel {
-                                let index = episodeModel.episodeInfo.firstIndex { $0.record.recordID == data.record.recordID
-                                }
-                                if let index = index {
-                                    episodeModel.episodeInfo[index] = data
-                                } else {
-                                    episodeModel.episodeInfo.insert(data, at: 0)
-                                }
-                            } else if let recordID = data.object as? CKRecord.ID {
-                                episodeModel.episodeInfo.removeAll {
-                                    $0.record.recordID == recordID
+                            DispatchQueue.main.async {
+                                if let data = data.object as? EpisodeListModel {
+                                    let index = episodeModel.episodeInfo.firstIndex { $0.record.recordID == data.record.recordID
+                                    }
+                                    if let index = index {
+                                        episodeModel.episodeInfo[index] = data
+                                    } else {
+                                        episodeModel.episodeInfo.insert(data, at: 0)
+                                    }
+                                } else if let recordID = data.object as? CKRecord.ID {
+                                    episodeModel.episodeInfo.removeAll {
+                                        $0.record.recordID == recordID
+                                    }
                                 }
                             }
                         }

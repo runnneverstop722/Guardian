@@ -61,15 +61,16 @@ class PDFContent {
             
             textTop += diagnosisTitleStringSize.height + 10
             
-            for diagnosis in diagnosisData {
+            for (index,diagnosis) in diagnosisData.enumerated() {
                 let items = [
-                    ("診断日: ", dateFormatter.string(from: diagnosis.diagnosisDate ?? Date())),
-                    ("診断名: ", diagnosis.diagnosis ?? ""),
-                    ("アレルゲン: ", (diagnosis.allergens?.joined(separator: ", ") ?? "")),
-                    ("医療機関名: ", diagnosis.diagnosedHospital ?? ""),
-                    ("担当医: ", diagnosis.diagnosedAllergist ?? ""),
-                    ("担当医コメント: ", diagnosis.diagnosedAllergistComment ?? ""),
-                    ("添付写真: ", " ")
+                    ("⚫︎診断記録: ", "#\(index + 1)"),
+                    ("・診断日: ", dateFormatter.string(from: diagnosis.diagnosisDate ?? Date())),
+                    ("・診断名: ", diagnosis.diagnosis ?? ""),
+                    ("・アレルゲン: ", (diagnosis.allergens?.joined(separator: ", ") ?? "")),
+                    ("・医療機関名: ", diagnosis.diagnosedHospital ?? ""),
+                    ("・担当医: ", diagnosis.diagnosedAllergist ?? ""),
+                    ("・担当医コメント: ", diagnosis.diagnosedAllergistComment ?? ""),
+                    ("・添付写真: ", " ")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -112,12 +113,12 @@ class PDFContent {
                                 resize.draw(in: logoRect)
                             }
                         }
-                        textTop += 10
+                        textTop += 30
                     }
                 }
             }
         } else {
-            let noDiagnosisMessage = "診断記録がありません。"
+            let noDiagnosisMessage = "⚠️診断記録がありません。"
             let noDiagnosisFont = UIFont.systemFont(ofSize: 12.0)
             let position = CGPoint(x: 20, y: textTop)
             textTop = drawText(message: noDiagnosisMessage, font: noDiagnosisFont, position: position, maxWidth: pageRect.width - 40)
@@ -159,18 +160,28 @@ class PDFContent {
             textTop += offsetY
             textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             
+            // Draw medical data title
+            let medicalTestTitle = "医療検査記録:"
+            let medicalTestTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+            let medicalTestTitleAttributes: [NSAttributedString.Key: Any] = [.font: medicalTestTitleFont ]
+            let attributedMedicalTestTitle = NSAttributedString(string: medicalTestTitle, attributes: medicalTestTitleAttributes)
+            let medicalTestTitleStringSize = attributedMedicalTestTitle.getSize(withPreferredWidth: pageRect.width - 40)
+            let medicalTestTitleStringRect = CGRect(x: 20, y: textTop, width: medicalTestTitleStringSize.width, height: medicalTestTitleStringSize.height)
+            attributedMedicalTestTitle.draw(in: medicalTestTitleStringRect)
+            textTop += medicalTestTitleStringSize.height + 10
+            
             // Draw medical data
             let allergenID = allergen.recordID!
             let bloodTests = PersistenceController.shared.fetchBloodTest(allergenID: allergenID)
             if bloodTests.isEmpty {
-                textTop = drawText(message: "血液検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+                textTop = drawText(message: "⚠️血液検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
             for (index, bloodTest) in bloodTests.enumerated() {
                 let items = [
-                    ("血液検査記録: ", "\(index + 1)"),
-                    ("検査日: ", dateFormatter.string(from: bloodTest.bloodTestDate ?? Date())),
-                    ("IgEレベル(UA/mL): ", bloodTest.bloodTestLevel ?? "0.0"),
-                    ("IgEクラス: ", bloodTest.bloodTestGrade)
+                    ("⚫︎血液検査記録: ", "#\(index + 1)"),
+                    ("・検査日: ", dateFormatter.string(from: bloodTest.bloodTestDate ?? Date())),
+                    ("・IgEレベル(UA/mL): ", bloodTest.bloodTestLevel ?? "0.0"),
+                    ("・IgEクラス: ", bloodTest.bloodTestGrade)
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -192,14 +203,14 @@ class PDFContent {
             }
             let skinTests = PersistenceController.shared.fetchSkinTest(allergenID: allergenID)
             if skinTests.isEmpty {
-                textTop = drawText(message: "皮膚プリック検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+                textTop = drawText(message: "⚠️皮膚プリック検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
             for (index, skinTest) in skinTests.enumerated() {
                 let items = [
-                    ("皮膚プリック検査記録: ", "\(index + 1)"),
-                    ("検査日: ", dateFormatter.string(from: skinTest.skinTestDate ?? Date())),
-                    ("結果(mm): ", skinTest.skinTestResultValue ?? "0.0"),
-                    ("陽性有無: ", skinTest.skinTestResult == true ? "陽性" : "陰性")
+                    ("⚫︎皮膚プリック検査記録: ", "#\(index + 1)"),
+                    ("・検査日: ", dateFormatter.string(from: skinTest.skinTestDate ?? Date())),
+                    ("・結果(mm): ", skinTest.skinTestResultValue ?? "0.0"),
+                    ("・陽性有無: ", skinTest.skinTestResult == true ? "陽性" : "陰性")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -221,14 +232,14 @@ class PDFContent {
             }
             let oralFoodChallenges = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID)
             if oralFoodChallenges.isEmpty {
-                textTop = drawText(message: "食物経口負荷試験記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
+                textTop = drawText(message: "⚠️食物経口負荷試験記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
             for (index, oralFoodChallenge) in oralFoodChallenges.enumerated() {
                 let items = [
-                    ("食物経口負荷試験記録: ", "\(index + 1)"),
-                    ("検査日: ", dateFormatter.string(from: oralFoodChallenge.creationDate ?? Date())),
-                    ("食べた量(mm): ", oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0"),
-                    ("陽性有無: ", oralFoodChallenge.oralFoodChallengeResult == true ? "陽性" : "陰性"),
+                    ("⚫︎食物経口負荷試験記録: ", "#\(index + 1)"),
+                    ("・検査日: ", dateFormatter.string(from: oralFoodChallenge.creationDate ?? Date())),
+                    ("・食べた量(mm): ", oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0"),
+                    ("・陽性有無: ", oralFoodChallenge.oralFoodChallengeResult == true ? "陽性" : "陰性"),
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -249,30 +260,31 @@ class PDFContent {
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             
+            // Draw Episode data title
+            let episodeTitle = "発症記録:"
+            let episodeTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+            let episodeTitleAttributes: [NSAttributedString.Key: Any] = [.font: episodeTitleFont ]
+            let attributedEpisodeTitle = NSAttributedString(string: episodeTitle, attributes: episodeTitleAttributes)
+            let episodeTitleStringSize = attributedEpisodeTitle.getSize(withPreferredWidth: pageRect.width - 40)
+            let episodeTitleStringRect = CGRect(x: 20, y: textTop, width: episodeTitleStringSize.width, height: episodeTitleStringSize.height)
+            attributedEpisodeTitle.draw(in: episodeTitleStringRect)
+            textTop += episodeTitleStringSize.height + 10
+                    
             // Draw episodes data
             let episodesData = fetchEpisodesData(for: allergenID)
             if !episodesData.isEmpty {
-                let episodesTitle = "発症記録:"
-                let episodesTitleFont = UIFont.systemFont(ofSize: 14.0, weight: .bold)
-                let episodesTitleAttributes: [NSAttributedString.Key: Any] = [.font: episodesTitleFont ]
-                let attributedEpisodesTitle = NSAttributedString(string: episodesTitle, attributes: episodesTitleAttributes)
-                let episodesTitleStringSize = attributedEpisodesTitle.getSize(withPreferredWidth: pageRect.width - 40)
-                let episodesTitleStringRect = CGRect(x: 20, y: textTop, width: episodesTitleStringSize.width, height: episodesTitleStringSize.height)
-                attributedEpisodesTitle.draw(in: episodesTitleStringRect)
-                
-                textTop += episodesTitleStringSize.height + 10
-                
-                for episode in episodesData {
+                for (index, episode) in episodesData.enumerated() {
                     let items = [
-                        ("発症日: ", dateFormatter.string(from: episode.episodeDate ?? Date())),
-                        ("初症状だった: ", episode.firstKnownExposure ? "はい" : "いいえ"),
-                        ("受診した: ", episode.wentToHospital ? "はい" : "いいえ"),
-                        ("アレルゲンへの接触タイプ: ", (episode.typeOfExposure?.joined(separator: ", ") ?? "")),
-                        ("症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")),
-                        ("重症度評価: ", episode.severity ?? ""),
-                        ("発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""),
-                        ("運動後だった: ", episode.didExercise ? "はい" : "いいえ"),
-                        ("添付写真: ", " ")
+                        ("⚫︎発症記録: ", "#\(index + 1)"),
+                        ("・発症日: ", dateFormatter.string(from: episode.episodeDate ?? Date())),
+                        ("・初症状だった: ", episode.firstKnownExposure ? "はい" : "いいえ"),
+                        ("・受診した: ", episode.wentToHospital ? "はい" : "いいえ"),
+                        ("・アレルゲンへの接触タイプ: ", (episode.typeOfExposure?.joined(separator: ", ") ?? "")),
+                        ("・症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")),
+                        ("・重症度評価: ", episode.severity ?? ""),
+                        ("・発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""),
+                        ("・運動後だった: ", episode.didExercise ? "はい" : "いいえ"),
+                        ("・添付写真: ", " ")
                     ]
                     
                     let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -313,34 +325,20 @@ class PDFContent {
                                     resize.draw(in: logoRect)
                                 }
                             }
-                            textTop += 10
+                            textTop += 40
+                            textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                         }
                     }
                 }
             } else {
-                let noEpisodeMessage = "発症記録がありません。"
+                let noEpisodeMessage = "⚠️発症記録がありません。"
                 let noEpisodeFont = UIFont.systemFont(ofSize: 12.0)
                 let position = CGPoint(x: 20, y: textTop)
                 textTop = drawText(message: noEpisodeMessage, font: noEpisodeFont, position: position, maxWidth: pageRect.width - 40)
+                textTop += 40
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
         }
-    }
-    
-    func drawText(message: String, font:UIFont, position: CGPoint, maxWidth: CGFloat, alignment: NSTextAlignment = .left, textColor: UIColor = .black) -> CGFloat {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = alignment
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .paragraphStyle: paragraphStyle,
-            .foregroundColor: textColor
-        ]
-        let attributedMessage = NSAttributedString(string: message, attributes: attributes)
-        let messageSize = attributedMessage.getSize(withPreferredWidth: maxWidth)
-        let messageRect = CGRect(x: position.x, y: position.y, width: maxWidth, height: messageSize.height)
-        attributedMessage.draw(in: messageRect)
-        
-        return position.y + messageSize.height + 10
     }
     
     private func fetchDiagnosisData(for profile: ProfileInfoEntity) -> [DiagnosisEntity] {
@@ -393,9 +391,26 @@ class PDFContent {
     }
 }
 
+func drawText(message: String, font:UIFont, position: CGPoint, maxWidth: CGFloat, alignment: NSTextAlignment = .left, textColor: UIColor = .black) -> CGFloat {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.alignment = alignment
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+        .font: font,
+        .paragraphStyle: paragraphStyle,
+        .foregroundColor: textColor
+    ]
+    let attributedMessage = NSAttributedString(string: message, attributes: attributes)
+    let messageSize = attributedMessage.getSize(withPreferredWidth: maxWidth)
+    let messageRect = CGRect(x: position.x, y: position.y, width: maxWidth, height: messageSize.height)
+    attributedMessage.draw(in: messageRect)
+    
+    return position.y + messageSize.height + 10
+}
+
 extension UIGraphicsPDFRendererContext {
     func checkContext(cursor: CGFloat, pdfSize: CGSize) -> CGFloat {
-        if cursor > pdfSize.height - 100 {
+        if cursor > pdfSize.height - 101 {
             self.beginPage()
             return 40
         }

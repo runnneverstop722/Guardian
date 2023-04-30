@@ -98,7 +98,7 @@ struct AwarenessView: View {
                                 .bold()
                         } else {
                             Picker("Select Profile", selection: $selectedProfile) {
-                                ForEach(profiles, id: \.self) { (item: ProfileInfoEntity) in
+                                ForEach(profiles, id: \.id) { (item: ProfileInfoEntity) in
                                     Text(item.firstName ?? "").tag(item as ProfileInfoEntity?)
                                 }
                             }

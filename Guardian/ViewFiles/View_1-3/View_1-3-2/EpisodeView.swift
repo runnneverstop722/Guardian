@@ -232,8 +232,12 @@ struct EpisodeView: View {
                             message: Text(""),
                             primaryButton: .destructive(Text("削除")) {
                                 episodeModel.deleteRecord(record: episodeModel.record) { isSuccess in
-                                    if isSuccess {
-                                        dismiss.callAsFunction()
+                                    DispatchQueue.main.async {
+                                        if isSuccess {
+                                            dismiss.callAsFunction()
+                                        } else {
+                                            print("Failed to delete Episode item.")
+                                        }
                                     }
                                 }
                             },

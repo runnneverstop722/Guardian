@@ -444,7 +444,10 @@ import CloudKit
             let records = try context.fetch(fetchRequest)
             for record in records {
                 if let object = EpisodeListModel(entity: record) {
-                    self.episodeInfo.append(object)
+                    // Avoid duplicates when fetching from the local cache
+                    if !episodeInfo.contains(where: { $0.record.recordID == object.record.recordID}) {
+                        self.episodeInfo.append(object)
+                    }
                 }
             }
         } catch let error as NSError {
