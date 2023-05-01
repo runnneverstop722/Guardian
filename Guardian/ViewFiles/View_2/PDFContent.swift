@@ -91,30 +91,11 @@ class PDFContent {
                 }
                 textTop += 10
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                
+                // Render Diagnosis Photo
                 let diagnosisPhoto = diagnosis.diagnosisPhoto ?? []
                 if !diagnosisPhoto.isEmpty {
-                    let diagnosisPhotos = diagnosisPhoto.chunk(size: 3)
-                    for photos in diagnosisPhotos {
-                        // 165
-                        var imageY = textTop
-                        textTop = renderer.checkContext(cursor: imageY + 165, pdfSize: pageRect.size)
-                        if textTop != imageY + 165 {
-                            imageY = textTop
-                        }
-                        if textTop == 40 {
-                            textTop += 165
-                        }
-                        for (index, url) in photos.enumerated() {
-                            let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                            let filePath = doc.appendingPathComponent(url)
-                            if let image = UIImage(contentsOfFile: filePath.path) {
-                                let resize = image.scaleImageToSize(newSize: CGSize(width: 165, height: 165))
-                                let logoRect = CGRect(x: 20.0 + CGFloat(165*index) + CGFloat(10*index), y: imageY, width: 165, height: 165)
-                                resize.draw(in: logoRect)
-                            }
-                        }
-                        textTop += 30
-                    }
+                    textTop = drawImageWithShadow(rendererContext: renderer, images: diagnosisPhoto, pageRect: pageRect, startY: textTop)
                 }
             }
         } else {
@@ -269,7 +250,7 @@ class PDFContent {
             let episodeTitleStringRect = CGRect(x: 20, y: textTop, width: episodeTitleStringSize.width, height: episodeTitleStringSize.height)
             attributedEpisodeTitle.draw(in: episodeTitleStringRect)
             textTop += episodeTitleStringSize.height + 10
-                    
+            
             // Draw episodes data
             let episodesData = fetchEpisodesData(for: allergenID)
             if !episodesData.isEmpty {
@@ -303,31 +284,11 @@ class PDFContent {
                     }
                     textTop += 10
                     textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                    
+                    // Render Episode Photo
                     let episodePhoto = episode.episodePhoto ?? []
                     if !episodePhoto.isEmpty {
-                        let episodePhotos = episodePhoto.chunk(size: 3)
-                        for photos in episodePhotos {
-                            // 165
-                            var imageY = textTop
-                            textTop = renderer.checkContext(cursor: imageY + 165, pdfSize: pageRect.size)
-                            if textTop != imageY + 165 {
-                                imageY = textTop
-                            }
-                            if textTop == 40 {
-                                textTop += 165
-                            }
-                            for (index, url) in photos.enumerated() {
-                                let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                                let filePath = doc.appendingPathComponent(url)
-                                if let image = UIImage(contentsOfFile: filePath.path) {
-                                    let resize = image.scaleImageToSize(newSize: CGSize(width: 165, height: 165))
-                                    let logoRect = CGRect(x: 20.0 + CGFloat(165*index) + CGFloat(10*index), y: imageY, width: 165, height: 165)
-                                    resize.draw(in: logoRect)
-                                }
-                            }
-                            textTop += 40
-                            textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
-                        }
+                        textTop = drawImageWithShadow(rendererContext: renderer, images: episodePhoto, pageRect: pageRect, startY: textTop)
                     }
                 }
             } else {
@@ -349,7 +310,7 @@ class PDFContent {
         }
         fetchRequest.predicate = NSPredicate(format: "profileID == %@", recordID)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-
+        
         do {
             let records = try viewContext.fetch(fetchRequest)
             return records
@@ -366,7 +327,7 @@ class PDFContent {
             return []
         }
         fetchRequest.predicate = NSPredicate(format: "profileID == %@", recordID)
-
+        
         do {
             let records = try viewContext.fetch(fetchRequest)
             return records
@@ -380,7 +341,7 @@ class PDFContent {
         let fetchRequest = EpisodeEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "allergenID = %@", allergenID)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-
+        
         do {
             let records = try viewContext.fetch(fetchRequest)
             return records
@@ -417,6 +378,7 @@ extension UIGraphicsPDFRendererContext {
         return cursor
     }
 }
+
 extension Array {
     func chunk(size: Int) -> [[Element]] {
         return stride(from: 0, to: count, by: size).map {
@@ -424,41 +386,73 @@ extension Array {
         }
     }
 }
+
 extension UIImage {
-    /// Scales an image to fit within a bounds with a size governed by the passed size. Also keeps the aspect ratio.
-    /// Switch MIN to MAX for aspect fill instead of fit.
-    ///
-    /// - parameter newSize: newSize the size of the bounds the image must fit within.
-    ///
-    /// - returns: a new scaled image.
-    func scaleImageToSize(newSize: CGSize) -> UIImage {
-        var scaledImageRect = CGRect.zero
-
-        let aspectWidth = newSize.width/size.width
-        let aspectheight = newSize.height/size.height
-
-        let aspectRatio = max(aspectWidth, aspectheight)
-
-        scaledImageRect.size.width = size.width * aspectRatio;
-        scaledImageRect.size.height = size.height * aspectRatio;
-        scaledImageRect.origin.x = (newSize.width - scaledImageRect.size.width) / 2.0;
-        scaledImageRect.origin.y = (newSize.height - scaledImageRect.size.height) / 2.0;
-
-        UIGraphicsBeginImageContext(newSize)
-        draw(in: scaledImageRect)
-        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return scaledImage!
+    func scalePreservingAspectRatio(newSize: CGSize) -> UIImage {
+        // Determine the scale factor that preserves aspect ratio
+        let widthRatio = newSize.width / size.width
+        let heightRatio = newSize.height / size.height
+        
+        let scaleFactor = min(widthRatio, heightRatio)
+        
+        // Compute the new image size that preserves aspect ratio
+        let scaledImageSize = CGSize(
+            width: size.width * scaleFactor,
+            height: size.height * scaleFactor
+        )
+        // Draw and return the resized UIImage
+        let renderer = UIGraphicsImageRenderer(
+            size: scaledImageSize
+        )
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: scaledImageSize))
+        }
+        return scaledImage
     }
+}
+
+func drawImageWithShadow(rendererContext: UIGraphicsPDFRendererContext, images: [String], pageRect: CGRect, startY: CGFloat) -> CGFloat {
+    var textTop = startY
+    let imagesChunked = images.chunk(size: 3)
+    for photos in imagesChunked {
+        var imageY = textTop
+        textTop = rendererContext.checkContext(cursor: imageY + 220, pdfSize: pageRect.size)
+        if textTop != imageY + 220 {
+            imageY = textTop
+        }
+        if textTop == 40 {
+            textTop += 220
+        }
+        for (index, url) in photos.enumerated() {
+            let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let filePath = doc.appendingPathComponent(url)
+            if let image = UIImage(contentsOfFile: filePath.path) {
+                let resize = image.scalePreservingAspectRatio(newSize: CGSize(width: 165, height: 220))
+                let logoRect = CGRect(x: 20.0 + CGFloat(165 * index) + CGFloat(10 * index), y: imageY, width: 165, height: 220)
+                
+                // Set the shadow properties
+                let context = UIGraphicsGetCurrentContext()
+                context?.saveGState()
+                context?.setShadow(offset: CGSize(width: 2, height: -2), blur: 6, color: UIColor.black.withAlphaComponent(0.3).cgColor)
+                
+                // Draw the image with the shadow
+                resize.draw(in: logoRect)
+                
+                // restore the context state
+                context?.restoreGState()
+            }
+        }
+        textTop += 30
+    }
+    return textTop
 }
 
 extension NSAttributedString {
     func getSize(withPreferredWidth width: CGFloat) -> CGSize {
         let sizeConstraint = CGSize(width: width, height: .greatestFiniteMagnitude)
         let boundingRect = self.boundingRect(with: sizeConstraint,
-                                                         options: [.usesLineFragmentOrigin, .usesFontLeading],
-                                                         context: nil)
+                                             options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                             context: nil)
         return CGSize(width: ceil(boundingRect.width), height: ceil(boundingRect.height))
     }
 }
