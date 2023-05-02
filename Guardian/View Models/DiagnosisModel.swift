@@ -179,7 +179,8 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         
     func updateDiagnosis(completion: @escaping ((SaveAlert) -> Void)) {
         let myRecord = record
-        CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
+        CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) { [weak self] record, _ in
+            guard let self = self else { return }
             guard let record = record else {
                 completion(.error)
                 return

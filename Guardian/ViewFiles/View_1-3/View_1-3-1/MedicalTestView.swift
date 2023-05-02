@@ -45,13 +45,13 @@ struct BloodTest: Identifiable {
     }
 }
 enum BloodTestGrade: String, CaseIterable {
-    case negative = "クラス0(陰性)"
-    case grade1 = "クラス1(偽陽性)"
-    case grade2 = "クラス2(陽性)"
-    case grade3 = "クラス3(陽性)"
-    case grade4 = "クラス4(陽性)"
-    case grade5 = "クラス5(陽性)"
-    case grade6 = "クラス6(陽性)"
+    case negative = "IgEクラス0(陰性)"
+    case grade1 = "IgEクラス1(偽陽性)"
+    case grade2 = "IgEクラス2(陽性)"
+    case grade3 = "IgEクラス3(陽性)"
+    case grade4 = "IgEクラス4(陽性)"
+    case grade5 = "IgEクラス5(陽性)"
+    case grade6 = "IgEクラス6(陽性)"
     
     static func gradeForLevel(_ level: Double) -> BloodTestGrade {
         switch level {
@@ -79,20 +79,20 @@ struct SkinTest: Identifiable {
     let id = UUID()
     var skinTestDate: Date = Date()
     var skinTestResultValue: String = ""
-    var skinTestResult: Bool = false
+    var skinResult: String = "陰性(-)"
     var record: CKRecord?
     
     init?(record: CKRecord) {
         self.record = record
         guard let skinTestDate = record["skinTestDate"] as? Date,
               let skinTestResultValue = record["skinTestResultValue"] as? String,
-              let skinTestResult = record["skinTestResult"] as? Bool
+              let skinResult = record["skinResult"] as? String
         else {
             return
         }
         self.skinTestDate = skinTestDate
         self.skinTestResultValue = skinTestResultValue
-        self.skinTestResult = skinTestResult
+        self.skinResult = skinResult
     }
     init() {
         
@@ -102,7 +102,7 @@ struct SkinTest: Identifiable {
         let myRecord = CKRecord(recordType: "SkinTest", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         myRecord["skinTestDate"] = entity.skinTestDate
         myRecord["skinTestResultValue"] = entity.skinTestResultValue
-        myRecord["skinTestResult"] = entity.skinTestResult
+        myRecord["skinResult"] = entity.skinResult
         let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
         let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
         myRecord["allergen"] = reference as CKRecordValue
@@ -115,19 +115,22 @@ struct OralFoodChallenge: Identifiable {
     let id = UUID()
     var oralFoodChallengeDate: Date = Date()
     var oralFoodChallengeQuantity: String = ""
-    var oralFoodChallengeResult: Bool = false
+    var oralFoodChallengeUnit: String = "g"
+    var ofcResult: String = "陰性(-)"
     var record: CKRecord?
     init?(record: CKRecord) {
         self.record = record
         guard let oralFoodChallengeDate = record["oralFoodChallengeDate"] as? Date,
               let oralFoodChallengeQuantity = record["oralFoodChallengeQuantity"] as? String,
-              let oralFoodChallengeResult = record["oralFoodChallengeResult"] as? Bool
+              let oralFoodChallengeUnit = record["oralFoodChallengeUnit"] as? String,
+              let ofcResult = record["ofcResult"] as? String
         else {
             return
         }
         self.oralFoodChallengeDate = oralFoodChallengeDate
         self.oralFoodChallengeQuantity = oralFoodChallengeQuantity
-        self.oralFoodChallengeResult = oralFoodChallengeResult
+        self.oralFoodChallengeUnit = oralFoodChallengeUnit
+        self.ofcResult = ofcResult
     }
     init() {
         
@@ -136,7 +139,8 @@ struct OralFoodChallenge: Identifiable {
         let myRecord = CKRecord(recordType: "OralFoodChallenge", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         myRecord["oralFoodChallengeDate"] = entity.oralFoodChallengeDate
         myRecord["oralFoodChallengeQuantity"] = entity.oralFoodChallengeQuantity
-        myRecord["oralFoodChallengeResult"] = entity.oralFoodChallengeResult
+        myRecord["oralFoodChallengeUnit"] = entity.oralFoodChallengeUnit
+        myRecord["ofcResult"] = entity.ofcResult
         let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
         let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
         myRecord["allergen"] = reference as CKRecordValue
@@ -240,9 +244,11 @@ struct MedicalTestView: View {
             myRecord["allergen"] = reference as CKRecordValue
             dispatchGroup.enter()
             save(record: myRecord) { record in
-                bloodTest.record = record
-                if let index = medicalTest.bloodTest.firstIndex(where: { $0.id == bloodTest.id }) {
-                    medicalTest.bloodTest[index] = bloodTest
+                DispatchQueue.main.async {
+                    bloodTest.record = record
+                    if let index = medicalTest.bloodTest.firstIndex(where: { $0.id == bloodTest.id }) {
+                        medicalTest.bloodTest[index] = bloodTest
+                    }
                 }
                 dispatchGroup.leave()
             }
@@ -252,15 +258,17 @@ struct MedicalTestView: View {
             
             myRecord["skinTestDate"] = test.skinTestDate
             myRecord["skinTestResultValue"] = test.skinTestResultValue
-            myRecord["skinTestResult"] = test.skinTestResult
+            myRecord["skinResult"] = test.skinResult
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             dispatchGroup.enter()
             save(record: myRecord) { record in
-                test.record = record
-                if let index = medicalTest.skinTest.firstIndex(where: { $0.id == test.id }) {
-                    medicalTest.skinTest[index] = test
+                DispatchQueue.main.async {
+                    test.record = record
+                    if let index = medicalTest.skinTest.firstIndex(where: { $0.id == test.id }) {
+                        medicalTest.skinTest[index] = test
+                    }
                 }
                 dispatchGroup.leave()
             }
@@ -270,15 +278,18 @@ struct MedicalTestView: View {
             
             myRecord["oralFoodChallengeDate"] = test.oralFoodChallengeDate
             myRecord["oralFoodChallengeQuantity"] = test.oralFoodChallengeQuantity
-            myRecord["oralFoodChallengeResult"] = test.oralFoodChallengeResult
+            myRecord["oralFoodChallengeUnit"] = test.oralFoodChallengeUnit
+            myRecord["ofcResult"] = test.ofcResult
             
             let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
             myRecord["allergen"] = reference as CKRecordValue
             dispatchGroup.enter()
             save(record: myRecord) { record in
-                test.record = record
-                if let index = medicalTest.oralFoodChallenge.firstIndex(where: { $0.id == test.id }) {
-                    medicalTest.oralFoodChallenge[index] = test
+                DispatchQueue.main.async {
+                    test.record = record
+                    if let index = medicalTest.oralFoodChallenge.firstIndex(where: { $0.id == test.id }) {
+                        medicalTest.oralFoodChallenge[index] = test
+                    }
                 }
                 dispatchGroup.leave()
             }
@@ -315,14 +326,15 @@ struct MedicalTestView: View {
             let myRecord = $0.record!
             myRecord["skinTestDate"] = $0.skinTestDate
             myRecord["skinTestResultValue"] = $0.skinTestResultValue
-            myRecord["skinTestResult"] = $0.skinTestResult
+            myRecord["skinResult"] = $0.skinResult
             records.append(myRecord)
         }
         oralTests.forEach {
             let myRecord = $0.record!
             myRecord["oralFoodChallengeDate"] = $0.oralFoodChallengeDate
             myRecord["oralFoodChallengeQuantity"] = $0.oralFoodChallengeQuantity
-            myRecord["oralFoodChallengeResult"] = $0.oralFoodChallengeResult
+            myRecord["oralFoodChallengeUnit"] = $0.oralFoodChallengeUnit
+            myRecord["ofcResult"] = $0.ofcResult
             records.append(myRecord)
         }
         
@@ -568,7 +580,7 @@ struct BloodTestFormView: View {
                 .focused($bloodTestFocusedField, equals: .bloodTestLevel)
             }
             HStack {
-                Text("IgEクラス")
+                Text("結果")
                 Spacer()
                 Text("\(currentGradeString)")
             }
@@ -581,6 +593,7 @@ struct BloodTestFormView: View {
 struct SkinTestFormView: View {
     @Binding var skinTest: SkinTest
     @FocusState private var skinTestFocusedField: MedicalTestFormField?
+    private let results = ["陰性(-)", "陽性(+)"]
     
     var body: some View {
         VStack {
@@ -592,7 +605,7 @@ struct SkinTestFormView: View {
                     .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             HStack {
-                Text("結果(mm)") // SkinTest Result Value
+                Text("膨疹直径(mm)") // SkinTest Result Value
                 Spacer()
                 HStack {
                     Spacer()
@@ -604,12 +617,13 @@ struct SkinTestFormView: View {
                     .focused($skinTestFocusedField, equals: .skinTestResultValue)
                 }
             }
-            HStack {
-                Text("陽性有無") // SkinTest Result
-                Spacer()
-                Toggle("", isOn: $skinTest.skinTestResult)
-                    .toggleStyle(SwitchToggleStyle())
+            Picker("結果", selection: $skinTest.skinResult) {
+                ForEach(results, id: \.self) { result in
+                    Text(result)
+                        .foregroundColor(.accentColor)
+                }
             }
+            .pickerStyle(MenuPickerStyle())
         }
     }
 }
@@ -618,31 +632,40 @@ struct SkinTestFormView: View {
 struct OralFoodChallengeFormView: View {
     @Binding var oralFoodChallenge: OralFoodChallenge
     @FocusState private var oralFoodChallengeFocusedField: MedicalTestFormField?
+    @State private var selectedUnit = "g"
+    private let units = ["g", "mL"]
+    private let results = ["陰性(-)", "判定保留", "陽性(+)"]
     
     var body: some View {
         VStack {
             HStack {
-                Text("検査日") // OralFoodChallenge Date
+                Text("検査日")
                 Spacer()
-                DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: .date)
+                DatePicker("", selection: $oralFoodChallenge.oralFoodChallengeDate, displayedComponents: [.date, .hourAndMinute])
                     .datePickerStyle(CompactDatePickerStyle())
                     .environment(\.locale, Locale(identifier: "ja_JP"))
             }
             HStack {
-                Text("食べた量(mm)") // OralFoodChallenge Quantity
+                Text("総負荷量")
                 Spacer()
-                CustomTextField(text: $oralFoodChallenge.oralFoodChallengeQuantity,
-                                placeholder: "0.0",
-                                keyboardType: .phonePad)
-                .keyboardType(.decimalPad)
-                .submitLabel(.done)
-                .focused($oralFoodChallengeFocusedField, equals: .oralFoodChallengeQuantity)
+                CustomTextField(text: $oralFoodChallenge.oralFoodChallengeQuantity, placeholder: "0.0", keyboardType: .phonePad)
+                    .keyboardType(.decimalPad)
+                    .submitLabel(.done)
+                    .focused($oralFoodChallengeFocusedField, equals: .oralFoodChallengeQuantity)
+                Picker("単位", selection: $oralFoodChallenge.oralFoodChallengeUnit) {
+                    ForEach(units, id: \.self) { unit in
+                        Text(unit)
+                    }
+                }.pickerStyle(MenuPickerStyle())
             }
             HStack {
-                Text("陽性有無") // OralFoodChallenge Result
-                Spacer()
-                Toggle("", isOn: $oralFoodChallenge.oralFoodChallengeResult)
-                    .toggleStyle(SwitchToggleStyle())
+                Picker("結果", selection: $oralFoodChallenge.ofcResult) {
+                    ForEach(results, id: \.self) { result in
+                        Text(result)
+                            .foregroundColor(.accentColor)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
             }
         }
     }

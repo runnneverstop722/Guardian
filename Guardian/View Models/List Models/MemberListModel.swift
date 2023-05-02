@@ -34,7 +34,9 @@ struct MemberListModel: Identifiable, Hashable {
         var fileURL: URL?
         if let profileImage = record["profileImage"] as? CKAsset {
             fileURL = profileImage.fileURL
-            print("save url: model ", fileURL?.absoluteString)
+            if let fileURLString = fileURL?.absoluteString {
+                print("save url: model ", fileURLString)
+            }
         }
       
         headline = String(format: "%@ %@", firstName, lastName) // firstname + " " + lastname

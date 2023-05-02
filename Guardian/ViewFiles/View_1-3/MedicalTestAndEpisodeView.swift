@@ -365,7 +365,9 @@ struct MedicalTestAndEpisodeView: View {
                     viewDidLoad = true
                     fetchData()
                 } else {
-                    medicalTest.cleanUpdateUnSaveData()
+                    Task.init {
+                        medicalTest.cleanUpdateUnSaveData()
+                    }
                 }
             }
         }

@@ -117,7 +117,7 @@ struct MembersView: View {
                     )
                 }
                 .listStyle(.insetGrouped)
-                .navigationTitle("家族一覧")
+                .navigationTitle("アレルギー保有者")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {

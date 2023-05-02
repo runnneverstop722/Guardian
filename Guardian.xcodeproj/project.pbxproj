@@ -103,6 +103,7 @@
 		7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guardian.swift; sourceTree = "<group>"; };
 		8bc783cd71dfe92c1e2486726982053a /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E3D2AD9329FBBB4D00093012 /* GradientButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientButtonStyle.swift; sourceTree = "<group>"; };
+		E3D2AD972A00C8BF00093012 /* ProfileContainer_v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProfileContainer_v2.xcdatamodel; sourceTree = "<group>"; };
 		b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ba5b8ef6a08eac2d1f30e768b5339ae4 /* AwarenessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwarenessView.swift; sourceTree = "<group>"; };
 		d65b9234ace86c190f444c8df57d4ad0 /* YourRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourRecordsView.swift; sourceTree = "<group>"; };
@@ -515,7 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -569,7 +570,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -705,6 +706,7 @@
 		057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				E3D2AD972A00C8BF00093012 /* ProfileContainer_v2.xcdatamodel */,
 				057F96D929E0F43800E92220 /* CoreDataModel.xcdatamodel */,
 			);
 			currentVersion = 057F96D929E0F43800E92220 /* CoreDataModel.xcdatamodel */;

@@ -162,7 +162,7 @@ class PDFContent {
                     ("⚫︎血液検査記録: ", "#\(index + 1)"),
                     ("・検査日: ", dateFormatter.string(from: bloodTest.bloodTestDate ?? Date())),
                     ("・IgEレベル(UA/mL): ", bloodTest.bloodTestLevel ?? "0.0"),
-                    ("・IgEクラス: ", bloodTest.bloodTestGrade)
+                    ("・結果: ", bloodTest.bloodTestGrade)
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -190,8 +190,8 @@ class PDFContent {
                 let items = [
                     ("⚫︎皮膚プリック検査記録: ", "#\(index + 1)"),
                     ("・検査日: ", dateFormatter.string(from: skinTest.skinTestDate ?? Date())),
-                    ("・結果(mm): ", skinTest.skinTestResultValue ?? "0.0"),
-                    ("・陽性有無: ", skinTest.skinTestResult == true ? "陽性" : "陰性")
+                    ("・膨疹直径(mm): ", skinTest.skinTestResultValue ?? "0.0"),
+                    ("・結果: ", skinTest.skinResult ?? "陰性(-)")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
@@ -216,11 +216,17 @@ class PDFContent {
                 textTop = drawText(message: "⚠️食物経口負荷試験記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
             for (index, oralFoodChallenge) in oralFoodChallenges.enumerated() {
+                dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+                
+                // Split the oralFoodChallengeQuantity into quantity and unit
+                let quantity = oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0"
+                let unit = oralFoodChallenge.oralFoodChallengeUnit ?? ""
+                
                 let items = [
                     ("⚫︎食物経口負荷試験記録: ", "#\(index + 1)"),
-                    ("・検査日: ", dateFormatter.string(from: oralFoodChallenge.creationDate ?? Date())),
-                    ("・食べた量(mm): ", oralFoodChallenge.oralFoodChallengeQuantity ?? "0.0"),
-                    ("・陽性有無: ", oralFoodChallenge.oralFoodChallengeResult == true ? "陽性" : "陰性"),
+                    ("・検査日: ", dateFormatter.string(from: oralFoodChallenge.oralFoodChallengeDate ?? Date())),
+                    ("・総負荷量: ", "\(quantity) \(unit)"),
+                    ("・結果: ", oralFoodChallenge.ofcResult ?? "陰性(-)")
                 ]
                 
                 let itemFont = UIFont.systemFont(ofSize: 12.0)

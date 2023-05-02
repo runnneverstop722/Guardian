@@ -37,7 +37,7 @@
         <attribute name="diagnosedHospital" optional="YES" attributeType="String"/>
         <attribute name="diagnosis" optional="YES" attributeType="String"/>
         <attribute name="diagnosisDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="diagnosisPhoto" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="diagnosisPhoto" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="profileID" optional="YES" attributeType="String"/>
         <attribute name="recordID" optional="YES" attributeType="String"/>
         <uniquenessConstraints>
@@ -52,16 +52,16 @@
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="didExercise" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="episodeDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="episodePhoto" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="episodePhoto" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="firstKnownExposure" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="intakeAmount" optional="YES" attributeType="String"/>
         <attribute name="leadTimeToSymptoms" optional="YES" attributeType="String"/>
         <attribute name="otherTreatment" optional="YES" attributeType="String"/>
         <attribute name="recordID" optional="YES" attributeType="String"/>
         <attribute name="severity" optional="YES" attributeType="String"/>
-        <attribute name="symptoms" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
-        <attribute name="treatments" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
-        <attribute name="typeOfExposure" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="symptoms" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="treatments" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="typeOfExposure" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="wentToHospital" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

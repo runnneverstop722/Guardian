@@ -53,7 +53,7 @@ struct EpisodeView: View {
     var body: some View {
         ZStack {
             Form {
-                DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: .date)
+                DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.locale, Locale(identifier: "ja_JP"))
                 Toggle("初症状だった", isOn: $episodeModel.firstKnownExposure)
                 Toggle("病院で受診した", isOn: $episodeModel.wentToHospital)

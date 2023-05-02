@@ -95,22 +95,6 @@ class PersistenceController {
             print("Could not delete from local cache. \(error), \(error.userInfo)")
         }
     }
-    
-//    func fetchDiagnosis(profileID: String, allergen: String) -> [DiagnosisEntity] {
-//        let fetchRequest = DiagnosisEntity.fetchRequest()
-//        fetchRequest.predicate = NSPredicate(format: "profileID == %@ AND %@ IN %K", profileID, allergen, "allergens")
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-//        do {
-//            let fetchedItems = try context.fetch(fetchRequest)
-//            return fetchedItems
-//        } catch let error as NSError {
-//            print("Could not fetch from local cache. \(error), \(error.userInfo)")
-//        }
-//        return []
-//    }
-    
-    
-  
 
     func fetchDiagnosis(profileID: String, allergen: String) -> [DiagnosisEntity] {
         let fetchRequest: NSFetchRequest<DiagnosisEntity> = DiagnosisEntity.fetchRequest()
@@ -459,7 +443,7 @@ extension SkinTestEntity {
         self.allergenID = (record["allergen"] as? CKRecord.Reference)?.recordID.recordName
         self.creationDate = record.creationDate
         skinTestDate = record["skinTestDate"] as? Date
-        skinTestResult = record["skinTestResult"] as? Bool ?? false
+        skinResult = record["skinResult"] as? String
         skinTestResultValue = record["skinTestResultValue"] as? String
     }
 }
@@ -470,6 +454,7 @@ extension OralFoodChallengeEntity {
         self.creationDate = record.creationDate
         oralFoodChallengeDate = record["oralFoodChallengeDate"] as? Date
         oralFoodChallengeQuantity = record["oralFoodChallengeQuantity"] as? String
-        oralFoodChallengeResult = record["oralFoodChallengeResult"] as? Bool ?? false
+        oralFoodChallengeUnit = record["oralFoodChallengeUnit"] as? String
+        ofcResult = record["ofcResult"] as? String
     }
 }
