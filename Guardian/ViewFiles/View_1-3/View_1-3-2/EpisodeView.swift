@@ -115,7 +115,7 @@ struct EpisodeView: View {
                         }
                     }
                 
-                Section(header: Text("アレルゲンと接触から発症まで")
+                Section(header: Text("発症までの時間")
                     .font(.headline)) {
                         Picker("経過時間", selection: $episodeModel.leadTimeToSymptoms) {
                             ForEach(episodeModel.leadTimeToSymptomsOptions, id: \.self) {

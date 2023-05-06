@@ -58,7 +58,6 @@ struct YourRecordsView: View {
                     HStack {
                         Spacer()
                         ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-                            //                            Color(.orange)
                             Color("background")
                                 .cornerRadius(14)
                                 .frame(maxWidth: (screenWidth - 20))
@@ -97,7 +96,6 @@ struct YourRecordsView: View {
                                         .frame(maxWidth: (screenWidth-20))
                                         .frame(height: 80)
                                         .shadow(radius: 12)
-                                        //                                    Spacer()
                                     }
                                     Carousel(diagnosisItems: $diagnosisModel.diagnosisInfo, selection: $selection)
                                         .frame(maxWidth: .infinity)
@@ -164,16 +162,13 @@ struct YourRecordsView: View {
                             }
                             .alert(isPresented: $isShowingDiagnosisTutorialAlert) {
                                 Alert(title: Text("診断記録とは？"),
-                                      message: Text("初めて医師より食物アレルギーと診断された際に記録します。\n５つの診断名から選択できます。\n(即時型IgE抗体アレルギー / 遅延型IgG抗体アレルギー / アレルギー性腸炎 / 好酸球性消化管疾患 / 新生児・乳児食物蛋白誘発胃腸症)"),
+                                      message: Text("初めて医師より食物アレルギーと\n診断された際に記録します。\n５つの診断名から選択できます。\n\n- 即時型IgE抗体アレルギー\n- 遅延型IgG抗体アレルギー\n- アレルギー性腸炎\n- 好酸球性消化管疾患\n- 新生児・乳児食物蛋白誘発胃腸症"),
                                       dismissButton: .default(Text("OK")))
                             }
                         }
-                        
                         Spacer()
                     }
-                    
                 }
-                
                 Spacer()
                 
                 //MARK: - Allergen Grid Items View
@@ -201,7 +196,7 @@ struct YourRecordsView: View {
                                                     }.foregroundColor(.primary)
                                                 }.alert(isPresented: $isShowingAllergensTutorialAlert) {
                                                     Alert(title: Text("アレルゲンのリストを編集するには、"),
-                                                          message: Text("プロフィール設定画面にてアレルゲンの設定を変更してください。"),
+                                                          message: Text("プロフィール設定画面にてアレルゲンの\n設定を変更してください。"),
                                                           dismissButton: .default(Text("OK")))
                                                 }
                                                 Label("\(allergenCount) 件", systemImage: "allergens")
@@ -238,7 +233,6 @@ struct YourRecordsView: View {
                 }
                 .background(
                     Color("background")
-                    //                    Color(.orange)
                         .cornerRadius(14)
                         .frame(maxWidth: (screenWidth - 20))
                         .opacity(0.2)

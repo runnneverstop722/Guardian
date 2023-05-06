@@ -104,7 +104,7 @@ struct ProfileView: View {
                         }
                     }
                 
-                Section(header: Text("通院先") // Clinical Information
+                Section(header: Text("医療機関")
                     .font(.headline)) {
                         TextField("Hospital",
                                   text: $profileModel.hospitalName,
@@ -128,7 +128,7 @@ struct ProfileView: View {
                 
                 // Added this selector in ProfileView
                 Section(header: HStack {
-                    Text("管理するアレルゲン") // Allergens that will be managed
+                    Text("食べないようにしている食物") // Allergens that will be managed
                         .font(.headline)
                 }) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in

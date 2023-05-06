@@ -47,6 +47,7 @@ class PDFContent {
         dateFormatter.dateFormat = "yyyy/MM/dd"
         let allergensData = fetchAllergenData(for: profile)
         let diagnosisData = fetchDiagnosisData(for: profile)
+            .sorted { $0.diagnosisDate ?? Date() < $1.diagnosisDate ?? Date() }
         // Draw diagnosis data
         if !diagnosisData.isEmpty {
             let diagnosisTitle = "診断記録"
@@ -154,6 +155,7 @@ class PDFContent {
             // Draw medical data
             let allergenID = allergen.recordID!
             let bloodTests = PersistenceController.shared.fetchBloodTest(allergenID: allergenID)
+                .sorted { $0.bloodTestDate ?? Date() < $1.bloodTestDate ?? Date() }
             if bloodTests.isEmpty {
                 textTop = drawText(message: "⚠️血液検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
@@ -183,6 +185,7 @@ class PDFContent {
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let skinTests = PersistenceController.shared.fetchSkinTest(allergenID: allergenID)
+                .sorted { $0.skinTestDate ?? Date() < $1.skinTestDate ?? Date() }
             if skinTests.isEmpty {
                 textTop = drawText(message: "⚠️皮膚プリック検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
@@ -212,6 +215,7 @@ class PDFContent {
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let oralFoodChallenges = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID)
+                .sorted { $0.oralFoodChallengeDate ?? Date() < $1.oralFoodChallengeDate ?? Date() }
             if oralFoodChallenges.isEmpty {
                 textTop = drawText(message: "⚠️食物経口負荷試験記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
@@ -259,6 +263,7 @@ class PDFContent {
             
             // Draw episodes data
             let episodesData = fetchEpisodesData(for: allergenID)
+                .sorted { $0.episodeDate ?? Date() < $1.episodeDate ?? Date() }
             if !episodesData.isEmpty {
                 for (index, episode) in episodesData.enumerated() {
                     let items = [

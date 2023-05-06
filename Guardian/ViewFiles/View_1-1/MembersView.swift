@@ -24,12 +24,10 @@ struct MembersView: View {
         ZStack {
             if isFirstProfile {
                 ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-                    VStack(alignment: .center, spacing: 50) {
+                    VStack(alignment: .center, spacing: 30) {
                         Spacer()
                         VStack(spacing: 20) {
                             Image("profile")
-                                .resizable()
-                                .scaledToFit()
                             Text("プロフィールを作成しましょう。")
                                 .font(.title3)
                         }
@@ -44,7 +42,7 @@ struct MembersView: View {
                             HStack {
                                 Image(systemName: "hand.point.up.fill")
                                     .font(.title2)
-                                Text("医療検査を受けた時(血液・皮膚・経口負荷試験)")
+                                Text("医療検査時(血液・皮膚・経口負荷試験)")
                             }
                             HStack {
                                 Image(systemName: "hand.point.up.fill")
@@ -200,7 +198,8 @@ extension MembersView {
                 if let image = image {
                     image
                         .resizable()
-                        .frame(width: 56.0, height: 56.0)
+                        .scaledToFill()
+                        .frame(width: 56, height: 56)
                         .clipShape(Circle())
                 } else {
                     Image(systemName: "person.fill")
