@@ -196,19 +196,19 @@
 				05F19E1829EBC8FE004A4352 /* YourRecordsView */,
 				05F3890A2A0771CA009C6210 /* DiagnosisView */,
 				051A27C929CE897E00A890D0 /* AllergenDetailView */,
-				05B0712329C01A81008A2010 /* View_2 */,
+				05B0712329C01A81008A2010 /* AwarenessView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		05B0712329C01A81008A2010 /* View_2 */ = {
+		05B0712329C01A81008A2010 /* AwarenessView */ = {
 			isa = PBXGroup;
 			children = (
 				ba5b8ef6a08eac2d1f30e768b5339ae4 /* AwarenessView.swift */,
 				05965BAE29F4F11100B3556B /* PDFExport.swift */,
 				05965BB029F4F1FD00B3556B /* PDFContent.swift */,
 			);
-			path = View_2;
+			path = AwarenessView;
 			sourceTree = "<group>";
 		};
 		05B0712429C01AF1008A2010 /* Utilities */ = {

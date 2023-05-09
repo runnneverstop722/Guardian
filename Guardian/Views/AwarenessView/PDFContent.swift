@@ -266,18 +266,21 @@ class PDFContent {
                 .sorted { $0.episodeDate ?? Date() < $1.episodeDate ?? Date() }
             if !episodesData.isEmpty {
                 for (index, episode) in episodesData.enumerated() {
-                    let items = [
-                        ("⚫︎発症記録: ", "#\(index + 1)"),
-                        ("・発症日: ", dateFormatter.string(from: episode.episodeDate ?? Date())),
-                        ("・初症状だった: ", episode.firstKnownExposure ? "はい" : "いいえ"),
-                        ("・受診した: ", episode.wentToHospital ? "はい" : "いいえ"),
-                        ("・アレルゲンへの接触タイプ: ", (episode.typeOfExposure?.joined(separator: ", ") ?? "")),
-                        ("・症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")),
-                        ("・重症度評価: ", episode.severity ?? ""),
-                        ("・発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""),
-                        ("・運動後だった: ", episode.didExercise ? "はい" : "いいえ"),
-                        ("・添付写真: ", " ")
-                    ]
+                    var items: [(String, String)] = []
+                    items.append(("⚫︎発症記録: ", "#\(index + 1)"))
+                    items.append(("・発症日: ", dateFormatter.string(from: episode.episodeDate ?? Date())))
+                    items.append(("・初症状だった: ", episode.firstKnownExposure ? "はい" : "いいえ"))
+                    items.append(("・受診した: ", episode.wentToHospital ? "はい" : "いいえ"))
+                    items.append(("・アレルゲンへの触れ方: ", (episode.typeOfExposure?.joined(separator: ", ") ?? "")))
+                    items.append(("・摂取量: ", episode.intakeAmount ?? ""))
+                    items.append(("・症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")))
+                    items.append(("・重症度評価: ", episode.severity ?? ""))
+                    items.append(("・発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""))
+                    items.append(("・運動後だった: ", episode.didExercise ? "はい" : "いいえ"))
+                    items.append(("・取った対応: ", (episode.treatments?.joined(separator: ", ") ?? "")))
+                    items.append(("・取った対応（その他）: ", episode.otherTreatment ?? ""))
+                    items.append(("・メモ: ", episode.episodeMemo ?? ""))
+                    items.append(("・添付写真: ", " "))
                     
                     let itemFont = UIFont.systemFont(ofSize: 12.0)
                     

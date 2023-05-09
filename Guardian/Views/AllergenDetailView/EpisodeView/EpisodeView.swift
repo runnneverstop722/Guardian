@@ -10,7 +10,7 @@ import PhotosUI
 import CoreTransferable
 
 enum EpisodeFormField {
-    case intakeAmount, otherTreatment
+    case intakeAmount, otherTreatment, episodeMemo
 }
 
 enum ActiveAlertOnEpisode: Identifiable {
@@ -53,12 +53,12 @@ struct EpisodeView: View {
     var body: some View {
         ZStack {
             Form {
-                DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: [.date, .hourAndMinute])
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
-                Toggle("初症状だった", isOn: $episodeModel.firstKnownExposure)
-                Toggle("病院で受診した", isOn: $episodeModel.wentToHospital)
-                
-                
+                Section {
+                    DatePicker("日付", selection: $episodeModel.episodeDate, displayedComponents: [.date, .hourAndMinute])
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                    Toggle("初症状だった", isOn: $episodeModel.firstKnownExposure)
+                    Toggle("病院で受診した", isOn: $episodeModel.wentToHospital)
+                }
                 Section(header: Text("接触タイプ（複数選択可）")
                     .font(.headline),
                         footer: Text("※摂取の場合、摂取量も記録しましょう。")
@@ -83,8 +83,6 @@ struct EpisodeView: View {
                                 .focused($episodeFocusedField, equals: .intakeAmount)
                         }
                     }
-                
-                
                 Section(header: Text("現れた症状（複数選択可）")
                     .font(.headline)) {
                         ForEach(episodeModel.symptomCategories, id: \.self) { category in
@@ -101,7 +99,6 @@ struct EpisodeView: View {
                             episodeModel.judgeSeverity()
                         })
                     }
-                
                 Section(
                     header: Text("重症度評価(自動表示)")
                         .font(.headline),
@@ -114,7 +111,6 @@ struct EpisodeView: View {
                             Spacer()
                         }
                     }
-                
                 Section(header: Text("発症までの時間")
                     .font(.headline)) {
                         Picker("経過時間", selection: $episodeModel.leadTimeToSymptoms) {
@@ -124,8 +120,6 @@ struct EpisodeView: View {
                         }
                         Toggle("運動後だった", isOn: $episodeModel.didExercise)
                     }
-                
-                
                 Section(header: Text("取った対応（複数選択可）")
                     .font(.headline)) {
                         ForEach(episodeModel.treatmentsOptions, id: \.self) { treatment in
@@ -148,11 +142,17 @@ struct EpisodeView: View {
                         if episodeModel.treatments.contains("その他") {
                             TextField("その他", text: $episodeModel.otherTreatment)
                                 .submitLabel(.done)
-                                .focused($episodeFocusedField, equals: .otherTreatment)
+//                                .focused($episodeFocusedField, equals: .otherTreatment)
                         }
                     }
-                Section(header: Text("添付写真")
-                    .font(.headline)) { // Picture Attachment
+                Section(header: Text("メモ").font(.headline),
+                        footer: Text("気付きや医師に聞きたいと思ったことなど")) {
+                    TextEditor(text: $episodeModel.episodeMemo)
+                        .frame(height: 100)
+                        .focused($episodeFocusedField, equals: .episodeMemo)
+                }
+                Section(header: Text("添付写真") // Picture Attachment
+                    .font(.headline)) {
                         Button(action: {
                             isPickerPresented = true
                         }) {

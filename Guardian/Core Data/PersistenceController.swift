@@ -404,7 +404,9 @@ extension EpisodeEntity {
         severity = record["severity"] as? String
         leadTimeToSymptoms = record["leadTimeToSymptoms"] as? String
         didExercise = record["didExercise"] as? Bool ?? false
+        treatments = record["treatments"] as? [String]
         otherTreatment = record["otherTreatmemt"] as? String
+        episodeMemo = record["episodeMemo"] as? String
         var imagePaths = [String]()
         if let images = record["data"] as? [CKAsset] {
             for image in images {

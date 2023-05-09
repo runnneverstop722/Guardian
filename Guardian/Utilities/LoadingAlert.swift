@@ -9,16 +9,14 @@ import SwiftUI
 
 struct LoadingAlert: View {
     var body: some View {
-        VStack {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
-                .scaleEffect(2.0)
-                .padding()
-            Text("Loading...")
-        }
-        .frame(width: 200, height: 200)
-        .background(Color.white)
-        .cornerRadius(20)
+        ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(2.0)
+            .padding()
+            .frame(width: 200, height: 200)
+            .background(Color.secondary.colorInvert())
+            .foregroundColor(Color.primary)
+            .cornerRadius(20)
     }
 }
 

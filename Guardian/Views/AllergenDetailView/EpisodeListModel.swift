@@ -65,6 +65,7 @@ struct EpisodeListModel: Identifiable, Hashable {
         myRecord["didExercise"] = entity.didExercise
         myRecord["treatments"] = entity.treatments
         myRecord["otherTreatment"] = entity.otherTreatment
+        myRecord["episodeMemo"] = entity.episodeMemo
         let allergenID = CKRecord.ID.init(recordName: entity.allergenID!)
         let reference = CKRecord.Reference(recordID: allergenID, action: .deleteSelf)
         myRecord["allergen"] = reference as CKRecordValue

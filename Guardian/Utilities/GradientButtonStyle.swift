@@ -11,7 +11,7 @@ struct GradientButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
             .foregroundColor(Color(uiColor: .white))
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: 280)
             .bold()
             .padding()
             .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.indigo]), startPoint: .leading, endPoint: .trailing))

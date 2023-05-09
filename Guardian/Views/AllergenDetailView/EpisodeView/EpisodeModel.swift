@@ -25,6 +25,7 @@ import CloudKit
     @Published var didExercise: Bool = false
     @Published var treatments: [String] = []
     @Published var otherTreatment: String = ""
+    @Published var episodeMemo: String = ""
     @Published var data: [Data] = []
     @Published var episodeImages: [EpisodeImage] = []
     @Published var episodeInfo: [EpisodeListModel] = []
@@ -104,6 +105,7 @@ import CloudKit
         let skinSymptoms = episode["skinSymptoms"] as? [String]
         let treatments = episode["treatments"] as? [String]
         let otherTreatment = episode["otherTreatment"] as? String
+        let episodeMemo = episode["episodeMemo"] as? String
         
         fetchStoredImages()
         
@@ -119,6 +121,7 @@ import CloudKit
         self.didExercise = didExercise
         self.treatments = treatments ?? [""]
         self.otherTreatment = otherTreatment ?? ""
+        self.episodeMemo = episodeMemo ?? ""
         isUpdated = true
     }
     
@@ -229,6 +232,7 @@ import CloudKit
                 didExercise: didExercise,
                 treatments: treatments,
                 otherTreatment: otherTreatment,
+                episodeMemo: episodeMemo,
                 episodePhoto: getImageURL(for: episodeImages),
                 completion: completion
             )
@@ -265,6 +269,7 @@ import CloudKit
         record["didExercise"] = didExercise
         record["treatments"] = treatments
         record["otherTreatment"] = otherTreatment
+        record["episodeMemo"] = episodeMemo
         saveItem(record: record, completion: completion)
     }
     
@@ -280,6 +285,7 @@ import CloudKit
         didExercise: Bool,
         treatments: [String],
         otherTreatment: String,
+        episodeMemo: String,
         episodePhoto: [URL]?,
         completion: @escaping ((SaveAlert) -> Void)
     ) {
@@ -300,6 +306,7 @@ import CloudKit
         myRecord["didExercise"] = didExercise
         myRecord["treatments"] = treatments
         myRecord["otherTreatment"] = otherTreatment
+        myRecord["episodeMemo"] = episodeMemo
         
         let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
         myRecord["allergen"] = reference as CKRecordValue
