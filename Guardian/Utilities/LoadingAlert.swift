@@ -10,19 +10,23 @@ import SwiftUI
 struct LoadingAlert: View {
     var body: some View {
         ProgressView()
-            .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(2.0)
-            .padding()
-            .frame(width: 200, height: 200)
-            .background(Color.secondary.colorInvert())
-            .foregroundColor(Color.primary)
-            .cornerRadius(20)
+        VStack {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .scaleEffect(2.0)
+                .padding()
+            Text("お待ちください...")
+        }
+        .frame(width: 200, height: 200)
+        .background(Color.secondary.colorInvert())
+        .foregroundColor(Color.primary)
+        .cornerRadius(20)
     }
 }
 
 struct BlurView: UIViewRepresentable {
     var style: UIBlurEffect.Style
-
+    
     func makeUIView(context: UIViewRepresentableContext<BlurView>) -> UIVisualEffectView {
         UIVisualEffectView(effect: UIBlurEffect(style: style))
     }

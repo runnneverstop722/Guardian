@@ -163,7 +163,7 @@ struct YourRecordsView: View {
                             .alert(isPresented: $isShowingDiagnosisTutorialAlert) {
                                 Alert(title: Text("診断記録とは？"),
                                       message: Text("初めて医師より食物アレルギーと\n診断された際に記録します。\n５つの診断名から選択できます。\n\n- 即時型IgE抗体アレルギー\n- 遅延型IgG抗体アレルギー\n- アレルギー性腸炎\n- 好酸球性消化管疾患\n- 新生児・乳児食物蛋白誘発胃腸症"),
-                                      dismissButton: .default(Text("OK")))
+                                      dismissButton: .default(Text("閉じる")))
                             }
                         }
                         Spacer()
@@ -195,9 +195,9 @@ struct YourRecordsView: View {
                                                             
                                                     }.foregroundColor(.primary)
                                                 }.alert(isPresented: $isShowingAllergensTutorialAlert) {
-                                                    Alert(title: Text("アレルゲンのリストを編集するには、"),
+                                                    Alert(title: Text("アレルゲンのリストを\n編集するには、"),
                                                           message: Text("プロフィール設定画面にてアレルゲンの\n設定を変更してください。"),
-                                                          dismissButton: .default(Text("OK")))
+                                                          dismissButton: .default(Text("閉じる")))
                                                 }
                                                 Label("\(allergenCount) 件", systemImage: "allergens")
                                                     .font(.footnote)
@@ -247,16 +247,32 @@ struct YourRecordsView: View {
                     }) {
                         Image(uiImage: profileImage)
                             .resizable()
-                            .scaledToFit()
-                            .frame(height: 40)
+                            .scaledToFill()
+                            .frame(width: 40, height: 40)
                             .clipShape(Circle())
                     }
-                    .padding(.trailing, -20)
                 }
             }
             .sheet(isPresented: $isShowingProfileView) {
                 ProfileView(profile: profile)
             }
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(action: {
+//                        isShowingProfileView = true
+//                    }) {
+//                        Image(uiImage: profileImage)
+//                            .resizable()
+//                            .frame(height: 50)
+//                            .scaledToFit()
+//                            .clipShape(Circle())
+//                    }
+//                    .padding()
+//                }
+//            }
+//            .sheet(isPresented: $isShowingProfileView) {
+//                ProfileView(profile: profile)
+//            }
         }
     }
 }
@@ -513,14 +529,16 @@ struct LoadingView<Content>: View where Content: View {
                     .disabled(self.isShowing)
                     .blur(radius: self.isShowing ? 3 : 0)
                 
-                ActivityIndicator(isAnimating: .constant(true), style: .large)
-                    .frame(width: geometry.size.width / 2,
-                           height: geometry.size.height / 5)
-                    .background(Color.secondary.colorInvert())
-                    .foregroundColor(Color.primary)
-                    .cornerRadius(20)
-                    .opacity(self.isShowing ? 1 : 0)
-                
+                VStack {
+                    ActivityIndicator(isAnimating: .constant(true), style: .large)
+                    Text("お待ちください...")
+                }
+                .frame(width: geometry.size.width / 2,
+                       height: geometry.size.height / 5)
+                .background(Color.secondary.colorInvert())
+                .foregroundColor(Color.primary)
+                .cornerRadius(20)
+                .opacity(self.isShowing ? 1 : 0)
             }
         }
     }
