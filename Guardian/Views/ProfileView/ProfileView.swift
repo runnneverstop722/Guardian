@@ -54,9 +54,8 @@ struct ProfileView: View {
     //MARK: - Body
     var body: some View {
         NavigationView {
-            Form(content: {
-                Section(header: Text("ユーザー") // User
-                    .font(.headline)) {
+            Form {
+                Section(header: Text("ユーザー").font(.headline)) {
                         VStack {
                             Section {
                                 HStack {
@@ -66,19 +65,19 @@ struct ProfileView: View {
                                 }
                             }
                             .listRowBackground(Color.clear)
-#if !os(macOS)
+                            #if !os(macOS)
                             .padding([.top], 10)
-#endif
+                            #endif
                             
                             Section {
-                                TextField("姓", text: $profileModel.lastName, prompt: Text("姓"))
+                                TextField("姓", text: $profileModel.lastName)
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
                                     .focused($focusedField1, equals: .lastName)
                                     .onChange(of: profileModel.lastName) { _ in
                                         isLastNameEmpty = profileModel.lastName.isEmpty
                                     }
                                 Divider()
-                                TextField("名", text: $profileModel.firstName, prompt: Text("名"))
+                                TextField("名", text: $profileModel.firstName)
                                     .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
                                     .focused($focusedField1, equals: .firstName)
                                     .onChange(of: profileModel.firstName) { _ in
@@ -86,15 +85,13 @@ struct ProfileView: View {
                                     }
                                 
                                 Divider()
-                                Spacer()
                                 Picker("Gender", selection: $profileModel.gender) {
                                     ForEach(ProfileModel.Gender.allCases) { gender in
                                         Text(gender.rawValue.capitalized).tag(gender)
                                     }
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
-                                Spacer()
-                                DatePicker("生年月日", // Date of Birth
+                                DatePicker("生年月日",
                                            selection: $profileModel.birthDate,
                                            displayedComponents: [.date])
                                 .foregroundColor(Color(uiColor: .placeholderText))
@@ -104,33 +101,22 @@ struct ProfileView: View {
                         }
                     }
                 
-                Section(header: Text("医療機関")
-                    .font(.headline)) {
-                        TextField("Hospital",
-                                  text: $profileModel.hospitalName,
-                                  prompt: Text("病院名")) // Hospital Name
+                Section(header: Text("医療機関").font(.headline)) {
+                        TextField("病院名", text: $profileModel.hospitalName)
                         .submitLabel(.next)
                         .focused($focusedField2, equals: .hospitalName)
                         
-                        TextField("Allergist",
-                                  text: $profileModel.allergist,
-                                  prompt: Text("担当医")) // Allergist Name
+                        TextField("担当医", text: $profileModel.allergist)
                         .submitLabel(.next)
                         .focused($focusedField2, equals: .allergist)
                         
-                        TextField("allergistContactInfo",
-                                  text: $profileModel.allergistContactInfo,
-                                  prompt: Text("担当医連絡先")) // Allergist's Contact Information
+                        TextField("担当医連絡先", text: $profileModel.allergistContactInfo)
                         .submitLabel(.done)
                         .focused($focusedField2, equals: .allergistContactInfo)
                     }
                     .fontWeight(.bold)
                 
-                // Added this selector in ProfileView
-                Section(header: HStack {
-                    Text("食べないようにしている食物") // Allergens that will be managed
-                        .font(.headline)
-                }) {
+                Section(header: Text("食べないようにしている食物").font(.headline)) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in
                         Text(allergen)
                     }
@@ -143,16 +129,15 @@ struct ProfileView: View {
                             RowBackground(isEmpty: profileModel.allergens.isEmpty)
                             HStack {
                                 Symbols.allergens
-                                Text("アレルゲンを選択") // Add Allergens
+                                Text("アレルゲンを選択")
                             }
                         }
                     }
                     .sheet(isPresented: $showingAddAllergen) {
                         AddAllergenView(allergenOptions: allergenOptions, selectedAllergens: $profileModel.allergens, selectedItems: Set($profileModel.allergens.wrappedValue))
                     }
-                    
                 }
-            })
+            }
             .keyboardDismissGesture()
             .onSubmit {
                 switch focusedField1 {
@@ -171,10 +156,10 @@ struct ProfileView: View {
                     focusedField2 = nil
                 }
             }
-            .navigationTitle("プロフィール") // Profile
+            .navigationTitle("プロフィール")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button() {
+                    Button {
                         let validation = formValidation
                         if validation.validateForm() {
                             profileModel.addButtonPressed()
@@ -183,14 +168,14 @@ struct ProfileView: View {
                             activeAlert = .emptyValidation
                         }
                     } label: {
-                        Symbols.done // Save
+                        Symbols.done
                     }
                     .alert(item: $activeAlert) { alertType in
                         switch alertType {
                         case .saveConfirmation:
-                            return Alert(title: Text("データが保存されました。"), // Data has been successfully saved
+                            return Alert(title: Text("データが保存されました。"),
                                          message: Text(""),
-                                         dismissButton: .default(Text("閉じる"), action: { // Close
+                                         dismissButton: .default(Text("閉じる"), action: {
                                        presentationMode.wrappedValue.dismiss()
                                    }))
                         case .emptyValidation:
@@ -198,7 +183,7 @@ struct ProfileView: View {
                                          message: Text(formValidation.getEmptyFieldsMessage()),
                                          dismissButton: .default(Text("閉じる")))
                         case .saveError:
-                            return Alert(title: Text("保存できませんでした。"), // Please select diagnosis and allergens.
+                            return Alert(title: Text("保存できませんでした。"),
                                          message: Text("もう一度試してください。"),
                                          dismissButton: .default(Text("閉じる")))
                         }
@@ -212,11 +197,10 @@ struct ProfileView: View {
         Button(action: {
             presentationMode.wrappedValue.dismiss()
         }, label: {
-            Image(systemName: "arrow.uturn.backward") // Cancel
+            Image(systemName: "arrow.uturn.backward")
         })
     }
     private func deleteAllergen(at offsets: IndexSet) {
         profileModel.allergens.remove(atOffsets: offsets)
     }
-    
 }

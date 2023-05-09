@@ -1,5 +1,5 @@
 //
-//  MedicalTestAndEpisodeView.swift
+//  AllergenDetailView.swift
 //  Guardian
 //
 //  Created by realteff on 2023/03/14.
@@ -28,29 +28,23 @@ import CloudKit
     }
 }
 
-struct MedicalTestAndEpisodeView: View {
+struct AllergenDetailView: View {
     @StateObject var episodeModel: EpisodeModel
     @StateObject private var medicalTest: MedicalTest
-    @State private var episodeDate: Date = Date()
+    @State private var diagnosis = [DiagnosisListModel]()
     @State private var firstKnownExposure: Bool = false
     @State private var isLoading = true
-
-    @State private var showChartView = false
-
     @State private var showAlert = false
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false
-
     @State private var viewDidLoad = false
     @Environment(\.presentationMode) var presentationMode
-    @Environment(\.colorScheme) var colorScheme
-
+    
     var allergenName: String = "Unknown Allergen"
     let allergen: CKRecord
     let existingEpisodeData = NotificationCenter.default.publisher(for: Notification.Name("existingEpisodeData"))
-    @State private var diagnosis = [DiagnosisListModel]()
     let symbolImage: Image
-
+    
     init(allergen: CKRecord, symbolImage: Image) {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
@@ -58,7 +52,7 @@ struct MedicalTestAndEpisodeView: View {
         _medicalTest = StateObject(wrappedValue: MedicalTest(allergen: allergen))
         self.symbolImage = symbolImage
     }
-
+    
     func fetchLocalData() {
         let allergenID = medicalTest.allergen.recordID.recordName
         medicalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
@@ -81,7 +75,7 @@ struct MedicalTestAndEpisodeView: View {
         let dispatchWork = DispatchGroup()
         let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
-
+        
         //MARK: - Blood
         let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
         bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -111,11 +105,9 @@ struct MedicalTestAndEpisodeView: View {
                 dispatchWork.leave()
             }
         }
-
         addOperation(operation: bloodTestQueryOperation)
         
         //MARK: - Skin
-        
         let skinTestQuery = CKQuery(recordType: "SkinTest", predicate: predicate)
         skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
@@ -199,7 +191,7 @@ struct MedicalTestAndEpisodeView: View {
             List {
                 Section(header: Text("診断歴") // Medical Test
                     .font(.title2)
-                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .foregroundColor(Color(uiColor: .label))
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         if diagnosis.isEmpty {
@@ -214,7 +206,7 @@ struct MedicalTestAndEpisodeView: View {
                     }
                 Section(header: Text("医療検査記録") // Medical Test
                     .font(.title2)
-                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .foregroundColor(Color(uiColor: .label))
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         VStack(alignment: .leading) {
@@ -229,7 +221,7 @@ struct MedicalTestAndEpisodeView: View {
                             }
                             Divider()
                             HStack {
-                                Text("皮膚プリック検査") // Skin Test
+                                Text("皮膚プリックテスト") // Skin Test
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
@@ -239,7 +231,7 @@ struct MedicalTestAndEpisodeView: View {
                             }
                             Divider()
                             HStack {
-                                Text("食物経口負荷試験") // Oral Food Challenge
+                                Text("経口負荷試験") // Oral Food Challenge
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
@@ -259,7 +251,7 @@ struct MedicalTestAndEpisodeView: View {
                                 Spacer()
                             }
                             .font(.headline)
-                            .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
+                            .foregroundColor(Color(.systemBackground))
                             .padding()
                             .background(Color(uiColor: .systemIndigo))
                             .cornerRadius(10)
@@ -274,12 +266,12 @@ struct MedicalTestAndEpisodeView: View {
                             )
                             .opacity(0)
                         )
-                
+                        
                     }
                 // Episode
                 Section(header: Text("発症記録")
                     .font(.title2)
-                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .foregroundColor(Color(uiColor: .label))
                     .fontWeight(.semibold)
                     .padding(.top)) {
                         if episodeModel.episodeInfo.isEmpty {
@@ -294,9 +286,9 @@ struct MedicalTestAndEpisodeView: View {
                             }
                         }
                         ZStack {
-                           NavigationLink(destination: EpisodeView(record: allergen)) {
-                               EmptyView()
-                           }
+                            NavigationLink(destination: EpisodeView(record: allergen)) {
+                                EmptyView()
+                            }
                             HStack {
                                 Spacer()
                                 Symbols.addNew
@@ -304,9 +296,9 @@ struct MedicalTestAndEpisodeView: View {
                                 Spacer()
                             }
                             .font(.headline)
-                            .foregroundColor(colorScheme == .dark ? Color(.systemBackground) : .white)
+                            .foregroundColor(Color(.systemBackground))
                             .padding()
-                            .background(colorScheme == .dark ? Color(.systemBlue).opacity(0.8) : Color.blue)
+                            .background(Color(.systemBlue).opacity(0.8))
                             .cornerRadius(10)
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -344,7 +336,6 @@ struct MedicalTestAndEpisodeView: View {
                     title: Text("医療検査・発症記録を\n削除しますか？"),
                     message: Text(""),
                     primaryButton: .destructive(Text("削除")) {
-                        // Delete all data action
                         episodeModel.deleteAllData()
                         for test in medicalTest.bloodTest where test.record != nil {
                             episodeModel.deleteRecord(record: test.record!)
@@ -374,7 +365,7 @@ struct MedicalTestAndEpisodeView: View {
     }
 }
 
-extension MedicalTestAndEpisodeView {
+extension AllergenDetailView {
     struct EpisodeListRow: View {
         let headline: String
         let caption1: String
@@ -403,28 +394,24 @@ extension MedicalTestAndEpisodeView {
                 if !caption3.isEmpty {
                     HStack {
                         Text("・接触タイプ: ")
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
                             .fontWeight(.semibold)
                         Text(caption3)
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
                         Spacer()
                     }
+                    .font(.subheadline)
+                    .foregroundColor(.primary)
                 }
                 if !caption4.isEmpty {
                     HStack {
                         Text("・症状: ")
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
                             .fontWeight(.semibold)
                         Text(caption4)
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
                             .lineLimit(1)
                             .truncationMode(.tail)
                         Spacer()
                     }
+                    .font(.subheadline)
+                    .foregroundColor(.primary)
                 }
             }.lineSpacing(10)
         }

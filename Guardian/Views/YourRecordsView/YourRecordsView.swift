@@ -247,10 +247,11 @@ struct YourRecordsView: View {
                     }) {
                         Image(uiImage: profileImage)
                             .resizable()
-                            .scaledToFill()
-                            .frame(width: 40, height: 40)
+                            .scaledToFit()
+                            .frame(height: 40)
                             .clipShape(Circle())
                     }
+                    .padding(.trailing, -20)
                 }
             }
             .sheet(isPresented: $isShowingProfileView) {
@@ -397,7 +398,7 @@ struct YourRecordsViewGrid: View {
         LazyVGrid(columns: columns, spacing: 16) {
             ForEach(items) { item in
                 NavigationLink(
-                    destination: MedicalTestAndEpisodeView(allergen: item.record, symbolImage: Image(item.imageName)),
+                    destination: AllergenDetailView(allergen: item.record, symbolImage: Image(item.imageName)),
                     label: {
                         YourRecordsViewGridCell(
                             headline: item.headline,
@@ -525,5 +526,33 @@ struct LoadingView<Content>: View where Content: View {
                 
             }
         }
+    }
+}
+
+struct YourRecordsView_Previews: PreviewProvider {
+    static var previews: some View {
+        let sampleProfile = createSampleProfile()
+
+        NavigationView {
+            YourRecordsView(profile: sampleProfile)
+        }
+    }
+
+    static func createSampleProfile() -> CKRecord {
+        let recordID = CKRecord.ID(recordName: "sampleRecord")
+        let sampleProfile = CKRecord(recordType: "Profile", recordID: recordID)
+        sampleProfile["firstName"] = "John" as CKRecordValue
+
+        // Use a default image
+        if let defaultImage = UIImage(systemName: "person.fill"),
+           let imageData = defaultImage.pngData() {
+            let tempDir = FileManager.default.temporaryDirectory
+            let fileURL = tempDir.appendingPathComponent("default_profile_image.png")
+            try? imageData.write(to: fileURL)
+            let asset = CKAsset(fileURL: fileURL)
+            sampleProfile["profileImage"] = asset
+        }
+
+        return sampleProfile
     }
 }

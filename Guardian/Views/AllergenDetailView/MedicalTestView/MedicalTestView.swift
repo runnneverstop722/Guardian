@@ -395,7 +395,6 @@ struct MedicalTestView: View {
 struct BloodTestSection: View {
     @Binding var bloodTests: [BloodTest]
     @Binding var deleteIDs: [CKRecord.ID]
-//    @Binding var showTestChartsView: Bool
     @State private var isShowingBloodTestTutorialAlert = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {

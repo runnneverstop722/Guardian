@@ -14,7 +14,6 @@ struct KeyboardDismissViewModifier: ViewModifier {
                 UIApplication.shared.dismissKeyboard()
             }
     }
-
     func body(content: Content) -> some View {
         content
             .gesture(gesture)
