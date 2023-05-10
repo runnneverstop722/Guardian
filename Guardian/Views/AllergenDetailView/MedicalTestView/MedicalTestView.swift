@@ -159,7 +159,7 @@ struct MedicalTestView: View {
     @EnvironmentObject var medicalTest: MedicalTest
     @State private var deleteIDs: [CKRecord.ID] = []
     @State private var activeAlert: ActiveAlert?
-    @State private var isLoading = true
+    @State private var isLoading = false
     @Environment(\.presentationMode) var presentationMode
     
     var totalNumberOfMedicalTest: String {
@@ -168,40 +168,41 @@ struct MedicalTestView: View {
     //MARK: - Body View
     
     var body: some View {
-        VStack {
-            Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
-                Text("血液検査").tag(0) // Blood Test
-                Text("皮膚プリックテスト").tag(1) // Skin Test
-                Text("食物経口負荷試験").tag(2) // Oral Food Challenge
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding()
+        ZStack {
             VStack {
-                if selectedTestIndex == 0 {
-                    BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
-                } else if selectedTestIndex == 1 {
-                    SkinTestSection(skinTests: $medicalTest.skinTest, deleteIDs: $deleteIDs)
-                } else {
-                    OralFoodChallengeSection(oralFoodChallenges: $medicalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
+                Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
+                    Text("血液検査").tag(0) // Blood Test
+                    Text("皮膚プリックテスト").tag(1) // Skin Test
+                    Text("食物経口負荷試験").tag(2) // Oral Food Challenge
                 }
-            }
-            .animation(.default, value: selectedTestIndex)
-        }
-        .navigationTitle("医療検査記録") // Medical Test
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(role: .none) {
-                    saveData { result in
-                        switch result {
-                        case .success:
-                            activeAlert = .saveConfirmation
-                        default:
-                            activeAlert = .saveError
-                        }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                VStack {
+                    if selectedTestIndex == 0 {
+                        BloodTestSection(bloodTests: $medicalTest.bloodTest, deleteIDs: $deleteIDs)
+                    } else if selectedTestIndex == 1 {
+                        SkinTestSection(skinTests: $medicalTest.skinTest, deleteIDs: $deleteIDs)
+                    } else {
+                        OralFoodChallengeSection(oralFoodChallenges: $medicalTest.oralFoodChallenge, deleteIDs: $deleteIDs)
                     }
-                } label: {
-                    Symbols.done // Save
                 }
+                .animation(.default, value: selectedTestIndex)
+            }
+            .navigationTitle("医療検査記録") // Medical Test
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(role: .none) {
+                        saveData { result in
+                            switch result {
+                            case .success:
+                                activeAlert = .saveConfirmation
+                            default:
+                                activeAlert = .saveError
+                            }
+                        }
+                    } label: {
+                        Symbols.done // Save
+                    }
                     .alert(item: $activeAlert) { alertType in
                         switch alertType {
                         case .saveConfirmation:
@@ -218,7 +219,12 @@ struct MedicalTestView: View {
                     }
                 }
             }
+            if isLoading {
+                Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
+                LoadingAlert()
+            }
         }
+    }
     
     //MARK: - Func Save
     func saveData(completion: @escaping ((SaveAlert) -> Void)) {
@@ -227,6 +233,9 @@ struct MedicalTestView: View {
         let newBloodTests = medicalTest.bloodTest.filter { $0.record == nil }
         let newSkinTests = medicalTest.skinTest.filter { $0.record == nil }
         let neworalTests = medicalTest.oralFoodChallenge.filter { $0.record == nil }
+        
+        // Start Loading
+        isLoading = true
         
         for var bloodTest in newBloodTests {
             let myRecord = CKRecord(recordType: "BloodTest")
@@ -299,7 +308,9 @@ struct MedicalTestView: View {
         updateRecord(record: allergen)
         NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
         PersistenceController.shared.addAllergen(allergen: allergen)
+        // Stop Loading
         dispatchGroup.notify(queue: .main) {
+            self.isLoading = false
             completion(.success)
         }
     }
@@ -313,6 +324,9 @@ struct MedicalTestView: View {
         let bloodTests = medicalTest.bloodTest.filter { $0.record != nil }
         let skinTests = medicalTest.skinTest.filter { $0.record != nil }
         let oralTests = medicalTest.oralFoodChallenge.filter { $0.record != nil }
+        
+        // Start Loading
+        isLoading = true
         
         var records = [CKRecord]()
         bloodTests.forEach {
@@ -365,12 +379,22 @@ struct MedicalTestView: View {
                 PersistenceController.shared.deleteOralFoodChallenge(recordIDs: ids)
             }
             dispatchGroup.leave()
+            // Stop Loading
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
         CKContainer.default().privateCloudDatabase.add(modifyRecords)
     }
     
     private func save(record: CKRecord, completion: @escaping ((CKRecord?) -> Void)) {
+        DispatchQueue.main.async {
+            self.isLoading = true
+        }
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
             if let record = returnedRecord {

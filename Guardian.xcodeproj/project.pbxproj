@@ -181,13 +181,6 @@
 			path = "Core Data";
 			sourceTree = "<group>";
 		};
-		05B0711D29C019FC008A2010 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		05B0711F29C01A11008A2010 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,7 +298,6 @@
 				7c18f8faa4b5b68e441aeb8971c3d551 /* Guardian.swift */,
 				05B0712429C01AF1008A2010 /* Utilities */,
 				05B0711F29C01A11008A2010 /* Views */,
-				05B0711D29C019FC008A2010 /* Model */,
 				b44ea3774057f863247ceade2fe0129a /* Assets.xcassets */,
 				95D39704291C4B3A0053F8C8 /* Preview Content */,
 				057F96D829E0F43800E92220 /* ProfileContainer.xcdatamodeld */,

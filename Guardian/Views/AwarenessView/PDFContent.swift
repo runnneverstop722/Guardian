@@ -20,6 +20,11 @@ class PDFContent {
         self.viewContext = viewContext
     }
     
+    func addItemIfExists(label: String, value: String?, to items: inout [(String, String)]) {
+        if let value = value, !value.isEmpty {
+            items.append((label, value))
+        }
+    }
     func drawPageContent(in renderer: UIGraphicsPDFRendererContext, pageRect: CGRect, textTop: CGFloat){
         let context = renderer.cgContext
         // Draw the content
@@ -63,17 +68,18 @@ class PDFContent {
             textTop += diagnosisTitleStringSize.height + 10
             
             for (index,diagnosis) in diagnosisData.enumerated() {
-                let items = [
-                    ("⚫︎診断記録: ", "#\(index + 1)"),
-                    ("・診断日: ", dateFormatter.string(from: diagnosis.diagnosisDate ?? Date())),
-                    ("・診断名: ", diagnosis.diagnosis ?? ""),
-                    ("・アレルゲン: ", (diagnosis.allergens?.joined(separator: ", ") ?? "")),
-                    ("・医療機関名: ", diagnosis.diagnosedHospital ?? ""),
-                    ("・担当医: ", diagnosis.diagnosedAllergist ?? ""),
-                    ("・担当医コメント: ", diagnosis.diagnosedAllergistComment ?? ""),
-                    ("・添付写真: ", " ")
-                ]
-                
+                var items: [(String, String)] = []
+                items.append(("⚫︎診断記録: ", "#\(index + 1)"))
+                items.append(("・診断日: ", dateFormatter.string(from: diagnosis.diagnosisDate ?? Date())))
+                items.append(("・診断名: ", diagnosis.diagnosis ?? ""))
+                addItemIfExists(label: "・アレルゲン: ", value: diagnosis.allergens?.joined(separator: ", "), to: &items)
+                addItemIfExists(label: "・医療機関名: ", value: diagnosis.diagnosedHospital, to: &items)
+                addItemIfExists(label: "・担当医: ", value: diagnosis.diagnosedAllergist, to: &items)
+                addItemIfExists(label: "・担当医コメント: ", value: diagnosis.diagnosedAllergistComment, to: &items)
+                if let diagnosisPhoto = diagnosis.diagnosisPhoto, !diagnosisPhoto.isEmpty {
+                    items.append(("・添付写真: ", " "))
+                }
+
                 let itemFont = UIFont.systemFont(ofSize: 12.0)
                 
                 for (label, value) in items {
@@ -269,18 +275,22 @@ class PDFContent {
                     var items: [(String, String)] = []
                     items.append(("⚫︎発症記録: ", "#\(index + 1)"))
                     items.append(("・発症日: ", dateFormatter.string(from: episode.episodeDate ?? Date())))
-                    items.append(("・初症状だった: ", episode.firstKnownExposure ? "はい" : "いいえ"))
-                    items.append(("・受診した: ", episode.wentToHospital ? "はい" : "いいえ"))
-                    items.append(("・アレルゲンへの触れ方: ", (episode.typeOfExposure?.joined(separator: ", ") ?? "")))
-                    items.append(("・摂取量: ", episode.intakeAmount ?? ""))
-                    items.append(("・症状: ", (episode.symptoms?.joined(separator: ", ") ?? "")))
-                    items.append(("・重症度評価: ", episode.severity ?? ""))
-                    items.append(("・発症までの経過時間: ", episode.leadTimeToSymptoms ?? ""))
-                    items.append(("・運動後だった: ", episode.didExercise ? "はい" : "いいえ"))
-                    items.append(("・取った対応: ", (episode.treatments?.joined(separator: ", ") ?? "")))
-                    items.append(("・取った対応（その他）: ", episode.otherTreatment ?? ""))
-                    items.append(("・メモ: ", episode.episodeMemo ?? ""))
-                    items.append(("・添付写真: ", " "))
+                    addItemIfExists(label: "・初症状だった: ", value: episode.firstKnownExposure ? "はい" : "いいえ", to: &items)
+                    addItemIfExists(label: "・受診した: ", value: episode.wentToHospital ? "はい" : "いいえ", to: &items)
+                    addItemIfExists(label: "・アレルゲンへの触れ方: ", value: episode.typeOfExposure?.joined(separator: ", "), to: &items)
+                    addItemIfExists(label: "・摂取量: ", value: episode.intakeAmount, to: &items)
+                    addItemIfExists(label: "・症状: ", value: episode.symptoms?.joined(separator: ", "), to: &items)
+                    addItemIfExists(label: "・重症度評価: ", value: episode.severity, to: &items)
+                    addItemIfExists(label: "・発症までの経過時間: ", value: episode.leadTimeToSymptoms, to: &items)
+                    addItemIfExists(label: "・運動後だった: ", value: episode.didExercise ? "はい" : "いいえ", to: &items)
+                    addItemIfExists(label: "・取った対応: ", value: episode.treatments?.joined(separator: ", "), to: &items)
+                    addItemIfExists(label: "・取った対応（その他）: ", value: episode.otherTreatment, to: &items)
+                    let memo = episode.episodeMemo ?? ""
+                    let indentedEpisodeMemo = memo.replacingOccurrences(of: "\n", with: "\n            ")
+                    addItemIfExists(label: "・メモ: ", value: indentedEpisodeMemo, to: &items)
+                    if let episodePhoto = episode.episodePhoto, !episodePhoto.isEmpty {
+                        items.append(("・添付写真: ", " "))
+                    }
                     
                     let itemFont = UIFont.systemFont(ofSize: 12.0)
                     

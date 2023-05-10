@@ -110,7 +110,7 @@ struct DiagnosisView: View {
                         TextField("担当医", text: $diagnosisModel.diagnosedAllergist) // Allergist Name
                             .submitLabel(.next)
                             .focused($diagnosisFocusedField, equals: .diagnosedAllergist)
-                        TextField("担当医コメント", text: $diagnosisModel.diagnosedAllergistComment) // Allergist Comment
+                        TextField("担当医コメント・指導内容", text: $diagnosisModel.diagnosedAllergistComment) // Allergist Comment
                             .submitLabel(.done)
                             .focused($diagnosisFocusedField, equals: .diagnosedAllergistComment)
                     }
