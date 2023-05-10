@@ -38,6 +38,8 @@ struct AllergenDetailView: View {
     @State private var showMedicalTestView = false
     @State private var showEpisodeView = false
     @State private var viewDidLoad = false
+    @State private var currentPage = 0
+    @State private var isLinkActive = false
     @Environment(\.presentationMode) var presentationMode
     
     var allergenName: String = "Unknown Allergen"
@@ -204,125 +206,154 @@ struct AllergenDetailView: View {
                             }
                         }
                     }
-                Section(header: Text("医療検査記録") // Medical Test
-                    .font(.title2)
-                    .foregroundColor(Color(uiColor: .label))
-                    .fontWeight(.semibold)
-                    .padding(.top)) {
+                
+                Section {
+                    HStack {
                         VStack(alignment: .leading) {
+                            Text("Medical Test")
+                                .font(.footnote)
+                                .fontWeight(.light)
+                            Text("医療検査記録").font(.title).bold()
                             HStack {
-                                Text("血液(特異的IgE抗体)検査") // Blood Test
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(medicalTest.bloodTest.count)")
-                                Text("件")
+                                Image(systemName: "menucard")
+                                Text("\(medicalTest.bloodTest.count + medicalTest.skinTest.count + medicalTest.oralFoodChallenge.count) 件")
                             }
-                            Divider()
-                            HStack {
-                                Text("皮膚プリックテスト") // Skin Test
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(medicalTest.skinTest.count)")
-                                Text("件")
-                            }
-                            Divider()
-                            HStack {
-                                Text("経口負荷試験") // Oral Food Challenge
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(medicalTest.oralFoodChallenge.count)")
-                                Text("件")
-                            }
+                            .font(.footnote)
+                            .fontWeight(.medium)
+                            .bold()
+                            Spacer()
                         }
-                        
-                        Button(action: {
-                            showMedicalTestView = true
-                        }) {
-                            HStack {
-                                Spacer()
-                                Image(systemName: "book.fill")
-                                Text("詳細")
-                                Spacer()
-                            }
-                            .font(.headline)
-                            .foregroundColor(Color(.systemBackground))
-                            .padding()
-                            .background(Color(uiColor: .systemIndigo))
-                            .cornerRadius(10)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .background(
-                            NavigationLink(
-                                destination: MedicalTestView().environmentObject(medicalTest),
-                                isActive: $showMedicalTestView,
-                                label: {}
+                        Spacer()
+                        VStack(alignment: .trailing) {
+                            AddNewButton(action: {
+                                showMedicalTestView = true
+                            }, image: Image(systemName: "doc.text.magnifyingglass"), gradient: Gradient(colors: [.blue, .purple]))
+                            .padding(.top, 10)
+                            .background(
+                                NavigationLink(
+                                    destination: MedicalTestView().environmentObject(medicalTest),
+                                    isActive: $showMedicalTestView,
+                                    label: {}
+                                )
+                                .opacity(0)
                             )
-                            .opacity(0)
-                        )
-                        
+                            Spacer()
+                        }
                     }
+                    // Summary of Medical Test
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("血液(特異的IgE抗体)検査") // Blood Test
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Text("\(medicalTest.bloodTest.count)")
+                            Text("件")
+                        }
+                        Divider()
+                        HStack {
+                            Text("皮膚プリックテスト") // Skin Test
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Text("\(medicalTest.skinTest.count)")
+                            Text("件")
+                        }
+                        Divider()
+                        HStack {
+                            Text("経口負荷試験") // Oral Food Challenge
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Text("\(medicalTest.oralFoodChallenge.count)")
+                            Text("件")
+                        }
+                    }
+                }
+                
                 // Episode
-                Section(header: Text("発症記録")
-                    .font(.title2)
-                    .foregroundColor(Color(uiColor: .label))
-                    .fontWeight(.semibold)
-                    .padding(.top)) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Episodes")
+                            .font(.footnote)
+                            .fontWeight(.light)
+                        Text("発症記録").font(.title).bold()
+                        HStack {
+                            Image(systemName: "menucard")
+                            Text("\(episodeModel.episodeInfo.count) 件")
+                        }
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .bold()
+                        Spacer()
+                    }
+                    NavigationLink(destination: EpisodeView(record: allergen), isActive: $isLinkActive) {
+                        EmptyView()
+                    }.hidden()
+                    VStack(alignment: .trailing) {
+                        AddNewButton(action: {
+                            self.isLinkActive = true
+                        }, image: Image(systemName: "doc.badge.plus"), gradient: Gradient(colors: [.blue, .purple]))
+                        .padding(.top, 10)
+                        Spacer()
+                    }
+                }
+                
+                // Episode List
+                ScrollView {
+                    VStack(spacing: 20) {
                         if episodeModel.episodeInfo.isEmpty {
                             Text("⚠️本アレルゲンに対して発症記録がありません。")
                                 .font(.subheadline)
                         } else {
-                            ForEach(episodeModel.episodeInfo, id: \.id) { item in
+                            ForEach(episodeModel.episodeInfo.prefix((currentPage+1) * 3), id: \.id) { item in
                                 NavigationLink(
                                     destination: EpisodeView(allergen: episodeModel.allergen, episode: item.record),
                                     label: { EpisodeListRow(headline: item.headline, caption1: item.caption1, caption2: item.caption2, caption3: item.caption3, caption4: item.caption4, caption5: item.caption5)
                                     })
+                                Divider()
                             }
-                        }
-                        ZStack {
-                            NavigationLink(destination: EpisodeView(record: allergen)) {
-                                EmptyView()
-                            }
-                            HStack {
-                                Spacer()
-                                Symbols.addNew
-                                Text("新規作成")
-                                Spacer()
-                            }
-                            .font(.headline)
-                            .foregroundColor(Color(.systemBackground))
-                            .padding()
-                            .background(Color(.systemBlue).opacity(0.8))
-                            .cornerRadius(10)
-                        }
-                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .onReceive(existingEpisodeData) { data in
-                            DispatchQueue.main.async {
-                                if let data = data.object as? EpisodeListModel {
-                                    let index = episodeModel.episodeInfo.firstIndex { $0.record.recordID == data.record.recordID
-                                    }
-                                    if let index = index {
-                                        episodeModel.episodeInfo[index] = data
-                                    } else {
-                                        episodeModel.episodeInfo.insert(data, at: 0)
-                                    }
-                                } else if let recordID = data.object as? CKRecord.ID {
-                                    episodeModel.episodeInfo.removeAll {
-                                        $0.record.recordID == recordID
+                            if currentPage < episodeModel.episodeInfo.count / 3 {
+                                Button {
+                                    currentPage += 1
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "ellipsis.bubble.fill")
+                                        Text("もっと見せて")
                                     }
                                 }
+                                .padding(.top)
+                            }
+                        }
+                        NavigationLink(destination: EpisodeView(record: allergen)) {
+                            EmptyView()
+                        }
+                    }
+                    
+                }
+                .onReceive(existingEpisodeData) { data in
+                    DispatchQueue.main.async {
+                        if let data = data.object as? EpisodeListModel {
+                            let index = episodeModel.episodeInfo.firstIndex { $0.record.recordID == data.record.recordID
+                            }
+                            if let index = index {
+                                episodeModel.episodeInfo[index] = data
+                            } else {
+                                episodeModel.episodeInfo.insert(data, at: 0)
+                            }
+                        } else if let recordID = data.object as? CKRecord.ID {
+                            episodeModel.episodeInfo.removeAll {
+                                $0.record.recordID == recordID
                             }
                         }
                     }
+                }
             }
             .navigationTitle(allergenName)
-            .listStyle(.sidebar)
+            .listStyle(.insetGrouped)
             .toolbar {
                 Button() {
                     showAlert.toggle()

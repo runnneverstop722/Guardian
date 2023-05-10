@@ -160,6 +160,7 @@ struct MedicalTestView: View {
     @State private var deleteIDs: [CKRecord.ID] = []
     @State private var activeAlert: ActiveAlert?
     @State private var isLoading = false
+    @State private var isShowingMedicalTestTutorialAlert = false
     @Environment(\.presentationMode) var presentationMode
     
     var totalNumberOfMedicalTest: String {
@@ -173,7 +174,7 @@ struct MedicalTestView: View {
                 Picker(selection: $selectedTestIndex, label: Text("Test Category")) {
                     Text("血液検査").tag(0) // Blood Test
                     Text("皮膚プリックテスト").tag(1) // Skin Test
-                    Text("食物経口負荷試験").tag(2) // Oral Food Challenge
+                    Text("経口負荷試験").tag(2) // Oral Food Challenge
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
@@ -216,6 +217,20 @@ struct MedicalTestView: View {
                                          message: Text("Please try again!"),
                                          dismissButton: .default(Text("閉じる")))
                         }
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowingMedicalTestTutorialAlert = true
+                    } label: {
+                        Symbols.question
+                    }
+                    .alert(isPresented: $isShowingMedicalTestTutorialAlert) {
+                        Alert(title: Text("医療検査記録"),
+                              message: Text("三つの検査結果を記録できます。\n記録されたデータを基にグラフが自動作成されます（今後アップデート予定）\nリスト上で記録内容を削除するには左スワイプしてください。"),
+                              dismissButton: .default(Text("閉じる")))
                     }
                 }
             }

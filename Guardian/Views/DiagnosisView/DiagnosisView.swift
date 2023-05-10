@@ -43,6 +43,7 @@ struct DiagnosisView: View {
     @State private var showingRemoveDiagnosisAlert = false
     @State private var showingEmptyValidationAlert = false
     @State private var showingSaveConfirmationAlert = false
+    @State private var isShowingDiagnosisTutorialAlert = false
     @State private var isPickerPresented: Bool = false
     @State private var selectedImages: [Image] = []
     private let diagnosisOptions = ["即時型IgE抗体アレルギー", "遅延型IgG抗体アレルギー", "アレルギー性腸炎", "好酸球性消化管疾患", "新生児・乳児食物蛋白誘発胃腸症"]
@@ -285,6 +286,20 @@ struct DiagnosisView: View {
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる")))
                         }
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowingDiagnosisTutorialAlert = true
+                    } label: {
+                        Symbols.question
+                    }
+                    .alert(isPresented: $isShowingDiagnosisTutorialAlert) {
+                        Alert(title: Text("診断記録とは？"),
+                              message: Text("初めて医師より食物アレルギーと\n診断された際に記録します。\n５つの診断名から選択できます。\n\n- 即時型IgE抗体アレルギー\n- 遅延型IgG抗体アレルギー\n- アレルギー性腸炎\n- 好酸球性消化管疾患\n- 新生児・乳児食物蛋白誘発胃腸症"),
+                              dismissButton: .default(Text("閉じる")))
                     }
                 }
             }

@@ -387,7 +387,7 @@ import CloudKit
         let predicate = NSPredicate(format: "allergen == %@", reference)
         
         let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        query.sortDescriptors = [NSSortDescriptor(key: "episodeDate", ascending: false)]
         
         let queryOperation = CKQueryOperation(query: query)
         
@@ -445,7 +445,7 @@ import CloudKit
     
     func fetchItemsFromLocalCache() {
         let fetchRequest = EpisodeEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "episodeDate", ascending: false)]
         fetchRequest.predicate = NSPredicate(format: "allergenID == %@", record.recordID.recordName)
         do {
             let records = try context.fetch(fetchRequest)

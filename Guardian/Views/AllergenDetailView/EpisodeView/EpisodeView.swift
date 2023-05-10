@@ -34,6 +34,7 @@ struct EpisodeView: View {
     @State private var showingAlert = false
     @State private var isUpdate = false
     @State private var showRemoveAlert = false
+    @State private var isShowingEpisodeTutorialAlert = false
     @State private var activeAlertEpisode: ActiveAlertOnEpisode?
     @FocusState private var episodeFocusedField: EpisodeFormField?
     @Environment(\.presentationMode) var presentationMode
@@ -279,6 +280,20 @@ struct EpisodeView: View {
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる")))
                         }
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowingEpisodeTutorialAlert = true
+                    } label: {
+                        Symbols.question
+                    }
+                    .alert(isPresented: $isShowingEpisodeTutorialAlert) {
+                        Alert(title: Text("発症記録"),
+                              message: Text("発症した際に状況を記録するだけではなく、次回の受診する際に確認したいことも記録しましょう。患部の写真を添付しておけば、より正確な診断に役立つでしょう。"),
+                              dismissButton: .default(Text("閉じる")))
                     }
                 }
             }

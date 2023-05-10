@@ -15,7 +15,7 @@ enum Symbols {
     static let delete = Image(systemName: "trash.fill")
     static let records = Image(systemName: "menucard")
     static let allergens = Image(systemName: "allergens")
-    static let addNew = Image(systemName: "plus.circle")
+    static let addNew = Image(systemName: "doc.badge.plus")
     static let done = Image(systemName: "checkmark")
     static let question = Image(systemName: "questionmark.circle")
     static let medicalTest = Image(systemName: "cross.case")

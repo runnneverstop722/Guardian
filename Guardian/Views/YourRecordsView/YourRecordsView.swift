@@ -16,7 +16,6 @@ struct YourRecordsView: View {
     @State private var isLoading = true
     @State private var isAddingNewDiagnosis = false
     @State private var showingRemoveAllergensAlert = false
-    @State private var isShowingDiagnosisTutorialAlert = false
     @State private var isShowingAllergensTutorialAlert = false
     @State private var selection = 0
     @State private var allergenCount: Int = 0
@@ -52,124 +51,89 @@ struct YourRecordsView: View {
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             ScrollView(.vertical) {
-                
                 //MARK: - Diagnosis List View
-                LazyVStack(spacing: 8.0) {
+                VStack {
                     HStack {
-                        Spacer()
-                        ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
-                            Color("background")
-                                .cornerRadius(14)
-                                .frame(maxWidth: (screenWidth - 20))
-                                .frame(maxHeight: 250)
-                                .opacity(0.2)
+                        VStack(alignment: .leading) {
+                            Text("Diagnosis")
+                                .font(.footnote)
+                                .fontWeight(.light)
+                            Text("診断記録")
+                                .font(.title)
+                                .bold()
+                            Spacer()
+                            Label(
+                                diagnosisModel.diagnosisInfo.count == 0 ? "0 / 0 件" : "\(selection + 1) / \(diagnosisModel.diagnosisInfo.count) 件", systemImage: "menucard")
+                            .font(.footnote)
+                            .fontWeight(.medium)
+                            .bold()
+                            
+                            Spacer()
+                        }
+                        .padding(.top)
+                        .padding(.leading, 10)
+                        
+                        VStack {
                             HStack {
                                 Spacer()
-                                VStack {
-                                    VStack {
-                                        HStack {
-                                            VStack(alignment: .leading) {
-                                                Text("Diagnosis").font(.footnote).fontWeight(.light).shadow(radius: 6)
-                                                HStack {
-                                                    Button {
-                                                        isShowingDiagnosisTutorialAlert = true
-                                                    } label: {
-                                                        HStack {
-                                                            Text("診断記録").font(.title).bold()
-                                                            Symbols.question
-                                                        }.foregroundColor(.primary)
-                                                    }
-                                                    Spacer()
-                                                }
-                                                Label(
-                                                    diagnosisModel.diagnosisInfo.count == 0 ? "0 / 0 件" : "\(selection + 1) / \(diagnosisModel.diagnosisInfo.count) 件", systemImage: "menucard")
-                                                .font(.footnote)
-                                                .fontWeight(.medium)
-                                                .shadow(radius: 6)
-                                                .bold()
-                                                Spacer()
-                                            }
-                                            .padding(.top)
-                                            Spacer()
+                                AddNewButton(action: {
+                                    isAddingNewDiagnosis = true
+                                }, image: Image(systemName: "doc.badge.plus"), gradient: Gradient(colors: [.blue, .purple]))
+                                .padding(.trailing, 10)
+                                .padding(.top, 20)
+                                .background(
+                                    NavigationLink(
+                                        destination: DiagnosisView(profile: profile),
+                                        isActive: $isAddingNewDiagnosis,
+                                        label: {}
+                                    )
+                                ).onReceive(existingDiagnosisData) { data in
+                                    if let data = data.object as? DiagnosisListModel {
+                                        let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID
                                         }
-                                        .padding(.leading)
-                                        .frame(maxWidth: (screenWidth-20))
-                                        .frame(height: 80)
-                                        .shadow(radius: 12)
-                                    }
-                                    Carousel(diagnosisItems: $diagnosisModel.diagnosisInfo, selection: $selection)
-                                        .frame(maxWidth: .infinity)
-                                    
-                                }
-                                Spacer()
-                            }.padding(.bottom, 5)
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        isAddingNewDiagnosis = true
-                                    } label: {
-                                        Symbols.addNew
-                                            .padding()
-                                            .font(.title3)
-                                            .foregroundColor(.primary)
-                                    }.background(
-                                        NavigationLink(
-                                            destination: DiagnosisView(profile: profile),
-                                            isActive: $isAddingNewDiagnosis,
-                                            label: {}
-                                        )
-                                    ).onReceive(existingDiagnosisData) { data in
-                                        if let data = data.object as? DiagnosisListModel {
-                                            let index = diagnosisModel.diagnosisInfo.firstIndex { $0.record.recordID == data.record.recordID
-                                            }
-                                            if let index = index {
-                                                diagnosisModel.diagnosisInfo[index] = data
-                                            } else {
-                                                diagnosisModel.diagnosisInfo.insert(data, at: 0)
-                                            }
-                                        } else if let recordID = data.object as? CKRecord.ID {
-                                            diagnosisModel.diagnosisInfo.removeAll {
-                                                $0.record.recordID == recordID
-                                            }
+                                        if let index = index {
+                                            diagnosisModel.diagnosisInfo[index] = data
+                                        } else {
+                                            diagnosisModel.diagnosisInfo.insert(data, at: 0)
                                         }
-                                    }
-                                    .onReceive(existingAllergenData) { data in
-                                        if let data = data.object as? AllergensListModel {
-                                            let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID
-                                            }
-                                            if let index = index {
-                                                episodeModel.allergens[index] = data
-                                            } else {
-                                                episodeModel.allergens.insert(data, at: 0)
-                                            }
-                                        } else if let recordID = data.object as? CKRecord.ID {
-                                            diagnosisModel.diagnosisInfo.removeAll {
-                                                $0.record.recordID == recordID
-                                            }
-                                        }
-                                    }
-                                    .onAppear() {
-                                        if !didLoad {
-                                            didLoad = true
-                                            diagnosisModel.fetchItemsFromCloud {
-                                                isLoading = false
-                                            }
+                                    } else if let recordID = data.object as? CKRecord.ID {
+                                        diagnosisModel.diagnosisInfo.removeAll {
+                                            $0.record.recordID == recordID
                                         }
                                     }
                                 }
-                                Spacer()
+                                .onReceive(existingAllergenData) { data in
+                                    if let data = data.object as? AllergensListModel {
+                                        let index = episodeModel.allergens.firstIndex { $0.record.recordID == data.record.recordID
+                                        }
+                                        if let index = index {
+                                            episodeModel.allergens[index] = data
+                                        } else {
+                                            episodeModel.allergens.insert(data, at: 0)
+                                        }
+                                    } else if let recordID = data.object as? CKRecord.ID {
+                                        diagnosisModel.diagnosisInfo.removeAll {
+                                            $0.record.recordID == recordID
+                                        }
+                                    }
+                                }
+                                .onAppear() {
+                                    if !didLoad {
+                                        didLoad = true
+                                        diagnosisModel.fetchItemsFromCloud {
+                                            isLoading = false
+                                        }
+                                    }
+                                }
                             }
-                            .alert(isPresented: $isShowingDiagnosisTutorialAlert) {
-                                Alert(title: Text("診断記録とは？"),
-                                      message: Text("初めて医師より食物アレルギーと\n診断された際に記録します。\n５つの診断名から選択できます。\n\n- 即時型IgE抗体アレルギー\n- 遅延型IgG抗体アレルギー\n- アレルギー性腸炎\n- 好酸球性消化管疾患\n- 新生児・乳児食物蛋白誘発胃腸症"),
-                                      dismissButton: .default(Text("閉じる")))
-                            }
+                            Spacer()
                         }
+                        
                         Spacer()
                     }
+                    Carousel(diagnosisItems: $diagnosisModel.diagnosisInfo, selection: $selection)
                 }
-                Spacer()
+                .frame(maxWidth: (screenWidth - 30))
                 
                 //MARK: - Allergen Grid Items View
                 LazyVStack(spacing: 8.0) {
@@ -183,16 +147,19 @@ struct YourRecordsView: View {
                                         HStack {
                                             VStack(alignment: .leading) {
                                                 HStack {
-                                                    Text("Allergens").font(.footnote).fontWeight(.light).shadow(radius: 6)
+                                                    Text("Allergens")
+                                                        .font(.footnote)
+                                                        .fontWeight(.light)
                                                     Spacer()
                                                 }
                                                 Button {
                                                     isShowingAllergensTutorialAlert = true
                                                 } label: {
                                                     HStack {
-                                                        Text("アレルゲン").font(.title).bold()
+                                                        Text("アレルゲン")
+                                                            .font(.title)
+                                                            .bold()
                                                         Symbols.question
-                                                            
                                                     }.foregroundColor(.primary)
                                                 }.alert(isPresented: $isShowingAllergensTutorialAlert) {
                                                     Alert(title: Text("アレルゲンのリストを\n編集するには、"),
@@ -202,7 +169,6 @@ struct YourRecordsView: View {
                                                 Label("\(allergenCount) 件", systemImage: "allergens")
                                                     .font(.footnote)
                                                     .fontWeight(.medium)
-                                                    .shadow(radius: 6)
                                                     .bold()
                                                 Spacer()
                                             }
@@ -212,7 +178,6 @@ struct YourRecordsView: View {
                                         .padding(.leading)
                                         .frame(maxWidth: (screenWidth-20))
                                         .frame(height: 80)
-                                        .shadow(radius: 12)
                                     }
                                     VStack {
                                         YourRecordsViewGrid(items: episodeModel.allergens.map {
@@ -234,7 +199,7 @@ struct YourRecordsView: View {
                 .background(
                     Color("background")
                         .cornerRadius(14)
-                        .frame(maxWidth: (screenWidth - 20))
+                        .frame(maxWidth: (screenWidth - 10))
                         .opacity(0.2)
                     
                 )
@@ -256,23 +221,6 @@ struct YourRecordsView: View {
             .sheet(isPresented: $isShowingProfileView) {
                 ProfileView(profile: profile)
             }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button(action: {
-//                        isShowingProfileView = true
-//                    }) {
-//                        Image(uiImage: profileImage)
-//                            .resizable()
-//                            .frame(height: 50)
-//                            .scaledToFit()
-//                            .clipShape(Circle())
-//                    }
-//                    .padding()
-//                }
-//            }
-//            .sheet(isPresented: $isShowingProfileView) {
-//                ProfileView(profile: profile)
-//            }
         }
     }
 }
@@ -440,7 +388,6 @@ struct YourRecordsViewGridCell: View {
     let caption2: String
     let record: CKRecord
     let symbolImage: Image
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -456,7 +403,7 @@ struct YourRecordsViewGridCell: View {
                     .scaledToFit()
                     .frame(width: 60.0, height: 60.0)
                     .background(Color.accentColor)
-                    .foregroundColor(colorScheme == .dark ? Color.white : Color.black) // Updated line
+                //                    .foregroundColor(Color(uiColor: .label)) // Updated line
                     .clipShape(Circle())
                     .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 2)
                 
@@ -531,7 +478,7 @@ struct LoadingView<Content>: View where Content: View {
                 
                 VStack {
                     ActivityIndicator(isAnimating: .constant(true), style: .large)
-                    Text("お待ちください...")
+                    Text("Processing...")
                 }
                 .frame(width: geometry.size.width / 2,
                        height: geometry.size.height / 5)
@@ -541,33 +488,5 @@ struct LoadingView<Content>: View where Content: View {
                 .opacity(self.isShowing ? 1 : 0)
             }
         }
-    }
-}
-
-struct YourRecordsView_Previews: PreviewProvider {
-    static var previews: some View {
-        let sampleProfile = createSampleProfile()
-
-        NavigationView {
-            YourRecordsView(profile: sampleProfile)
-        }
-    }
-
-    static func createSampleProfile() -> CKRecord {
-        let recordID = CKRecord.ID(recordName: "sampleRecord")
-        let sampleProfile = CKRecord(recordType: "Profile", recordID: recordID)
-        sampleProfile["firstName"] = "John" as CKRecordValue
-
-        // Use a default image
-        if let defaultImage = UIImage(systemName: "person.fill"),
-           let imageData = defaultImage.pngData() {
-            let tempDir = FileManager.default.temporaryDirectory
-            let fileURL = tempDir.appendingPathComponent("default_profile_image.png")
-            try? imageData.write(to: fileURL)
-            let asset = CKAsset(fileURL: fileURL)
-            sampleProfile["profileImage"] = asset
-        }
-
-        return sampleProfile
     }
 }

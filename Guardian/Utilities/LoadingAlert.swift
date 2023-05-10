@@ -15,7 +15,7 @@ struct LoadingAlert: View {
                 .progressViewStyle(CircularProgressViewStyle())
                 .scaleEffect(2.0)
                 .padding()
-            Text("お待ちください...")
+            Text("Processing...")
         }
         .frame(width: 200, height: 200)
         .background(Color.secondary.colorInvert())

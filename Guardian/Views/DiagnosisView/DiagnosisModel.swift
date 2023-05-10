@@ -275,7 +275,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
     
     func fetchItemsFromLocalCache() {
         let fetchRequest = DiagnosisEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "diagnosisDate", ascending: false)]
         fetchRequest.predicate = NSPredicate(format: "profileID == %@", record.recordID.recordName)
         do {
             let records = try context.fetch(fetchRequest)
@@ -296,7 +296,7 @@ struct diagnosisInfoModel: Hashable, Identifiable {
         let predicate = NSPredicate(format: "profile == %@", reference)
         
         let query = CKQuery(recordType: "DiagnosisInfo", predicate: predicate)
-        query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        query.sortDescriptors = [NSSortDescriptor(key: "diagnosisDate", ascending: false)]
         
         let queryOperation = CKQueryOperation(query: query)
         
