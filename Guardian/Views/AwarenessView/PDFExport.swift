@@ -13,7 +13,7 @@ class PDFExport {
     private let viewContext: NSManagedObjectContext
     
     private let topPadding: CGFloat = 20
-    private let bottomPadding: CGFloat = 20
+    private let bottomPadding: CGFloat = 50
     private let leftPadding: CGFloat = 50
     private let rightPadding: CGFloat = 50
     
