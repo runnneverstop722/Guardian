@@ -167,7 +167,6 @@ class PDFContent {
             let bloodTests = PersistenceController.shared.fetchBloodTest(allergenID: allergenID)
                 .sorted { $0.bloodTestDate ?? Date() < $1.bloodTestDate ?? Date() }
             if bloodTests.isEmpty {
-                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                 textTop = drawText(message: "⚠️血液検査記録がありません。", font: UIFont.systemFont(ofSize: 12.0), position: CGPoint(x: 20, y: textTop), maxWidth: pageRect.width - 40)
             }
             for (index, bloodTest) in bloodTests.enumerated() {
@@ -188,13 +187,12 @@ class PDFContent {
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
                     let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
-                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
-//                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                 }
                 textTop += 10
-//                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let skinTests = PersistenceController.shared.fetchSkinTest(allergenID: allergenID)
                 .sorted { $0.skinTestDate ?? Date() < $1.skinTestDate ?? Date() }
@@ -220,13 +218,12 @@ class PDFContent {
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
                     let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
-                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
-//                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                 }
                 textTop += 10
-//                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             let oralFoodChallenges = PersistenceController.shared.fetchOralFoodChallenge(allergenID: allergenID)
                 .sorted { $0.oralFoodChallengeDate ?? Date() < $1.oralFoodChallengeDate ?? Date() }
@@ -258,13 +255,12 @@ class PDFContent {
                     let attributedItemText = NSAttributedString(string: itemText, attributes: itemTextAttributes)
                     let itemTextSize = attributedItemText.getSize(withPreferredWidth: pageRect.width - 40)
                     let itemTextRect = CGRect(x: 20, y: textTop, width: pageRect.width - 40,height: itemTextSize.height)
-                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                     attributedItemText.draw(in: itemTextRect)
                     textTop += itemTextSize.height + 6
-//                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                    textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
                 }
                 textTop += 10
-//                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             }
             
             // Draw Episode data title
@@ -274,9 +270,9 @@ class PDFContent {
             let attributedEpisodeTitle = NSAttributedString(string: episodeTitle, attributes: episodeTitleAttributes)
             let episodeTitleStringSize = attributedEpisodeTitle.getSize(withPreferredWidth: pageRect.width - 40)
             let episodeTitleStringRect = CGRect(x: 20, y: textTop, width: episodeTitleStringSize.width, height: episodeTitleStringSize.height)
-            textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             attributedEpisodeTitle.draw(in: episodeTitleStringRect)
             textTop += episodeTitleStringSize.height + 10
+            textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
             
             // Draw episodes data
             let episodesData = fetchEpisodesData(for: allergenID)
@@ -330,6 +326,7 @@ class PDFContent {
                 let noEpisodeMessage = "⚠️発症記録がありません。"
                 let noEpisodeFont = UIFont.systemFont(ofSize: 12.0)
                 let position = CGPoint(x: 20, y: textTop)
+                textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size) // try
                 textTop = drawText(message: noEpisodeMessage, font: noEpisodeFont, position: position, maxWidth: pageRect.width - 40)
                 textTop += 40
                 textTop = renderer.checkContext(cursor: textTop, pdfSize: pageRect.size)
