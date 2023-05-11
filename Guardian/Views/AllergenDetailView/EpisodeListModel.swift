@@ -25,7 +25,6 @@ struct EpisodeListModel: Identifiable, Hashable {
               let wentToHospital = record["wentToHospital"] as? Bool,
               let typeOfExposure = record["typeOfExposure"] as? [String],
               let symptoms = record["symptoms"] as? [String],
-              let severity = record["severity"] as? String,
               let didExercise = record["didExercise"] as? Bool else {
             return nil
         }

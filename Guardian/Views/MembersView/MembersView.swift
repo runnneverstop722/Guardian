@@ -26,13 +26,15 @@ struct MembersView: View {
                 ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
                     VStack(alignment: .center, spacing: 30) {
                         Spacer()
-                        VStack(spacing: 20) {
+                        VStack {
                             Image("profile")
+                                .resizable()
+                                .scaledToFit()
                             Text("プロフィールを作成しましょう。")
                                 .font(.title3)
                         }
                         
-                        VStack(spacing: 20) {
+                        VStack {
                             Text("プロフィールを作成したら、")
                             HStack {
                                 Image(systemName: "hand.point.up.fill")

@@ -104,8 +104,11 @@ struct AwarenessView: View {
                                     Text(item.firstName ?? "").tag(item as ProfileInfoEntity?)
                                 }
                             }
+//                            .NeumorphicStyle()
+                            .padding(5)
                             .pickerStyle(MenuPickerStyle())
                             .foregroundColor(.secondary)
+                            .cornerRadius(5)
                         }
                         if let selectedProfile = selectedProfile {
                             Image(uiImage: loadImageFromURL(urlString: selectedProfile.profileImageData ?? "") ?? UIImage())

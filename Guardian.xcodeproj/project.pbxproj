@@ -22,6 +22,7 @@
 		051A27E329D4294A00A890D0 /* AllergensModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E229D4294A00A890D0 /* AllergensModel.swift */; };
 		051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E429D5368000A890D0 /* AllergensListModel.swift */; };
 		051A27EA29D5554F00A890D0 /* EpisodeListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051A27E929D5554F00A890D0 /* EpisodeListModel.swift */; };
+		0536E6062A0CB52800E7D8C4 /* NeumorphicStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536E6052A0CB52800E7D8C4 /* NeumorphicStyle.swift */; };
 		05422C8629D94036004BB4A5 /* EpisodeImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */; };
 		05422C8F29DBCEEE004BB4A5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */; };
 		05552CF829E2385B00F9AC0A /* CustomUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05552CF729E2385B00F9AC0A /* CustomUITextField.swift */; };
@@ -73,6 +74,7 @@
 		051A27E229D4294A00A890D0 /* AllergensModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensModel.swift; sourceTree = "<group>"; };
 		051A27E429D5368000A890D0 /* AllergensListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergensListModel.swift; sourceTree = "<group>"; };
 		051A27E929D5554F00A890D0 /* EpisodeListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeListModel.swift; sourceTree = "<group>"; };
+		0536E6052A0CB52800E7D8C4 /* NeumorphicStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeumorphicStyle.swift; sourceTree = "<group>"; };
 		05422C8529D94036004BB4A5 /* EpisodeImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeImageModel.swift; sourceTree = "<group>"; };
 		05422C8D29DBCE2D004BB4A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		05422C8E29DBCEED004BB4A5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				05F19E1B29ED8EA5004A4352 /* Symbols.swift */,
 				05099BC229FA925A003D7E8D /* LoadingAlert.swift */,
 				05F19E1D29ED9530004A4352 /* Theme.swift */,
+				0536E6052A0CB52800E7D8C4 /* NeumorphicStyle.swift */,
 				E3D2AD9329FBBB4D00093012 /* GradientButtonStyle.swift */,
 				E34217592A0BCE5300BEFE0E /* AddNewButton.swift */,
 				05099BBF29FA1378003D7E8D /* AllergenTranslations.swift */,
@@ -424,6 +427,7 @@
 				5d0929bfd1bb67cb97803fe43d53246e /* MemberListModel.swift in Sources */,
 				05B0714329C6BD28008A2010 /* ImagePicker.swift in Sources */,
 				051A27B729CE87DD00A890D0 /* DiagnosisModel.swift in Sources */,
+				0536E6062A0CB52800E7D8C4 /* NeumorphicStyle.swift in Sources */,
 				051A27E529D5368000A890D0 /* AllergensListModel.swift in Sources */,
 				051A27BB29CE885400A890D0 /* EpisodeModel.swift in Sources */,
 				051A27DB29D08DE400A890D0 /* AllergenDetailView.swift in Sources */,

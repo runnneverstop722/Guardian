@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MobileCoreServices
+import UniformTypeIdentifiers
 
 struct ShareSheet: UIViewControllerRepresentable {
     var activityItems: [Any]
@@ -19,7 +20,7 @@ struct ShareSheet: UIViewControllerRepresentable {
             if let url = item as? URL {
                 do {
                     let data = try Data(contentsOf: url)
-                    let itemProvider = NSItemProvider(item: data as NSData, typeIdentifier: kUTTypePDF as String)
+                    let itemProvider = NSItemProvider(item: data as NSData, typeIdentifier: UTType.pdf.identifier)
                     items.append(itemProvider)
                 } catch {
                     print("Error converting URL to Data: \(error)")
