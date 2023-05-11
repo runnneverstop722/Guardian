@@ -11,7 +11,6 @@ import CloudKit
 import CoreData
 
 struct MemberListModel: Identifiable, Hashable {
-    
     let id = UUID()
     let headline: String
     let caption: String

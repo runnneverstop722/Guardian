@@ -32,7 +32,6 @@ struct BloodTest: Identifiable {
     init() {
         
     }
-    
     init?(entity: BloodTestEntity) {
         let myRecord = CKRecord(recordType: "BloodTest", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         myRecord["bloodTestDate"] = entity.bloodTestDate
@@ -97,7 +96,6 @@ struct SkinTest: Identifiable {
     init() {
         
     }
-    
     init?(entity: SkinTestEntity) {
         let myRecord = CKRecord(recordType: "SkinTest", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         myRecord["skinTestDate"] = entity.skinTestDate
@@ -153,7 +151,6 @@ struct OralFoodChallenge: Identifiable {
 enum MedicalTestFormField {
     case bloodTestLevel, skinTestResultValue, oralFoodChallengeQuantity
 }
-
 struct MedicalTestView: View {
     @State private var selectedTestIndex = 0
     @EnvironmentObject var medicalTest: MedicalTest
@@ -166,6 +163,7 @@ struct MedicalTestView: View {
     var totalNumberOfMedicalTest: String {
         return "TotalNumberOfMedicalTestData: \(medicalTest.bloodTest.count + medicalTest.skinTest.count + medicalTest.oralFoodChallenge.count)"
     }
+    
     //MARK: - Body View
     
     var body: some View {
@@ -259,7 +257,6 @@ struct MedicalTestView: View {
             if let level = Double(bloodTest.bloodTestLevel) {
                 bloodTest.bloodTestGrade = BloodTestGrade.gradeForLevel(level)
             }
-            
             myRecord["bloodTestDate"] = bloodTest.bloodTestDate
             myRecord["bloodTestLevel"] = bloodTest.bloodTestLevel
             myRecord["bloodTestGrade"] = bloodTest.bloodTestGrade.rawValue
@@ -331,7 +328,7 @@ struct MedicalTestView: View {
     }
     func updateRecord(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
-
+            
         }
     }
     //MARK: - Func Update
@@ -366,7 +363,6 @@ struct MedicalTestView: View {
             myRecord["ofcResult"] = $0.ofcResult
             records.append(myRecord)
         }
-        
         let allergen = medicalTest.allergen
         allergen["totalNumberOfMedicalTests"] = medicalTest.bloodTest.count + medicalTest.skinTest.count + medicalTest.oralFoodChallenge.count
         records.append(allergen)
@@ -401,7 +397,6 @@ struct MedicalTestView: View {
         }
         CKContainer.default().privateCloudDatabase.add(modifyRecords)
     }
-    
     private func save(record: CKRecord, completion: @escaping ((CKRecord?) -> Void)) {
         DispatchQueue.main.async {
             self.isLoading = true
@@ -436,8 +431,8 @@ struct BloodTestSection: View {
     @Binding var deleteIDs: [CKRecord.ID]
     @State private var isShowingBloodTestTutorialAlert = false
     @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-
         VStack {
             List {
                 Button {
@@ -467,7 +462,7 @@ struct BloodTestSection: View {
                       dismissButton: .default(Text("閉じる")))
             }
             Button(action: {
-                bloodTests.insert(BloodTest(), at: 0) // Add new record at the top
+                bloodTests.insert(BloodTest(), at: 0)
             }) {
                 HStack {
                     Spacer()
@@ -507,7 +502,6 @@ struct SkinTestSection: View {
                     skinTests.remove(atOffsets: indexSet)
                 })
             }
-            
             Button(action: {
                 skinTests.insert(SkinTest(), at: 0) // Add new record at the top
             }) {
@@ -550,10 +544,8 @@ struct OralFoodChallengeSection: View {
                     oralFoodChallenges.remove(atOffsets: indexSet)
                 })
             }
-            
-            
             Button(action: {
-                oralFoodChallenges.insert(OralFoodChallenge(), at: 0) // Add new record at the top                
+                oralFoodChallenges.insert(OralFoodChallenge(), at: 0) // Add new record at the top
             }) {
                 HStack {
                     Spacer()
@@ -590,14 +582,13 @@ struct BloodTestFormView: View {
         )
     }
     private var currentGradeString: String {
-            if let level = Double(bloodTest.bloodTestLevel) {
-                let grade = BloodTestGrade.gradeForLevel(level)
-                return grade.rawValue
-            } else {
-                return ""
-            }
+        if let level = Double(bloodTest.bloodTestLevel) {
+            let grade = BloodTestGrade.gradeForLevel(level)
+            return grade.rawValue
+        } else {
+            return ""
         }
-    
+    }
     var body: some View {
         VStack {
             HStack {
@@ -708,10 +699,3 @@ struct OralFoodChallengeFormView: View {
         }
     }
 }
-
-//
-//struct MedicalTestView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MedicalTestView()
-//    }
-//}

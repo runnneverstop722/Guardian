@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-The profile image that reflects the selected item state.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ The profile image that reflects the selected item state.
+ */
 
 import SwiftUI
 import PhotosUI
@@ -28,7 +28,6 @@ struct ProfileImageModel: View {
         }
     }
 }
-
 struct CircularProfileImage: View {
     let imageState: ProfileModel.ImageState
     
@@ -48,7 +47,6 @@ struct CircularProfileImage: View {
             }
     }
 }
-
 struct EditableCircularProfileImage: View {
     @ObservedObject var viewModel: ProfileModel
     
@@ -63,7 +61,7 @@ struct EditableCircularProfileImage: View {
                         .font(.system(size: 30))
                         .foregroundColor(.accentColor)
                 }
-                .buttonStyle(.borderless)
+                             .buttonStyle(.borderless)
             }
     }
 }

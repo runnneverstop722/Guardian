@@ -12,11 +12,12 @@ import CoreData
 
 @MainActor class ProfileModel: ObservableObject  {
     enum Gender: String, CaseIterable, Identifiable {
-        case 男, 女, 選択なし
         var id: String { self.rawValue }
+        case 男
+        case 女
+        case 選択なし
     }
     private let context = PersistenceController.shared.container.viewContext
-    
     @Published var data: Data? //image
     @Published var firstName: String = ""
     @Published var lastName: String = ""
@@ -26,7 +27,6 @@ import CoreData
     @Published var allergist: String = ""
     @Published var allergistContactInfo: String = ""
     @Published var allergens: [String] = []
-    
     private var allergensObject: [AllergensModel] = []
     @Published var profileInfo: [MemberListModel] = []
     @Published var isAddMemberPresented = false
@@ -45,7 +45,6 @@ import CoreData
         fetchItemsFromLocalCache()
         fetchItemsFromCloud()
     }
-    
     init(profile: CKRecord) {
         record = profile
         guard let firstName = profile["firstName"] as? String,
@@ -110,7 +109,6 @@ import CoreData
             print("Could not fetch from local cache. \(error), \(error.userInfo)")
         }
     }
-    
     func saveToLocalCache(_ profileInfo: MemberListModel) {
         let entity = ProfileInfoEntity(context: context)
         entity.update(with: profileInfo.record)
@@ -121,7 +119,6 @@ import CoreData
             print("Could not save to local cache. \(error), \(error.userInfo)")
         }
     }
-    
     func deleteFromLocalCache(_ recordID: String) {
         let fetchRequest = NSFetchRequest<ProfileInfoEntity>(entityName: "ProfileInfoEntity")
         fetchRequest.predicate = NSPredicate(format: "recordID == %@", recordID)
@@ -136,14 +133,11 @@ import CoreData
             print("Could not delete from local cache. \(error), \(error.userInfo)")
         }
     }
-    
     private func fetchAllergens(recordID: CKRecord.ID) {
         let reference = CKRecord.Reference(recordID: recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "profile == %@", reference)
-        
         let query = CKQuery(recordType: "Allergens", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        
         let queryOperation = CKQueryOperation(query: query)
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -170,11 +164,9 @@ import CoreData
         case success(Image)
         case failure(Error)
     }
-    
     enum TransferError: Error {
         case importFailed
     }
-    
     struct ProfileImage: Transferable {
         let image: Image
         let data: Data
@@ -278,7 +270,6 @@ import CoreData
         allergens: [String]
     )
     {
-        
         let myRecord = CKRecord(recordType: "ProfileInfo")
         if let profileImage = profileImage {
             let url = CKAsset(fileURL: profileImage)
@@ -298,7 +289,6 @@ import CoreData
     }
     
     private func deleteAllergens(recordID: CKRecord.ID) {
-        
         CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { recordID, error in
             DispatchQueue.main.async {
                 
@@ -329,14 +319,12 @@ import CoreData
             PersistenceController.shared.addAllergen(allergen: myRecord)
         }
     }
-    
     private func saveAllergen(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
             print("Error: \(String(describing: returnedError))")
         }
     }
-    
     private func saveItem(record: CKRecord, completion: @escaping ((CKRecord.ID?)->Void)) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
@@ -356,10 +344,8 @@ import CoreData
     
     func fetchItemsFromCloud() {
         let predicate = NSPredicate(value: true)
-        
         let query = CKQuery(recordType: "ProfileInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        
         let queryOperation = CKQueryOperation(query: query)
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -393,7 +379,6 @@ import CoreData
             }
         }
     }
-    
     private func updateRecord(record: CKRecord) {
         if let profileImage = getImageURL(for: data) {
             let url = CKAsset(fileURL: profileImage)
@@ -426,5 +411,3 @@ import CoreData
         }
     }
 }
-
-

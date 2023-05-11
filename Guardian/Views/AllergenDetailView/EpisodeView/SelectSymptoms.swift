@@ -7,10 +7,10 @@
 import SwiftUI
 
 struct SelectSymptoms: View {
+    @Binding var selectedSymptoms: [String]
     let symptoms: [String]
     let category: String
-    @Binding var selectedSymptoms: [String]
-
+    
     init(category: String, selectedSymptoms: Binding<[String]>) {
         self.category = category
         self._selectedSymptoms = selectedSymptoms
@@ -36,11 +36,6 @@ struct SelectSymptoms: View {
     var body: some View {
         List {
             ForEach(symptoms, id: \.self) { symptom in
-//                if category == "皮膚" {
-//                    NavigationLink(destination: SelectLocations(category: category, symptom: symptom, selectedSymptoms: $selectedSymptoms)) {
-//                        symptomRow(symptom: symptom)
-//                    }
-//                } else {
                 Button(action: {
                     let symptomWithCategory = "\(category)\(symptom)"
                     if let index = selectedSymptoms.firstIndex(of: symptomWithCategory) {
@@ -51,32 +46,18 @@ struct SelectSymptoms: View {
                 }) {
                     symptomRow(symptom: symptom)
                 }
-//                }
             }
         }
         .navigationBarTitle("\(category)")
     }
-
+    
     func symptomRow(symptom: String) -> some View {
         HStack {
             Text(symptom)
             Spacer()
-//            if category == "皮膚" {
-//                Text("\(selectedSymptoms.filter { $0.hasPrefix("\(category)\(symptom)") }.count) ヶ所")
-//                    .foregroundColor(.gray)
-//            } else {
             if selectedSymptoms.contains("\(category)\(symptom)") {
                 Symbols.done
             }
-//            }
         }
     }
 }
-
-//struct SelectSymptoms_Previews: PreviewProvider {
-//    @State static var selectedSymptoms: [String] = []
-//
-//    static var previews: some View {
-//        SelectSymptoms(category: "皮膚", selectedSymptoms: $selectedSymptoms)
-//    }
-//}

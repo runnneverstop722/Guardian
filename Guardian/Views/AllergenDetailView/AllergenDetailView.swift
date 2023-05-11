@@ -12,15 +12,14 @@ import CloudKit
     @Published var bloodTest: [BloodTest] = []
     @Published var skinTest: [SkinTest] = []
     @Published var oralFoodChallenge: [OralFoodChallenge] = []
+    
     var allergen: CKRecord
     init(allergen: CKRecord) {
         self.allergen = allergen
     }
-    
     var totalTest: Int {
         return bloodTest.count + skinTest.count + oralFoodChallenge.count
     }
-    
     func cleanUpdateUnSaveData() {
         bloodTest.removeAll { $0.record == nil }
         skinTest.removeAll { $0.record == nil }
@@ -46,7 +45,6 @@ struct AllergenDetailView: View {
     let allergen: CKRecord
     let existingEpisodeData = NotificationCenter.default.publisher(for: Notification.Name("existingEpisodeData"))
     let symbolImage: Image
-    
     init(allergen: CKRecord, symbolImage: Image) {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
@@ -54,7 +52,6 @@ struct AllergenDetailView: View {
         _medicalTest = StateObject(wrappedValue: MedicalTest(allergen: allergen))
         self.symbolImage = symbolImage
     }
-    
     func fetchLocalData() {
         let allergenID = medicalTest.allergen.recordID.recordName
         medicalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
@@ -114,6 +111,7 @@ struct AllergenDetailView: View {
         skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
         dispatchWork.enter()
+        
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
@@ -144,7 +142,6 @@ struct AllergenDetailView: View {
         dispatchWork.enter()
         let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
         OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
         let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
         
         OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -173,17 +170,14 @@ struct AllergenDetailView: View {
         }
         addOperation(operation: OFCQueryOperation)
         episodeModel.fetchItemsFromLocalCache()
-        
         dispatchWork.enter()
         episodeModel.fetchItemsFromCloud {
             dispatchWork.leave()
         }
-        
         dispatchWork.notify(queue: DispatchQueue.main) {
             isLoading = false
         }
     }
-    
     func addOperation(operation: CKDatabaseOperation) {
         CKContainer.default().privateCloudDatabase.add(operation)
     }
@@ -191,6 +185,7 @@ struct AllergenDetailView: View {
     var body: some View {
         LoadingView(isShowing: $isLoading) {
             List {
+                //MARK: - 診断歴
                 Section(header: Text("診断歴") // Medical Test
                     .font(.title2)
                     .foregroundColor(Color(uiColor: .label))
@@ -206,7 +201,6 @@ struct AllergenDetailView: View {
                             }
                         }
                     }
-                
                 Section {
                     HStack {
                         VStack(alignment: .leading) {
@@ -240,7 +234,8 @@ struct AllergenDetailView: View {
                             Spacer()
                         }
                     }
-                    // Summary of Medical Test
+                    
+                    //MARK: - Summary of Medical Test
                     VStack(alignment: .leading) {
                         HStack {
                             Text("血液(特異的IgE抗体)検査") // Blood Test
@@ -274,7 +269,7 @@ struct AllergenDetailView: View {
                     }
                 }
                 
-                // Episode
+                //MARK: - Episode
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Episodes")
@@ -301,7 +296,6 @@ struct AllergenDetailView: View {
                         Spacer()
                     }
                 }
-                
                 // Episode List
                 ScrollView {
                     VStack(spacing: 20) {

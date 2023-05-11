@@ -10,12 +10,13 @@ import PhotosUI
 import CoreTransferable
 
 enum EpisodeFormField {
-    case intakeAmount, otherTreatment, episodeMemo
+    case intakeAmount
+    case otherTreatment
+    case episodeMemo
 }
-
 enum ActiveAlertOnEpisode: Identifiable {
-    case saveConfirmation, saveError
-    
+    case saveConfirmation
+    case saveError
     var id: Int {
         switch self {
         case .saveConfirmation:
@@ -143,7 +144,6 @@ struct EpisodeView: View {
                         if episodeModel.treatments.contains("その他") {
                             TextField("その他", text: $episodeModel.otherTreatment)
                                 .submitLabel(.done)
-//                                .focused($episodeFocusedField, equals: .otherTreatment)
                         }
                     }
                 Section(header: Text("メモ").font(.headline),
@@ -169,7 +169,6 @@ struct EpisodeView: View {
                         .sheet(isPresented: $isPickerPresented) {
                             EpisodePhotoPicker(selectedImages: $episodeModel.episodeImages)
                         }
-                        
                         // Display the selected image thumbnails
                         ScrollView(.horizontal) {
                             VStack(alignment: .leading) {
@@ -214,7 +213,6 @@ struct EpisodeView: View {
                             }
                         }
                     }
-                
                 if isUpdate {
                     Button(action: {
                         showRemoveAlert.toggle()
@@ -272,7 +270,6 @@ struct EpisodeView: View {
                             return Alert(title: Text("データが保存されました。"),
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる"), action: {
-                                
                                 presentationMode.wrappedValue.dismiss()
                             }))
                         case .saveError:
@@ -312,11 +309,3 @@ struct EpisodeView: View {
         return adaptiveColumns
     }
 }
-
-//struct EpisodeView_Previews: PreviewProvider {
-//
-//    static var previews: some View {
-//        let allergen = CKRecord(recordType: "allergen")
-//        EpisodeView(record: allergen)
-//    }
-//}

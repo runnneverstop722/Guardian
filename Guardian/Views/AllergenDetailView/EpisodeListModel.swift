@@ -10,7 +10,6 @@ import PhotosUI
 import CloudKit
 
 struct EpisodeListModel: Identifiable, Hashable {
-    
     let id = UUID()
     let headline: String
     let caption1: String
@@ -42,7 +41,6 @@ struct EpisodeListModel: Identifiable, Hashable {
         caption5 = didExercise ? "運動後" : ""
         self.record = record
     }
-    
     init?(entity: EpisodeEntity) {
         let myRecord = CKRecord(recordType: "EpisodeInfo", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         if let diagnosisPhoto = entity.episodePhoto {

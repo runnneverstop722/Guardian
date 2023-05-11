@@ -11,14 +11,16 @@ import CloudKit
 import UIKit
 
 enum FormField1 {
-    case lastName, firstName
+    case lastName
+    case firstName
 }
 enum FormField2 {
-    case hospitalName, allergist, allergistContactInfo
+    case hospitalName
+    case allergist
+    case allergistContactInfo
 }
 
 struct ProfileView: View {
-    
     @StateObject var profileModel: ProfileModel
     @State private var showingAddAllergen = false
     @State private var showingRemoveAlert = false
@@ -27,7 +29,6 @@ struct ProfileView: View {
     @FocusState private var focusedField1: FormField1?
     @FocusState private var focusedField2: FormField2?
     @Environment(\.presentationMode) var presentationMode
-    
     @State private var isLastNameEmpty = true
     @State private var isFirstNameEmpty = true
     
@@ -38,7 +39,6 @@ struct ProfileView: View {
     init() {
         _profileModel = StateObject(wrappedValue: ProfileModel())
     }
-    
     init(profile: CKRecord) {
         self.profile = profile
         _isUpdate = State(initialValue: true)
@@ -46,7 +46,6 @@ struct ProfileView: View {
         _isLastNameEmpty = State(initialValue: profile["lastName"] == nil || (profile["lastName"] as? String)?.isEmpty == true)
         _isFirstNameEmpty = State(initialValue: profile["firstName"] == nil || (profile["firstName"] as? String)?.isEmpty == true)
     }
-    
     private var formValidation: FormValidationProfile {
         FormValidationProfile(isLastNameEmpty: isLastNameEmpty, isFirstNameEmpty: isFirstNameEmpty, isAllergensEmpty: profileModel.allergens.isEmpty)
     }
@@ -56,65 +55,64 @@ struct ProfileView: View {
         NavigationView {
             Form {
                 Section(header: Text("ユーザー").font(.headline)) {
-                        VStack {
-                            Section {
-                                HStack {
-                                    Spacer()
-                                    EditableCircularProfileImage(viewModel: profileModel)
-                                    Spacer()
-                                }
+                    VStack {
+                        Section {
+                            HStack {
+                                Spacer()
+                                EditableCircularProfileImage(viewModel: profileModel)
+                                Spacer()
                             }
-                            .listRowBackground(Color.clear)
-                            #if !os(macOS)
-                            .padding([.top], 10)
-                            #endif
-                            
-                            Section {
-                                TextField("姓", text: $profileModel.lastName)
-                                    .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
-                                    .focused($focusedField1, equals: .lastName)
-                                    .onChange(of: profileModel.lastName) { _ in
-                                        isLastNameEmpty = profileModel.lastName.isEmpty
-                                    }
-                                Divider()
-                                TextField("名", text: $profileModel.firstName)
-                                    .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
-                                    .focused($focusedField1, equals: .firstName)
-                                    .onChange(of: profileModel.firstName) { _ in
-                                        isFirstNameEmpty = profileModel.firstName.isEmpty
-                                    }
-                                
-                                Divider()
-                                Picker("Gender", selection: $profileModel.gender) {
-                                    ForEach(ProfileModel.Gender.allCases) { gender in
-                                        Text(gender.rawValue.capitalized).tag(gender)
-                                    }
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
-                                DatePicker("生年月日",
-                                           selection: $profileModel.birthDate,
-                                           displayedComponents: [.date])
-                                .foregroundColor(Color(uiColor: .placeholderText))
-                                .environment(\.locale, Locale(identifier: "ja_JP"))
-                            }
-                            .fontWeight(.bold)
                         }
+                        .listRowBackground(Color.clear)
+#if !os(macOS)
+                        .padding([.top], 10)
+#endif
+                        
+                        Section {
+                            TextField("姓", text: $profileModel.lastName)
+                                .textFieldStyle(RequiredFieldStyle(isEmpty: isLastNameEmpty))
+                                .focused($focusedField1, equals: .lastName)
+                                .onChange(of: profileModel.lastName) { _ in
+                                    isLastNameEmpty = profileModel.lastName.isEmpty
+                                }
+                            Divider()
+                            TextField("名", text: $profileModel.firstName)
+                                .textFieldStyle(RequiredFieldStyle(isEmpty: isFirstNameEmpty))
+                                .focused($focusedField1, equals: .firstName)
+                                .onChange(of: profileModel.firstName) { _ in
+                                    isFirstNameEmpty = profileModel.firstName.isEmpty
+                                }
+                            
+                            Divider()
+                            Picker("Gender", selection: $profileModel.gender) {
+                                ForEach(ProfileModel.Gender.allCases) { gender in
+                                    Text(gender.rawValue.capitalized).tag(gender)
+                                }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            DatePicker("生年月日",
+                                       selection: $profileModel.birthDate,
+                                       displayedComponents: [.date])
+                            .foregroundColor(Color(uiColor: .placeholderText))
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                        }
+                        .fontWeight(.bold)
                     }
-                
+                }
                 Section(header: Text("医療機関").font(.headline)) {
-                        TextField("病院名", text: $profileModel.hospitalName)
+                    TextField("病院名", text: $profileModel.hospitalName)
                         .submitLabel(.next)
                         .focused($focusedField2, equals: .hospitalName)
-                        
-                        TextField("担当医", text: $profileModel.allergist)
+                    
+                    TextField("担当医", text: $profileModel.allergist)
                         .submitLabel(.next)
                         .focused($focusedField2, equals: .allergist)
-                        
-                        TextField("担当医連絡先", text: $profileModel.allergistContactInfo)
+                    
+                    TextField("担当医連絡先", text: $profileModel.allergistContactInfo)
                         .submitLabel(.done)
                         .focused($focusedField2, equals: .allergistContactInfo)
-                    }
-                    .fontWeight(.bold)
+                }
+                .fontWeight(.bold)
                 
                 Section(header: Text("食べないようにしている食物").font(.headline)) {
                     ForEach(profileModel.allergens, id: \.self) { allergen in
@@ -176,8 +174,8 @@ struct ProfileView: View {
                             return Alert(title: Text("データが保存されました。"),
                                          message: Text(""),
                                          dismissButton: .default(Text("閉じる"), action: {
-                                       presentationMode.wrappedValue.dismiss()
-                                   }))
+                                presentationMode.wrappedValue.dismiss()
+                            }))
                         case .emptyValidation:
                             return Alert(title: Text("入力されてない項目があります。"),
                                          message: Text(formValidation.getEmptyFieldsMessage()),

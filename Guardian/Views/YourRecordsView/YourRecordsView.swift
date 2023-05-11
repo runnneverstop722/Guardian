@@ -19,20 +19,17 @@ struct YourRecordsView: View {
     @State private var isShowingAllergensTutorialAlert = false
     @State private var selection = 0
     @State private var allergenCount: Int = 0
-    
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
     private let allergenImages: [String:String] = [
         "えび": "shrimp", "かに": "crab", "小麦": "wheat", "そば": "buckwheat", "卵": "egg", "乳": "milk", "落花生(ピーナッツ)": "peanut", "アーモンド": "almond", "あわび": "abalone", "いか": "squid",  "いくら": "salmonroe", "オレンジ": "orange", "カシューナッツ": "cashewnut", "キウイフルーツ": "kiwi", "牛肉": "beef", "くるみ": "walnut", "ごま": "sesame", "さけ": "salmon", "さば": "makerel", "大豆": "soybean", "鶏肉": "chicken", "バナナ": "banana", "豚肉": "pork", "まつたけ": "matsutake", "もも": "peach", "やまいも": "yam", "りんご": "apple", "ゼラチン": "gelatine"
     ]
-    
     var selectedMemberName: String = "Unknown Member"
     @State private var didLoad = false
     let profile: CKRecord
     let existingDiagnosisData = NotificationCenter.default.publisher(for: Notification.Name("existingDiagnosisData"))
     let existingAllergenData = NotificationCenter.default.publisher(for: Notification.Name("existingAllergenData"))
-    
     var profileImage: UIImage {
         if let asset = profile["profileImage"] as? CKAsset, let fileURL = asset.fileURL, let data = try? Data(contentsOf: fileURL), let image = UIImage(data: data) {
             return image
@@ -67,7 +64,6 @@ struct YourRecordsView: View {
                             .font(.footnote)
                             .fontWeight(.medium)
                             .bold()
-                            
                             Spacer()
                         }
                         .padding(.top)
@@ -128,7 +124,6 @@ struct YourRecordsView: View {
                             }
                             Spacer()
                         }
-                        
                         Spacer()
                     }
                     Carousel(diagnosisItems: $diagnosisModel.diagnosisInfo, selection: $selection)
@@ -201,7 +196,6 @@ struct YourRecordsView: View {
                         .cornerRadius(14)
                         .frame(maxWidth: (screenWidth - 10))
                         .opacity(0.2)
-                    
                 )
             }
             .navigationTitle(selectedMemberName)
@@ -268,7 +262,6 @@ struct Card: View {
         if let item = item {
             ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
                 VStack {
-                    //                    Spacer()
                     VStack(alignment: .leading, spacing: 8.0) {
                         HStack {
                             Text(item.headline)
@@ -353,7 +346,6 @@ struct Card: View {
 }
 
 struct YourRecordsViewGrid: View {
-    
     var items: [GridItemData]
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
     @Binding var allergenCount: Int
@@ -391,11 +383,9 @@ struct YourRecordsViewGridCell: View {
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-            Group {
-                Color("detail-background")
-            }
-            .cornerRadius(10.0)
-            .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
+            Color("detail-background")
+                .cornerRadius(10.0)
+                .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 5)
             
             VStack(alignment: .center, spacing: 8.0) {
                 symbolImage
@@ -403,15 +393,12 @@ struct YourRecordsViewGridCell: View {
                     .scaledToFit()
                     .frame(width: 60.0, height: 60.0)
                     .background(Color.accentColor)
-                //                    .foregroundColor(Color(uiColor: .label)) // Updated line
                     .clipShape(Circle())
                     .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 2)
-                
                 Text(headline)
                     .font(.headline)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
-                
                 HStack {
                     Symbols.medicalTest
                         .font(.subheadline)
@@ -450,21 +437,18 @@ struct GridItemData: Identifiable {
 }
 
 struct ActivityIndicator: UIViewRepresentable {
-    
     @Binding var isAnimating: Bool
     let style: UIActivityIndicatorView.Style
     
     func makeUIView(context: UIViewRepresentableContext<ActivityIndicator>) -> UIActivityIndicatorView {
         return UIActivityIndicatorView(style: style)
     }
-    
     func updateUIView(_ uiView: UIActivityIndicatorView, context: UIViewRepresentableContext<ActivityIndicator>) {
         isAnimating ? uiView.startAnimating() : uiView.stopAnimating()
     }
 }
 
 struct LoadingView<Content>: View where Content: View {
-    
     @Binding var isShowing: Bool
     var content: () -> Content
     
@@ -475,7 +459,6 @@ struct LoadingView<Content>: View where Content: View {
                 self.content()
                     .disabled(self.isShowing)
                     .blur(radius: self.isShowing ? 3 : 0)
-                
                 VStack {
                     ActivityIndicator(isAnimating: .constant(true), style: .large)
                     Text("Processing...")

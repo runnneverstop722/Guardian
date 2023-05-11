@@ -10,7 +10,6 @@ import PhotosUI
 import CloudKit
 
 struct AllergensListModel: Identifiable, Hashable {
-    
     let id = UUID()
     let headline: String
     let caption1: String
@@ -28,7 +27,6 @@ struct AllergensListModel: Identifiable, Hashable {
         caption1 = String(totalNumberOfMedicalTests)
         caption2 = String(totalNumberOfEpisodes)
         self.record = record
-        //        caption1 = String(format: "%d", diagnosisDate.dateFormat)
     }
     
     init?(entity: AllergenEntity) {

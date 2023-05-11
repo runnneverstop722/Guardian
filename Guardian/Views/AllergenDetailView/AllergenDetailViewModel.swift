@@ -23,14 +23,12 @@ import Combine
     
     let allergen: CKRecord
     var allergenName: String = "Unknown Allergen"
-    
     init(allergen: CKRecord) {
         self.allergen = allergen
         allergenName = allergen["allergen"] as? String ?? ""
         medicalTest = MedicalTest(allergen: allergen)
         episodeModel = EpisodeModel(record: allergen)
     }
-    
     func fetchLocalData() {
         let allergenID = medicalTest.allergen.recordID.recordName
         medicalTest.bloodTest = PersistenceController.shared.fetchBloodTest(allergenID: allergenID).compactMap({
@@ -53,12 +51,13 @@ import Combine
         let dispatchWork = DispatchGroup()
         let reference = CKRecord.Reference(recordID: medicalTest.allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
-
+        
         //MARK: - Blood
         let bloodTestQuery = CKQuery(recordType: "BloodTest", predicate: predicate)
         bloodTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let bloodTestQueryOperation = CKQueryOperation(query: bloodTestQuery)
         dispatchWork.enter()
+        
         bloodTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = BloodTest(record: returnedRecord) {
@@ -83,7 +82,6 @@ import Combine
                 dispatchWork.leave()
             }
         }
-
         addOperation(operation: bloodTestQueryOperation)
         
         //MARK: - Skin
@@ -91,6 +89,7 @@ import Combine
         skinTestQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         let skinTestQueryOperation = CKQueryOperation(query: skinTestQuery)
         dispatchWork.enter()
+        
         skinTestQueryOperation.recordFetchedBlock = { (returnedRecord) in
             DispatchQueue.main.async {
                 if let object = SkinTest(record: returnedRecord) {
@@ -121,7 +120,6 @@ import Combine
         dispatchWork.enter()
         let OFCQuery = CKQuery(recordType: "OralFoodChallenge", predicate: predicate)
         OFCQuery.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
         let OFCQueryOperation = CKQueryOperation(query: OFCQuery)
         
         OFCQueryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -150,17 +148,14 @@ import Combine
         }
         addOperation(operation: OFCQueryOperation)
         episodeModel.fetchItemsFromLocalCache()
-        
         dispatchWork.enter()
         episodeModel.fetchItemsFromCloud {
             dispatchWork.leave()
         }
-        
         dispatchWork.notify(queue: DispatchQueue.main) {
             self.isLoading = false
         }
     }
-    
     func addOperation(operation: CKDatabaseOperation) {
         CKContainer.default().privateCloudDatabase.add(operation)
     }

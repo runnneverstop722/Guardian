@@ -8,7 +8,6 @@
 import CloudKit
 
 struct AllergensModel: Identifiable, Hashable {
-    
     let id = UUID()
     let allergen: String
     let record: CKRecord
@@ -18,7 +17,6 @@ struct AllergensModel: Identifiable, Hashable {
         allergen = name
         self.record = record
     }
-    
     init?(entity: AllergenEntity) {
         let myRecord = CKRecord(recordType: "Allergens", recordID: CKRecord.ID.init(recordName: entity.recordID!))
         myRecord["allergen"] = entity.allergen

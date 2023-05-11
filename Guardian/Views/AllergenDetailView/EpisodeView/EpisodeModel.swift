@@ -30,7 +30,6 @@ import CloudKit
     @Published var episodeImages: [EpisodeImage] = []
     @Published var episodeInfo: [EpisodeListModel] = []
     @Published var allergens: [AllergensListModel] = []
-    
     @Published var symptomCategories = ["皮膚", "粘膜", "消化器", "呼吸器", "循環器", "神経"]
     @Published var typeOfExposureOptions = ["摂取", "肌に接触", "匂い", "不明"]
     @Published var leadTimeToSymptomsOptions = ["5分以内", "5~10分", "10~15分", "15~30分", "30~60分", "1時間~2時間", "2時間~"]
@@ -86,7 +85,6 @@ import CloudKit
         fetchAllergenFromLocalCache()
         fetchAllergens()
     }
-    
     init(allergen: CKRecord, episode: CKRecord) {
         self.allergen = allergen
         record = episode
@@ -132,11 +130,9 @@ import CloudKit
         case success(Image)
         case failure(Error)
     }
-    
     enum TransferError: Error {
         case importFailed
     }
-    
     struct EpisodeImage: Transferable {
         let image: Image
         let data: Data
@@ -164,7 +160,6 @@ import CloudKit
     }
     
     @Published private(set) var imageState: ImageState = .empty
-    
     @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
             if let imageSelection {
@@ -202,11 +197,9 @@ import CloudKit
         var imageURLs = [URL]()
         if data.isEmpty { return nil }
         for image in data {
-            
             let documentsDirectoryPath:NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
             let tempImageName = String(format: "%@.jpg", UUID().uuidString)
             let path:String = documentsDirectoryPath.appendingPathComponent(tempImageName)
-            
             let imageURL = URL(fileURLWithPath: path)
             try? image.data.write(to: imageURL, options: [.atomic])
             imageURLs.append(imageURL)
@@ -240,6 +233,7 @@ import CloudKit
     }
     
     //MARK: - UPDATE/EDIT @CK Private DataBase
+    
     func updateEpisode(completion: @escaping ((SaveAlert) -> Void)) {
         let myRecord = record
         CKContainer.default().privateCloudDatabase.fetch(withRecordID: myRecord.recordID) {  record, _ in
@@ -272,7 +266,6 @@ import CloudKit
         record["episodeMemo"] = episodeMemo
         saveItem(record: record, completion: completion)
     }
-    
     private func addItem(
         episodeDate: Date,
         firstKnownExposure: Bool,
@@ -318,13 +311,11 @@ import CloudKit
         NotificationCenter.default.post(name: NSNotification.Name.init("existingAllergenData"), object: AllergensListModel(record: allergen))
         PersistenceController.shared.addAllergen(allergen: allergen)
     }
-    
     func updateRecord(record: CKRecord) {
         CKContainer.default().privateCloudDatabase.modifyRecords(saving: [record], deleting: []) { result in
             
         }
     }
-    
     func deleteRecord(record: CKRecord, completion: ((Bool) -> Void)? = nil) {
         if record.recordType == "EpisodeInfo" {
             allergen["totalNumberOfEpisodes"] = max(Int(truncating: allergen["totalNumberOfEpisodes"] as! NSNumber) - 1, 0)
@@ -343,7 +334,6 @@ import CloudKit
             completion?(error == nil)
         }
     }
-    
     func deleteAllData() {
         for episode in episodeInfo {
             deleteRecord(record: episode.record)
@@ -356,7 +346,6 @@ import CloudKit
             }
         }
     }
-    
     private func saveItem(record: CKRecord, completion: @escaping ((SaveAlert) -> Void)) {
         CKContainer.default().privateCloudDatabase.save(record) { returnedRecord, returnedError in
             print("Record: \(String(describing: returnedRecord))")
@@ -378,17 +367,14 @@ import CloudKit
         }
     }
     
-    
     //MARK: - Fetch from CK Private DataBase
     
     func fetchItemsFromCloud(complete: (() -> Void)? = nil) {
         fetchItemsFromLocalCache()
         let reference = CKRecord.Reference(recordID: allergen.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "allergen == %@", reference)
-        
         let query = CKQuery(recordType: "EpisodeInfo", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "episodeDate", ascending: false)]
-        
         let queryOperation = CKQueryOperation(query: query)
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -409,7 +395,6 @@ import CloudKit
                 complete?()
             }
         }
-        
         addOperation(operation: queryOperation)
     }
     func addOperation(operation: CKDatabaseOperation) {
@@ -419,10 +404,8 @@ import CloudKit
     private func fetchAllergens() {
         let reference = CKRecord.Reference(recordID: record.recordID, action: .deleteSelf)
         let predicate = NSPredicate(format: "profile == %@", reference)
-        
         let query = CKQuery(recordType: "Allergens", predicate: predicate)
         query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        
         let queryOperation = CKQueryOperation(query: query)
         
         queryOperation.recordFetchedBlock = { (returnedRecord) in
@@ -479,7 +462,7 @@ import CloudKit
     
     func fetchStoredImages() {
         if let assets = record["data"] as? [CKAsset] {
-            print("Number of assets: \(assets.count)") // Add this line
+            print("Number of assets: \(assets.count)")
             for asset in assets {
                 if let imageURL = asset.fileURL {
                     if let imageData = try? Data(contentsOf: imageURL) {
@@ -492,7 +475,7 @@ import CloudKit
                 }
             }
         } else {
-            print("No assets found.") // Add this line
+            print("No assets found.")
         }
     }
 }

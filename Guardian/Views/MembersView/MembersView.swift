@@ -181,7 +181,6 @@ private extension MembersView {
     func editItems() {
         
     }
-    
     func move(fromOffsets source: IndexSet, toOffset destination: Int) {
         profileModel.profileInfo.move(fromOffsets: source, toOffset: destination)
     }
@@ -229,11 +228,3 @@ extension MembersView {
         }
     }
 }
-//
-//struct Members_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationStack {
-//            MembersView()
-//        }
-//    }
-//}

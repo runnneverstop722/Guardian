@@ -28,14 +28,11 @@ struct EpisodeImageModel: View {
         }
     }
 }
-
 struct CircularEpisodeImage: View {
     let imageState: EpisodeModel.ImageState
     
     var body: some View {
         EpisodeImageModel(imageState: imageState)
-            //.scaledToFill()
-            
             .aspectRatio(contentMode: .fill)
             .frame(width: 80, height: 80)
             .background {
@@ -64,7 +61,7 @@ struct EditableCircularEpisodeImage: View {
                         .font(.system(size: 30))
                         .foregroundColor(.accentColor)
                 }
-                .buttonStyle(.borderless)
+                             .buttonStyle(.borderless)
             }
     }
 }

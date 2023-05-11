@@ -7,10 +7,9 @@
 import SwiftUI
 
 struct SelectLocations: View {
+    @Binding var selectedSymptoms: [String]
     let category: String
     let symptom: String
-    @Binding var selectedSymptoms: [String]
-
     let locations = ["耳", "唇(くちびる)", "舌", "首", "腕（うで）", "手", "胴体", "足（足首より上）", "足（足首より下）"]
     
     var body: some View {
@@ -35,13 +34,5 @@ struct SelectLocations: View {
             }
         }
         .navigationBarTitle("\(symptom)")
-    }
-}
-
-struct SelectLocations_Previews: PreviewProvider {
-    @State static var selectedSymptoms: [String] = []
-
-    static var previews: some View {
-        SelectLocations(category: "皮膚", symptom: "かぶれ", selectedSymptoms: $selectedSymptoms)
     }
 }
