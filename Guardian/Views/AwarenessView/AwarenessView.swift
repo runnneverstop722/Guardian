@@ -62,9 +62,6 @@ struct AwarenessView: View {
     }
     func sharePDF(viewContext: NSManagedObjectContext) {
         if let selectedProfile = selectedProfile {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.isGeneratingPDF = true
-            }
             isCancelled = false
             progressMessage = "PDFファイルを作成中です...\n"
             PersistenceController.shared.exportAllRecordsToPDF(selectedProfile: selectedProfile, viewContext: viewContext) { result in
