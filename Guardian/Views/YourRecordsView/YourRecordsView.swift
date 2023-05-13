@@ -231,12 +231,10 @@ struct Carousel: View {
             } else {
                 TabView(selection: $selection) {
                     ForEach(diagnosisItems.indices, id: \.self) { index in
-                        NavigationLink(
-                            destination: DiagnosisView(record: diagnosisItems[index].record),
-                            label: {
-                                Card(item: diagnosisItems[index])
-                                    .padding(10.0)
-                            })
+                        NavigationLink(value: diagnosisItems[index], label: {
+                            Card(item: diagnosisItems[index])
+                                .padding(10.0)
+                        })
                         .buttonStyle(PlainButtonStyle())
                         .tag(index)
                     }
@@ -248,6 +246,9 @@ struct Carousel: View {
                     selection = value
                 }
             }
+        }
+        .navigationDestination(for: DiagnosisListModel.self) { item in
+            DiagnosisView(record: item.record)
         }
     }
 }
